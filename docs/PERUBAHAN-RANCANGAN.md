@@ -1,0 +1,45 @@
+# Catatan Perubahan Rancangan (Change Log terhadap Proposal)
+
+Dokumen ini menjelaskan bagian implementasi yang **sengaja** berbeda dari proposal yang sudah di-ACC. Penting karena saat Sprint Review, AI akan membandingkan repository dengan proposal — perbedaan yang tercatat di sini menunjukkan keputusan sadar, bukan kelalaian.
+
+| No | Bagian proposal | Di proposal | Implementasi | Alasan | Sumber keputusan | Tanggal |
+|---|---|---|---|---|---|---|
+| 1 | 5, 5.1 Jadwal | 7 sprint × 1 minggu | **2 sprint**; Sprint 1 = 14 Okt–11 Nov 2026 (12 PBI), Sprint 2 = 12 Nov–±9 Des (12 PBI) | Arahan dosen saat presentasi | Dosen | 2026-10-13 |
+| 2 | TK-20 Task Scheduler (cron), TK-22 Queue; UC-09 & UC-22 trigger scheduler | Pengecekan berkala via cron | Tanpa cron & queue worker. Pengingat (PBI 9) dan deteksi lonjakan (PBI 22) dipicu saat penghuni menyimpan data atau membuka Beranda; queue `sync`; PDF dibuat langsung | Arahan dosen | Dosen | 2026-10-13 |
+| 3 | TK-05 Bootstrap atau Tailwind | Belum dipilih | **Tailwind CSS v4** | Mockup final dibuat di Figma dan diterjemahkan ke Tailwind | Tim | 2026-10-14 |
+| 4 | 4.6 Mockup | Gambar di proposal | **Figma** sebagai sumber desain utama (diakses Claude Code lewat Figma MCP) | — | Tim | 2026-10-14 |
+| 5 | 6.2 & 6.3 Tools AI | Coding: GitHub Copilot / Cursor; 7 sprint | Coding: **Claude Code**; tabel per sprint disusun ulang untuk 2 sprint (di bawah) | Sprint berubah; tim memakai Claude Code. **Wajib cek ketersediaan di spreadsheet kuota tools sebelum dipakai** | Tim | 2026-10-14 |
+| 6 | 4.4 ERD — primary key | `id_alat`, `id_user`, dst | `id`; foreign key `<tabel>_id` | Konvensi Laravel/Eloquent, mengurangi error relasi | Tim (P3) | 2026-10-14 |
+| 7 | 4.4 ERD — entitas hasil hitungan | Rekap_Token, Prediksi_Token, Estimasi_Biaya, Perbandingan_Pemakaian, Pemakaian_Listrik, Tarif_Listrik sebagai tabel | Dihitung di Service saat dibutuhkan; tarif disimpan di `profil_kost` | Mencegah data ganda yang tidak sinkron saat data sumber diubah/dihapus. Rinci di `DATABASE.md` | Tim (P3) | 2026-10-14 |
+| 8 | 3.1.2 Karakteristik Pengguna | Admin mengelola profil kost & tarif | **Penghuni** mengelola profil kost & tarif (sesuai UC-15, KF-15, mockup) | Proposal tidak konsisten; UC-15 yang dipakai | Tim | 2026-10-14 |
+| 9 | UC-05 | Hanya catat & lihat riwayat | Ditambah ubah & hapus pembelian | Memperbaiki salah input | Tim (P2) | 2026-10-14 |
+| 10 | UC-07 | Input sisa kWh | Setiap input disimpan sebagai riwayat (bukan menimpa) | Dibutuhkan prediksi (PBI 8) & deteksi lonjakan (PBI 22) | Tim | 2026-10-14 |
+| 11 | KF-08 | "rata-rata penggunaan listrik" (belum didefinisikan) | Prioritas: selisih pembacaan meteran → catatan pemakaian alat 7 hari → nilai bawaan 3 kWh/hari | Rumus harus pasti agar bisa diuji | Tim (P3) | 2026-10-14 |
+| 12 | UC-01 | Hapus alat | Soft delete | Riwayat pemakaian & laporan bulan lalu tidak hilang | Tim | 2026-10-14 |
+| 14 | 5.2 Tim Pengembang (PBI per orang) | PBI dibagi per orang | Kerja **berpasangan**; P1 Eca+Tata (PBI 1,2,3), P2 Rafa+Habiebie (5,6,7), P3 Luthfan+Dhias (4,8,18), P4 Puti+Tika (13,15,23 + fondasi). Peran Scrum (PM, PO, SM, UI/UX) tetap | Pair programming mengurangi error & konflik; Puti+Tika memulai kerangka lebih dulu | Tim | 2026-10-14 |
+| 13 | Auth | Login & logout | Ditambah registrasi penghuni (mockup Login memuat opsi daftar); akun admin dibuat lewat seeder | — | Tim | 2026-10-14 |
+
+## Tabel tools AI per sprint (pengganti 6.3)
+
+> ⚠️ Sesuai ketentuan 6.1, maksimal 2 kelompok memakai tool yang sama pada proses yang sama. **Cek spreadsheet pelacakan dulu**, terutama "Claude Code" untuk Coding. Ganti sel di bawah jika kuotanya penuh.
+
+| Proses | Sprint 1 (14 Okt–11 Nov) | Sprint 2 (12 Nov–±9 Des) |
+|---|---|---|
+| Sprint Planning (memecah PBI jadi task) | Claude | ChatGPT |
+| Analisis / Design (skema DB, rumus, alur) | Claude (rumus & skema DB) | Gemini (rancangan notifikasi & laporan) |
+| Coding | Claude Code (+ MCP Laravel Boost & Figma) | Claude Code |
+| Testing (test case & data uji) | ChatGPT | Claude Code (menulis test) + Gemini (skenario uji menyeluruh) |
+| Sprint Review (membaca repo publik) | Gemini | ChatGPT |
+| Sprint Retrospective | ChatGPT | Gemini |
+
+Bukti prompt: semua prompt Claude Code tersimpan otomatis di `docs/ai-log/` (hook `UserPromptSubmit`). Prompt dari tools lain (ChatGPT/Gemini/Claude chat) disalin manual ke `docs/ai-log/manual/<tanggal>-<proses>.md` atau dilampirkan sebagai tautan share.
+
+## Koreksi dokumen proposal (non-teknis) yang sebaiknya diperbaiki
+1. Halaman sampul: nama **Kartika Febrianti Prasetya tertulis dua kali**, sedangkan **Habiebie Gilang Djaelani** dan **Muhammad Rafa Irhamsyah** tidak tercantum (padahal ada di 5.2).
+2. Penomoran: subbab mockup ditulis 4.5.x padahal berada di 4.6; Class Diagram dan Mockup sama-sama 4.5 di beberapa tempat. Daftar isi: nomor halaman Bab 3 kembali ke 1.
+3. TK melompat dari TK-25 ke TK-27, lalu ke TK-29 (TK-26 & TK-28 tidak ada). TK-10 menyebut "14 entitas" padahal ERD berisi ±28 entitas.
+4. Sitasi BPS: di teks (BPS, 2025), di daftar pustaka 2026 — samakan dan tambahkan URL tabel BPS.
+5. Daftar pustaka belum lengkap: Al-Debagy & Martinek (halaman/DOI), Gunawardhana masih berisi "[lengkapi penulis lain bila ada]", Sunardi & Suharjito tanpa nama jurnal/volume.
+6. KF-14 menyebut PDF/Excel, UC-14 hanya PDF — pilih salah satu (saran: PDF saja; Excel kalau sempat).
+7. Bab 6.3 masih berisi 7 sprint dan Copilot/Cursor — ganti dengan tabel di atas.
+8. Ejaan kecil: "Berancda", "Penghunni", "rapih" (baku: rapi), "Pengunaan" (judul Bab 6).

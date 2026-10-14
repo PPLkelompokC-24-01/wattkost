@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.blade.php diff=html
+*.css diff=css
+*.md diff=markdown
+*.php diff=php
+*.png binary
+*.jpg binary
+*.pdf binary

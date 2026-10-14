@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, sqlite3, gd, zip
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependency PHP
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Install & build aset
+        run: |
+          npm ci
+          npm run build
+
+      - name: Siapkan .env
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Cek format kode (Pint)
+        run: vendor/bin/pint --test
+
+      - name: Cek migration lama tidak diubah
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          CHANGED=$(git diff --name-only --diff-filter=MD origin/${{ github.base_ref }} HEAD -- database/migrations || true)
+          if [ -n "$CHANGED" ]; then
+            echo "::error::Migration yang sudah ada di ${{ github.base_ref }} diubah/dihapus. Buat migration BARU."
+            echo "$CHANGED"
+            exit 1
+          fi
+
+      - name: Jalankan test (SQLite in-memory)
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: php artisan test
