@@ -1,0 +1,1321 @@
+import { useState, type ReactNode } from "react"
+import {
+  Actions,
+  Badge,
+  Btn,
+  Card,
+  Check,
+  Field,
+  Gauge,
+  HouseIllustration,
+  Modal,
+  PageTitle,
+  Placeholder,
+  Progress,
+  Search,
+  Select,
+  Stat,
+  Table,
+  Tabs,
+  Toggle,
+  type Go,
+} from "./ui"
+
+type P = { go: Go }
+const Rp = (n: number) => "Rp" + n.toLocaleString("id-ID")
+
+function Row({ k, v }: { k: string; v: ReactNode }) {
+  return (
+    <div className="flex justify-between py-3 border-b border-line last:border-0 text-sm">
+      <span className="text-mute">{k}</span>
+      <span className="font-medium tabular-nums">{v}</span>
+    </div>
+  )
+}
+
+function Beranda({ go }: P) {
+  return (
+    <>
+      <PageTitle
+        title="Beranda"
+        sub="Rabu, 08 Oktober 2026 · Kost Melati, Kamar A01"
+      >
+        <Btn variant="secondary" onClick={() => go("03")}>
+          Catat Pemakaian
+        </Btn>
+        <Btn onClick={() => go("06")}>+ Catat Token</Btn>
+      </PageTitle>
+      <div className="grid grid-cols-4 gap-6">
+        <Stat
+          label="Sisa kWh"
+          value="42,5 kWh"
+          note="Diperbarui 08 Okt, 07.30"
+          onClick={() => go("08")}
+        />
+        <Stat
+          label="Prediksi token habis"
+          value="6 hari lagi"
+          note="Estimasi 14 Okt 2026"
+          onClick={() => go("09")}
+        />
+        <Stat
+          label="Pemakaian bulan ini"
+          value="86,4 kWh"
+          note="Rp124.850 estimasi biaya"
+          onClick={() => go("04")}
+        />
+        <Stat
+          label="Alat terboros"
+          value="AC — 38,2 kWh"
+          note="44% dari total"
+          onClick={() => go("05")}
+        />
+      </div>
+      <div className="grid grid-cols-3 gap-6 mt-6">
+        <Card
+          title="Pemakaian Listrik 30 Hari"
+          className="col-span-2"
+          action={
+            <Btn variant="link" onClick={() => go("11")}>
+              Buka Dashboard →
+            </Btn>
+          }
+        >
+          <Placeholder
+            label="[PLACEHOLDER GRAFIK PEMAKAIAN LISTRIK — GARIS]"
+            h="h-80"
+          />
+        </Card>
+        <Card title="Ringkasan Pemakaian">
+          <div className="rounded-2xl bg-gradient-to-br from-deep to-abyss border border-line overflow-hidden mb-4">
+            <HouseIllustration className="w-full h-36" />
+          </div>
+          <Row k="Pemakaian bulan ini" v="86,4 kWh" />
+          <Row k="Alat terboros" v="AC · 44%" />
+          <Row k="Token diperkirakan habis" v="6 hari" />
+          <div className="flex flex-col gap-2 mt-4">
+            <Btn variant="secondary" onClick={() => go("13")}>
+              Lihat Rekomendasi Hemat
+            </Btn>
+            <Btn variant="secondary" onClick={() => go("23")}>
+              Cek Peringatan Lonjakan
+            </Btn>
+            <Btn variant="secondary" onClick={() => go("25")}>
+              Lihat Jejak Karbon
+            </Btn>
+          </div>
+        </Card>
+      </div>
+    </>
+  )
+}
+
+function AlatListrik() {
+  const [open, setOpen] = useState(false)
+  const data = [
+    ["AC", 500, 1],
+    ["Kulkas", 100, 1],
+    ["Laptop", 65, 1],
+    ["Lampu Kamar", 12, 2],
+    ["Kipas Angin", 45, 1],
+  ] as const
+  return (
+    <>
+      <PageTitle title="Alat Listrik" sub="Daftar alat listrik di kamar Anda" />
+      <Card>
+        <div className="flex justify-between mb-4">
+          <Search placeholder="Cari alat..." />
+          <Btn onClick={() => setOpen(true)}>+ Tambah Alat</Btn>
+        </div>
+        <Table
+          head={["Nama", "Daya (W)", "Jumlah", "Aksi"]}
+          rows={data.map(([n, w, j]) => [
+            <span className="font-medium">{n}</span>,
+            `${w} W`,
+            j,
+            <Actions items={["Edit", "Hapus"]} />,
+          ])}
+        />
+        <p className="text-xs text-mute mt-4">
+          Menampilkan 5 dari 5 alat · Total daya terpasang 734 W
+        </p>
+      </Card>
+      {open && (
+        <Modal title="Tambah Alat" onClose={() => setOpen(false)}>
+          <Field label="Nama Alat" placeholder="Contoh: Rice Cooker" />
+          <Field label="Daya (W)" placeholder="300" suffix="W" />
+          <Field label="Jumlah" placeholder="1" />
+        </Modal>
+      )}
+    </>
+  )
+}
+
+function PemakaianHarian() {
+  const d = [
+    ["AC", 500, 6],
+    ["Laptop", 65, 5],
+    ["Lampu Kamar", 12, 8],
+    ["Kulkas", 100, 24 - 20],
+    ["Kipas Angin", 45, 4],
+  ]
+  return (
+    <>
+      <PageTitle
+        title="Pemakaian Harian"
+        sub="Catat jam pemakaian setiap alat per hari"
+      >
+        <Field
+          label=""
+          placeholder="Pilih tanggal"
+          value="08 Okt 2026"
+          type="date"
+        />
+        <Btn>Simpan</Btn>
+      </PageTitle>
+      <div className="grid grid-cols-3 gap-6">
+        <Card title="Input Jam Pemakaian" className="col-span-2">
+          <Table
+            head={["Alat", "Daya", "Jam Pakai/Hari"]}
+            rows={d.map(([n, w, h]) => [
+              <span className="font-medium">{n}</span>,
+              `${w} W`,
+              <div className="w-32 h-9 rounded-lg border border-line px-3 flex items-center justify-between">
+                {h}
+                <span className="text-xs text-mute">jam</span>
+              </div>,
+            ])}
+          />
+          <div className="mt-4 flex justify-between items-center rounded-lg bg-wash p-4">
+            <span className="text-sm font-medium">Total Jam Pemakaian</span>
+            <span className="text-lg font-bold">27 jam</span>
+          </div>
+        </Card>
+        <Card title="Riwayat 7 Hari">
+          {[
+            ["08 Okt", "27 jam", "7,4"],
+            ["07 Okt", "25 jam", "6,9"],
+            ["06 Okt", "31 jam", "9,2"],
+            ["05 Okt", "24 jam", "6,8"],
+            ["04 Okt", "26 jam", "7,0"],
+            ["03 Okt", "23 jam", "6,5"],
+            ["02 Okt", "25 jam", "7,1"],
+          ].map(([t, j, k]) => (
+            <Row key={t} k={t} v={`${j} · ${k} kWh`} />
+          ))}
+        </Card>
+      </div>
+    </>
+  )
+}
+
+const est = [
+  ["AC", 500, 6],
+  ["Rice Cooker", 300, 1.6],
+  ["Kulkas", 100, 4],
+  ["Laptop", 65, 4.4],
+  ["Lampu Kamar", 24, 7.2],
+  ["Kipas Angin", 45, 3],
+] as const
+const f = (n: number) => n.toFixed(2).replace(".", ",")
+
+function Estimasi() {
+  const [t, setT] = useState("Bulanan")
+  return (
+    <>
+      <PageTitle
+        title="Estimasi Konsumsi"
+        sub="Perhitungan: Watt × Jam ÷ 1000 = kWh"
+      >
+        <Tabs items={["Harian", "Bulanan"]} value={t} onChange={setT} />
+      </PageTitle>
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        <Stat
+          label="Total Konsumsi"
+          value={t === "Bulanan" ? "86,4 kWh/bulan" : "2,88 kWh/hari"}
+        />
+        <Stat
+          label="Estimasi Biaya"
+          value={t === "Bulanan" ? "Rp124.850" : "Rp4.162"}
+          note="Tarif Rp1.444,70/kWh"
+        />
+        <Stat label="Jumlah Alat Dihitung" value="6 alat" />
+      </div>
+      <Card title={`Rincian ${t}`}>
+        <Table
+          head={["Alat", "Watt", "Jam/Hari", "kWh/Hari", "kWh/Bulan"]}
+          align={["l", "r", "r", "r", "r"]}
+          rows={est.map(([n, w, h]) => [
+            <span className="font-medium">{n}</span>,
+            `${w} W`,
+            String(h).replace(".", ","),
+            f((w * h) / 1000),
+            f((w * h * 30) / 1000),
+          ])}
+        />
+      </Card>
+    </>
+  )
+}
+
+function Boros() {
+  const d = [
+    ["AC", 38.2, 44],
+    ["Rice Cooker", 14.5, 17],
+    ["Kulkas", 12.1, 14],
+    ["Laptop", 8.6, 10],
+    ["Lampu", 5.2, 6],
+  ] as const
+  return (
+    <>
+      <PageTitle title="Alat Paling Boros">
+        <Select value="Oktober 2026" />
+      </PageTitle>
+      <div className="grid grid-cols-3 gap-6">
+        <Card title="Ranking Konsumsi" className="col-span-2">
+          <div className="flex flex-col gap-5">
+            {d.map(([n, k, p], i) => (
+              <div
+                key={n}
+                className="grid grid-cols-[40px_140px_1fr_90px_50px] items-center gap-4 text-sm"
+              >
+                <span
+                  className={`size-8 rounded-lg grid place-items-center font-bold border ${
+                    i === 0
+                      ? "border-accent text-accent"
+                      : "border-line text-mute"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <span className="font-medium">{n}</span>
+                <div className="h-4 bg-wash rounded border border-line">
+                  <div
+                    className={`h-full rounded ${
+                      i === 0 ? "bg-accent" : "bg-mute/50"
+                    }`}
+                    style={{ width: `${(p / 44) * 100}%` }}
+                  />
+                </div>
+                <span className="text-right tabular-nums">
+                  {String(k).replace(".", ",")} kWh
+                </span>
+                <span className="text-right text-mute">{p}%</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+        <div className="flex flex-col gap-6">
+          <Stat
+            label="Alat Terboros"
+            value="AC"
+            note="38,2 kWh · 44% dari total 86,4 kWh"
+            big
+          />
+          <Card title="Catatan">
+            <p className="text-sm text-mute">
+              AC menyumbang hampir setengah pemakaian. Pertimbangkan menaikkan
+              suhu ke 25°C atau mengurangi 1 jam pemakaian per hari.
+            </p>
+          </Card>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function Token({ go }: P) {
+  return (
+    <>
+      <PageTitle title="Token Listrik">
+        <Btn variant="secondary" onClick={() => go("07")}>
+          Rekap Pengeluaran
+        </Btn>
+        <Btn variant="secondary" onClick={() => go("09")}>
+          Prediksi Habis
+        </Btn>
+        <Btn variant="secondary" onClick={() => go("10")}>
+          Pengingat
+        </Btn>
+        <Btn variant="secondary" onClick={() => go("20")}>
+          Patungan
+        </Btn>
+      </PageTitle>
+      <Card title="Catat Pembelian Token" className="receipt">
+        <div className="grid grid-cols-4 gap-4">
+          <Field label="Tanggal" value="08 Okt 2026" type="date" />
+          <Field label="Nominal (Rp)" placeholder="100.000" suffix="Rp" />
+          <Field label="kWh" placeholder="69,2" suffix="kWh" />
+          <Field label="Catatan" placeholder="Pembelian bulanan" />
+        </div>
+        <div className="flex justify-end mt-4">
+          <Btn>Simpan</Btn>
+        </div>
+      </Card>
+      <Card title="Riwayat Pembelian Token" className="mt-6">
+        <Table
+          head={["Tanggal", "Nominal", "kWh", "Catatan"]}
+          rows={[
+            ["02 Okt 2026", "Rp100.000", "69,2 kWh", "Pembelian bulanan"],
+            ["18 Sep 2026", "Rp50.000", "34,6 kWh", "Tambahan"],
+            ["01 Sep 2026", "Rp100.000", "69,2 kWh", "Pembelian bulanan"],
+            ["14 Agu 2026", "Rp100.000", "69,8 kWh", "Patungan kamar A"],
+          ]}
+        />
+      </Card>
+    </>
+  )
+}
+
+function Rekap() {
+  return (
+    <>
+      <PageTitle title="Rekap Pengeluaran Token">
+        <Select label="Periode" value="Jul – Okt 2026" />
+      </PageTitle>
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        <Stat label="Total Pengeluaran" value="Rp350.000" />
+        <Stat label="Total kWh" value="242,8 kWh" />
+      </div>
+      <div className="grid grid-cols-5 gap-6">
+        <Card title="Pengeluaran per Bulan" className="col-span-3">
+          <Placeholder label="[PLACEHOLDER GRAFIK BATANG PENGELUARAN]" />
+        </Card>
+        <Card title="Rincian" className="col-span-2">
+          <Table
+            head={["Bulan", "Total Pengeluaran", "Total kWh"]}
+            rows={[
+              ["Juli", "Rp50.000", "34,6"],
+              ["Agustus", "Rp100.000", "69,8"],
+              ["September", "Rp100.000", "69,2"],
+              ["Oktober", "Rp100.000", "69,2"],
+            ]}
+          />
+        </Card>
+      </div>
+    </>
+  )
+}
+
+function Sisa() {
+  return (
+    <>
+      <PageTitle
+        title="Sisa kWh Meteran"
+        sub="Catat angka sisa kWh yang tertera di meteran prabayar"
+      />
+      <div className="grid grid-cols-3 gap-6">
+        <div className="rounded-3xl border border-line-strong bg-gradient-to-br from-deep to-surface p-6 flex flex-col items-center">
+          <p className="text-sm text-secondary self-start">Sisa kWh Terakhir</p>
+          <Gauge value="42,5" />
+          <p className="text-xs text-secondary">Dicatat 08 Okt 2026, 07.30</p>
+        </div>
+        <Card title="Catat Sisa kWh" className="col-span-2">
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Tanggal" value="08 Okt 2026" type="date" />
+            <Field label="Sisa kWh" placeholder="42,5" suffix="kWh" />
+          </div>
+          <div className="flex justify-end mt-4">
+            <Btn>Simpan</Btn>
+          </div>
+        </Card>
+      </div>
+      <Card title="Riwayat Sisa kWh" className="mt-6">
+        <Table
+          head={["Tanggal", "Sisa kWh"]}
+          rows={[
+            ["08 Okt 2026", "42,5 kWh"],
+            ["07 Okt 2026", "49,9 kWh"],
+            ["06 Okt 2026", "56,8 kWh"],
+            ["05 Okt 2026", "66,0 kWh"],
+            ["04 Okt 2026", "72,8 kWh"],
+          ]}
+        />
+      </Card>
+    </>
+  )
+}
+
+function Prediksi({ go }: P) {
+  return (
+    <>
+      <PageTitle title="Prediksi Token Habis">
+        <Btn onClick={() => go("06")}>Catat Pembelian</Btn>
+      </PageTitle>
+      <div className="grid grid-cols-3 gap-6">
+        <Card className="col-span-2 !bg-gradient-to-br !from-deep !to-[#062B33] !border-line-strong text-white dot-grid">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm font-medium text-white/65">
+                Token diperkirakan habis dalam
+              </p>
+              <p className="font-meter text-[76px] font-medium my-4 text-white">
+                6 HARI
+              </p>
+            </div>
+            <Gauge value="42,5" compact />
+          </div>
+          <div className="flex justify-between text-sm mb-3">
+            <span>Sisa kWh</span>
+            <span className="font-meter">42,5 / 69,2 kWh</span>
+          </div>
+          <Progress value={42.5} max={69.2} />
+          <div className="mt-6">
+            <Btn variant="hero" onClick={() => go("06")}>
+              Catat Pembelian
+            </Btn>
+          </div>
+        </Card>
+        <Card title="Info">
+          <Row k="Rata-rata penggunaan" v="7,1 kWh/hari" />
+          <Row k="Sisa" v="42,5 kWh" />
+          <Row k="Estimasi habis" v="14 Oktober 2026" />
+        </Card>
+      </div>
+      <Card title="Proyeksi Sisa kWh" className="mt-6">
+        <Placeholder label="[PLACEHOLDER GRAFIK PROYEKSI SISA KWH]" />
+      </Card>
+    </>
+  )
+}
+
+function Pengingat() {
+  const [on, setOn] = useState(true)
+  return (
+    <>
+      <PageTitle title="Pengingat Token" />
+      <div className="grid grid-cols-2 gap-6">
+        <Card title="Pengaturan Pengingat">
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm font-medium">Aktifkan Pengingat</span>
+            <Toggle on={on} onChange={() => setOn(!on)} />
+          </div>
+          <div className="my-4">
+            <Field label="Batas hari sebelum habis" value="3" suffix="hari" />
+          </div>
+          <span className="text-sm font-medium">Kanal</span>
+          <div className="flex flex-col gap-2 mt-2">
+            <Check label="Notifikasi aplikasi" on />
+            <Check label="Email" />
+          </div>
+          <div className="flex justify-end mt-4">
+            <Btn>Simpan</Btn>
+          </div>
+        </Card>
+        <Card title="Pengingat Terakhir">
+          <Table
+            head={["Tanggal", "Isi Pengingat", "Status"]}
+            rows={[
+              [
+                "08 Okt",
+                "Token habis dalam 6 hari",
+                <Badge strong>Baru</Badge>,
+              ],
+              ["29 Sep", "Token habis dalam 3 hari", <Badge>Dibaca</Badge>],
+              ["14 Sep", "Token habis dalam 3 hari", <Badge>Dibaca</Badge>],
+              ["30 Agu", "Sisa kWh di bawah 10 kWh", <Badge>Dibaca</Badge>],
+            ]}
+          />
+        </Card>
+      </div>
+    </>
+  )
+}
+
+function Dashboard({ go }: P) {
+  const [t, setT] = useState("Harian")
+  return (
+    <>
+      <PageTitle title="Dashboard">
+        <Btn variant="secondary" onClick={() => go("18")}>
+          Perbandingan Pemakaian
+        </Btn>
+        <Btn variant="secondary" onClick={() => go("19")}>
+          Estimasi Biaya
+        </Btn>
+      </PageTitle>
+      <div className="grid grid-cols-4 gap-6 mb-6">
+        <Stat label="Total kWh" value="86,4 kWh" />
+        <Stat label="Rata-rata kWh/hari" value="7,1 kWh" />
+        <Stat
+          label="Estimasi biaya"
+          value="Rp124.850"
+          onClick={() => go("19")}
+        />
+        <Stat
+          label="Persentase penghematan"
+          value="8,5%"
+          onClick={() => go("18")}
+        />
+      </div>
+      <div className="grid grid-cols-3 gap-6">
+        <Card
+          title="Tren Pemakaian"
+          className="col-span-2"
+          action={
+            <Tabs
+              items={["Harian", "Mingguan", "Bulanan"]}
+              value={t}
+              onChange={setT}
+            />
+          }
+        >
+          <Placeholder
+            label={`[PLACEHOLDER GRAFIK GARIS PEMAKAIAN — ${t.toUpperCase()}]`}
+          />
+        </Card>
+        <Card title="Rincian">
+          <Table
+            head={["Periode", "kWh", "Biaya"]}
+            rows={[
+              ["08 Okt", "7,4", "Rp10.691"],
+              ["07 Okt", "6,9", "Rp9.968"],
+              ["06 Okt", "9,2", "Rp13.291"],
+              ["05 Okt", "6,8", "Rp9.824"],
+              ["04 Okt", "7,0", "Rp10.113"],
+            ]}
+          />
+        </Card>
+      </div>
+    </>
+  )
+}
+
+function Target({ go }: P) {
+  return (
+    <>
+      <PageTitle title="Target Hemat">
+        <Btn variant="secondary" onClick={() => go("13")}>
+          Lihat Rekomendasi Hemat →
+        </Btn>
+      </PageTitle>
+      <div className="grid grid-cols-2 gap-6">
+        <Card title="Target konsumsi listrik per bulan">
+          <Field label="Target" value="70" suffix="kWh" />
+          <div className="flex justify-end mt-4">
+            <Btn>Simpan Target</Btn>
+          </div>
+        </Card>
+        <Card
+          title="Progress Target Bulan Ini"
+          action={<Badge strong>On Track</Badge>}
+        >
+          <p className="text-[28px] font-bold mb-3">61,5 / 70 kWh</p>
+          <Progress value={61.5} max={70} />
+          <p className="text-xs text-mute mt-2">
+            88% terpakai · sisa 8,5 kWh untuk 23 hari
+          </p>
+        </Card>
+      </div>
+      <Card title="Riwayat Target" className="mt-6">
+        <Table
+          head={["Periode", "Target", "Realisasi", "Status"]}
+          rows={[
+            [
+              "Oktober 2026",
+              "70 kWh",
+              "61,5 kWh",
+              <Badge strong>On Track</Badge>,
+            ],
+            ["September 2026", "80 kWh", "94,4 kWh", <Badge>Melebihi</Badge>],
+            ["Agustus 2026", "85 kWh", "82,1 kWh", <Badge>Tercapai</Badge>],
+            ["Juli 2026", "85 kWh", "79,6 kWh", <Badge>Tercapai</Badge>],
+          ]}
+        />
+      </Card>
+    </>
+  )
+}
+
+function Rekomendasi() {
+  const [t, setT] = useState("Semua")
+  const [done, setDone] = useState<number[]>([3])
+  const d = [
+    [
+      "AC",
+      "Kurangi penggunaan AC 1 jam per hari.",
+      "Matikan AC 1 jam lebih awal sebelum tidur dan gunakan kipas angin.",
+      15,
+      21670,
+    ],
+    [
+      "AC",
+      "Atur suhu AC ke 25°C.",
+      "Setiap kenaikan 1°C menghemat sekitar 6% energi kompresor.",
+      6.8,
+      9824,
+    ],
+    [
+      "Rice Cooker",
+      "Matikan mode warm setelah nasi matang.",
+      "Mode penghangat menyedot daya terus-menerus sepanjang hari.",
+      7.2,
+      10402,
+    ],
+    [
+      "Charger HP",
+      "Cabut charger setelah baterai penuh.",
+      "Charger yang tetap terpasang tetap memakai daya standby.",
+      0.9,
+      1300,
+    ],
+  ] as const
+  const list = d
+    .map((x, i) => ({ x, i }))
+    .filter(
+      ({ i }) =>
+        t === "Semua" || (t === "Sudah Dilakukan") === done.includes(i),
+    )
+  return (
+    <>
+      <PageTitle title="Rekomendasi Hemat">
+        <Tabs
+          items={["Semua", "Belum Dilakukan", "Sudah Dilakukan"]}
+          value={t}
+          onChange={setT}
+        />
+      </PageTitle>
+      <div className="grid grid-cols-2 gap-6">
+        {list.map(({ x: [a, j, desc, k, r], i }) => (
+          <Card key={i}>
+            <div className="flex justify-between items-center mb-2">
+              <Badge>{a}</Badge>
+              {done.includes(i) && <Badge strong>✓ Sudah dilakukan</Badge>}
+            </div>
+            <h2 className="text-lg font-semibold">{j}</h2>
+            <p className="text-sm text-mute mt-1">{desc}</p>
+            <div className="grid grid-cols-2 gap-4 my-4 p-4 rounded-lg bg-wash">
+              <div>
+                <p className="text-xs text-mute">Potensi hemat</p>
+                <p className="font-bold">
+                  {String(k).replace(".", ",")} kWh/bulan
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-mute">Potensi hemat</p>
+                <p className="font-bold">{Rp(r)}/bulan</p>
+              </div>
+            </div>
+            <Btn
+              variant={done.includes(i) ? "secondary" : "primary"}
+              onClick={() =>
+                setDone(
+                  done.includes(i) ? done.filter((n) => n !== i) : [...done, i],
+                )
+              }
+            >
+              {done.includes(i) ? "Batalkan Tanda" : "Tandai Sudah Dilakukan"}
+            </Btn>
+          </Card>
+        ))}
+      </div>
+    </>
+  )
+}
+
+function AdminTips() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <PageTitle title="Kelola Tips Hemat">
+        <Btn onClick={() => setOpen(true)}>+ Tambah Tips</Btn>
+      </PageTitle>
+      <Card>
+        <div className="mb-4">
+          <Search placeholder="Cari tips..." />
+        </div>
+        <Table
+          head={["Judul", "Kategori", "Status", "Tanggal", "Aksi"]}
+          rows={[
+            [
+              "Atur suhu AC ke 25°C",
+              "Pendingin",
+              <Badge strong>Terbit</Badge>,
+              "05 Okt 2026",
+            ],
+            [
+              "Matikan mode warm rice cooker",
+              "Dapur",
+              <Badge strong>Terbit</Badge>,
+              "01 Okt 2026",
+            ],
+            [
+              "Cabut charger setelah penuh",
+              "Elektronik",
+              <Badge strong>Terbit</Badge>,
+              "28 Sep 2026",
+            ],
+            [
+              "Gunakan lampu LED",
+              "Penerangan",
+              <Badge>Draf</Badge>,
+              "20 Sep 2026",
+            ],
+            [
+              "Setrika sekaligus seminggu sekali",
+              "Rumah Tangga",
+              <Badge>Draf</Badge>,
+              "15 Sep 2026",
+            ],
+          ].map((r) => [
+            <span className="font-medium">{r[0]}</span>,
+            ...r.slice(1),
+            <Actions items={["Edit", "Hapus"]} />,
+          ])}
+        />
+      </Card>
+      {open && (
+        <Modal title="Tambah Tips Hemat" onClose={() => setOpen(false)}>
+          <Field label="Judul" placeholder="Contoh: Atur suhu AC ke 25°C" />
+          <Field label="Kategori" placeholder="Pilih kategori" type="select" />
+          <Field
+            label="Isi Tips"
+            placeholder="Tuliskan isi tips hemat..."
+            type="area"
+          />
+          <Field label="Status" value="Draf" type="select" />
+        </Modal>
+      )}
+    </>
+  )
+}
+
+function Laporan() {
+  return (
+    <>
+      <PageTitle title="Laporan Bulanan">
+        <Select value="Oktober 2026" />
+        <Btn>Unduh PDF</Btn>
+      </PageTitle>
+      <div className="grid grid-cols-3 gap-6 border-t-8 border-ink pt-6">
+        <Card title="Ringkasan Bulanan">
+          <Row k="Total kWh" v="86,4 kWh" />
+          <Row k="Total biaya" v="Rp124.850" />
+          <Row k="Bulan sebelumnya" v="94,4 kWh" />
+          <Row k="Perbandingan" v="↓ 8,5%" />
+          <p className="text-sm font-medium mt-4 mb-2">3 Alat Terboros</p>
+          {[
+            "1. AC — 38,2 kWh",
+            "2. Rice Cooker — 14,5 kWh",
+            "3. Kulkas — 12,1 kWh",
+          ].map((x) => (
+            <p key={x} className="text-sm py-1">
+              {x}
+            </p>
+          ))}
+        </Card>
+        <Card title="Grafik Laporan" className="col-span-2">
+          <Placeholder label="[PLACEHOLDER GRAFIK LAPORAN BULANAN]" h="h-96" />
+        </Card>
+      </div>
+    </>
+  )
+}
+
+function Profil({ go }: P) {
+  return (
+    <>
+      <PageTitle
+        title="Profil Kost"
+        sub="Data ini menjadi dasar perhitungan estimasi kWh, biaya, dan emisi"
+      />
+      <div className="grid grid-cols-3 gap-6">
+        <Card title="Data Kost" className="col-span-2">
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Nama Kost" value="Kost Melati Putri" />
+            <Field label="Daya Listrik (VA)" value="1.300" suffix="VA" />
+            <Field label="Tarif per kWh" value="1.444,70" suffix="Rp/kWh" />
+            <Field label="Jumlah Kamar" value="6" suffix="kamar" />
+          </div>
+          <div className="flex justify-end mt-4">
+            <Btn>Simpan</Btn>
+          </div>
+        </Card>
+        <Card title="Informasi Tarif">
+          <Row k="Tarif listrik" v="Rp1.444,70/kWh" />
+          <Row k="Daya tersedia" v="1.300 VA" />
+          <Row k="Jumlah kamar" v="6 kamar" />
+          <p className="text-sm font-medium mt-4 mb-2">Digunakan oleh</p>
+          <div className="flex flex-col items-start gap-1">
+            {[
+              ["Estimasi Konsumsi", "04"],
+              ["Estimasi Biaya", "19"],
+              ["Simulasi Hemat", "17"],
+              ["Jejak Karbon", "25"],
+            ].map(([l, id]) => (
+              <Btn key={id} variant="link" onClick={() => go(id)}>
+                {l} →
+              </Btn>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </>
+  )
+}
+
+function Simulasi() {
+  const [h, setH] = useState(1)
+  const before = 38.2
+  const after = +(before - h * 6.4).toFixed(1)
+  const c = (k: number) => Rp(Math.round(k * 1444.6))
+  return (
+    <>
+      <PageTitle title="Simulasi Hemat" />
+      <Card title="Parameter Simulasi">
+        <div className="grid grid-cols-[240px_1fr_auto] gap-6 items-end">
+          <Field label="Pilih Alat" value="AC (500 W)" type="select" />
+          <div>
+            <div className="flex justify-between text-sm font-medium mb-2">
+              <span>Kurangi jam penggunaan per hari</span>
+              <span className="text-accent">-{h} jam/hari</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={4}
+              value={h}
+              onChange={(e) => setH(+e.target.value)}
+              className="w-full range-wattkost"
+            />
+          </div>
+          <Btn>Hitung</Btn>
+        </div>
+      </Card>
+      <div className="grid grid-cols-3 gap-6 mt-6">
+        <Card title="Sebelum">
+          <Row k="kWh" v="38,2 kWh" />
+          <Row k="Biaya" v="Rp55.184" />
+        </Card>
+        <Card title="Sesudah" className="!bg-lime-soft !border-transparent">
+          <Row k="kWh" v={`${String(after).replace(".", ",")} kWh`} />
+          <Row k="Biaya" v={c(after)} />
+        </Card>
+        <div className="bg-gradient-to-br from-deep to-surface text-white rounded-3xl p-6 border border-line-strong">
+          <p className="text-sm font-medium text-white/70">Potensi Hemat</p>
+          <p className="font-display text-[28px] font-extrabold mt-2">
+            {String(+(before - after).toFixed(1)).replace(".", ",")} kWh/bulan
+          </p>
+          <p className="text-lg font-semibold text-lime">
+            {c(before - after)}/bulan
+          </p>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function Perbandingan() {
+  return (
+    <>
+      <PageTitle title="Perbandingan Pemakaian">
+        <Select value="September 2026" />
+        <span className="text-mute">vs</span>
+        <Select value="Oktober 2026" />
+      </PageTitle>
+      <div className="grid grid-cols-3 gap-6">
+        <Stat
+          label="Selisih Pemakaian"
+          value="↓ 8,5%"
+          note="94,4 kWh → 86,4 kWh"
+          big
+        />
+        <Card title="Grafik" className="col-span-2">
+          <Placeholder
+            label="[PLACEHOLDER GRAFIK BATANG PERBANDINGAN]"
+            h="h-56"
+          />
+        </Card>
+      </div>
+      <Card title="Per Alat" className="mt-6">
+        <Table
+          head={["Alat", "September", "Oktober", "Selisih"]}
+          align={["l", "r", "r", "r"]}
+          rows={[
+            ["AC", "43,5 kWh", "38,2 kWh", "↓ 5,3"],
+            ["Rice Cooker", "15,1 kWh", "14,5 kWh", "↓ 0,6"],
+            ["Kulkas", "12,0 kWh", "12,1 kWh", "↑ 0,1"],
+            ["Laptop", "9,8 kWh", "8,6 kWh", "↓ 1,2"],
+            ["Lampu", "5,4 kWh", "5,2 kWh", "↓ 0,2"],
+          ]}
+        />
+      </Card>
+    </>
+  )
+}
+
+function Biaya() {
+  return (
+    <>
+      <PageTitle title="Estimasi Biaya Listrik">
+        <Select value="Oktober 2026" />
+      </PageTitle>
+      <div className="grid grid-cols-3 gap-6">
+        <div className="flex flex-col gap-6">
+          <Stat
+            label="Estimasi Biaya"
+            value="Rp124.850"
+            note="86,4 kWh × Rp1.444,70"
+            big
+          />
+          <Card title="Perbandingan dengan Pembelian Token">
+            <Row k="Estimasi pemakaian" v="Rp124.850" />
+            <Row k="Pembelian token" v="Rp150.000" />
+            <Row k="Selisih" v="Rp25.150 tersisa" />
+          </Card>
+        </div>
+        <Card title="Rincian per Alat" className="col-span-2">
+          <Table
+            head={["Alat", "kWh", "Tarif", "Estimasi Biaya"]}
+            align={["l", "r", "r", "r"]}
+            rows={[
+              ["AC", "38,2", "Rp1.444,70", "Rp55.188"],
+              ["Rice Cooker", "14,5", "Rp1.444,70", "Rp20.948"],
+              ["Kulkas", "12,1", "Rp1.444,70", "Rp17.481"],
+              ["Laptop", "8,6", "Rp1.444,70", "Rp12.424"],
+              ["Lampu", "5,2", "Rp1.444,70", "Rp7.512"],
+              ["Lainnya", "7,8", "Rp1.444,70", "Rp11.297"],
+            ]}
+          />
+        </Card>
+      </div>
+    </>
+  )
+}
+
+function Patungan() {
+  const [paid, setPaid] = useState([true, false, true])
+  const names = [
+    ["Puti", "A01"],
+    ["Alya", "A02"],
+    ["Nadia", "A03"],
+  ]
+  const got = paid.filter(Boolean).length * 50000
+  return (
+    <>
+      <PageTitle title="Patungan Token">
+        <Select value="Pembelian Token — Rp150.000" />
+        <Btn variant="secondary">+ Tambah Penghuni</Btn>
+      </PageTitle>
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        <div className="receipt bg-surface border border-line rounded-3xl p-6">
+          <p className="text-sm font-medium text-mute">Terkumpul</p>
+          <p className="text-[28px] font-bold my-2">{Rp(got)} / Rp150.000</p>
+          <Progress value={got} max={150000} />
+        </div>
+        <Stat label="Sisa" value={Rp(150000 - got)} />
+      </div>
+      <Card title="Daftar Penghuni">
+        <Table
+          head={["Nama", "Kamar", "Bagian (Rp)", "Status", "Aksi"]}
+          rows={names.map(([n, k], i) => [
+            <span className="font-medium">{n}</span>,
+            k,
+            "Rp50.000",
+            <Badge strong={paid[i]}>{paid[i] ? "Lunas" : "Belum"}</Badge>,
+            paid[i] ? (
+              <span className="text-xs text-mute">—</span>
+            ) : (
+              <Btn
+                small
+                onClick={() =>
+                  setPaid(paid.map((p, j) => (j === i ? true : p)))
+                }
+              >
+                Tandai Lunas
+              </Btn>
+            ),
+          ])}
+        />
+      </Card>
+    </>
+  )
+}
+
+function Tantangan({ go }: P) {
+  const [t, setT] = useState("Tersedia")
+  const d = [
+    ["Tantangan 7 Hari Tanpa Boros", "7 hari", "Maks. 6 kWh/hari", 100],
+    ["AC Off Siang Hari", "14 hari", "AC mati 10.00–16.00", 150],
+    ["Hemat 10% Bulan Ini", "30 hari", "≤ 78 kWh/bulan", 250],
+    ["Cabut Charger Standby", "5 hari", "Charger dicabut saat penuh", 50],
+  ] as const
+  return (
+    <>
+      <PageTitle title="Tantangan Hemat">
+        <Tabs
+          items={["Tersedia", "Diikuti", "Selesai"]}
+          value={t}
+          onChange={setT}
+        />
+        <Btn variant="secondary" onClick={() => go("22")}>
+          Leaderboard →
+        </Btn>
+      </PageTitle>
+      <div className="grid grid-cols-3 gap-6">
+        <div className="col-span-2 grid grid-cols-2 gap-6">
+          {d.map(([n, dur, tg, p]) => (
+            <Card key={n}>
+              <div className="h-24 rounded-2xl bg-gradient-to-br from-deep to-abyss border border-line overflow-hidden mb-4">
+                <HouseIllustration className="w-full h-28 -mt-2" />
+              </div>
+              <div className="flex justify-between mb-2">
+                <Badge>{dur}</Badge>
+                <span className="text-sm font-bold">{p} poin</span>
+              </div>
+              <h2 className="text-lg font-semibold">{n}</h2>
+              <Row k="Durasi" v={dur} />
+              <Row k="Target" v={tg} />
+              <div className="mt-4">
+                <Btn>
+                  {t === "Tersedia"
+                    ? "Ikuti"
+                    : t === "Diikuti"
+                      ? "Lihat Progres"
+                      : "Selesai ✓"}
+                </Btn>
+              </div>
+            </Card>
+          ))}
+        </div>
+        <div className="flex flex-col gap-6">
+          <Stat
+            label="Total Poin Saya"
+            value="350 poin"
+            note="Peringkat 4 dari 12 penghuni"
+            onClick={() => go("22")}
+          />
+          <Card title="Sedang Diikuti">
+            <p className="text-sm">Hemat 10% Bulan Ini</p>
+            <div className="my-2">
+              <Progress value={8} max={30} />
+            </div>
+            <p className="text-xs text-mute">Hari 8 dari 30</p>
+          </Card>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function Leaderboard() {
+  const [t, setT] = useState("Bulan")
+  const top = [
+    ["Nadia", "A03", 620],
+    ["Rara", "B02", 540],
+    ["Sinta", "B01", 480],
+  ] as const
+  return (
+    <>
+      <PageTitle title="Leaderboard">
+        <Tabs items={["Minggu", "Bulan"]} value={t} onChange={setT} />
+      </PageTitle>
+      <div className="grid grid-cols-3 gap-6 mb-6 items-end">
+        {[1, 0, 2].map((i) => (
+          <div
+            key={i}
+            className={`border-0 rounded-[20px] p-6 text-center ${
+              i === 0
+                ? "bg-gradient-to-br from-deep to-surface border border-aqua/40 pb-10"
+                : i === 1
+                  ? "bg-surface border border-line"
+                  : "bg-surface border border-line"
+            }`}
+          >
+            <div
+              className={`size-11 mx-auto rounded-full grid place-items-center font-display font-extrabold ${
+                i === 0 ? "bg-aqua text-abyss" : "bg-white/8 text-white"
+              }`}
+            >
+              {i + 1}
+            </div>
+            <p className="text-lg font-semibold mt-3">{top[i][0]}</p>
+            <p className="text-sm text-mute">Kamar {top[i][1]}</p>
+            <p className="text-[28px] font-bold mt-2">{top[i][2]} poin</p>
+          </div>
+        ))}
+      </div>
+      <Card>
+        <Table
+          head={["Peringkat", "Nama/Kamar", "% Hemat", "Poin"]}
+          align={["l", "l", "r", "r"]}
+          highlight={3}
+          rows={[
+            ["1", "Nadia · A03", "14,2%", "620"],
+            ["2", "Rara · B02", "12,8%", "540"],
+            ["3", "Sinta · B01", "11,0%", "480"],
+            ["4", <b>Saya (Puti) · A01</b>, "8,5%", <b>350</b>],
+            ["5", "Alya · A02", "6,1%", "290"],
+            ["6", "Dewi · B03", "4,3%", "210"],
+          ]}
+        />
+      </Card>
+    </>
+  )
+}
+
+function Lonjakan() {
+  const [ck, setCk] = useState<number[]>([])
+  const d = [
+    ["06 Okt", "AC", "4,5 kWh", "7,8 kWh", "Tinggi"],
+    ["05 Okt", "Rice Cooker", "0,5 kWh", "0,9 kWh", "Sedang"],
+    ["03 Okt", "Setrika", "0,3 kWh", "0,4 kWh", "Rendah"],
+  ]
+  return (
+    <>
+      <PageTitle title="Peringatan Lonjakan">
+        <Select label="Sensitivitas" value="Sedang" />
+      </PageTitle>
+      <Card title="Pemakaian 30 Hari">
+        <Placeholder
+          label="[PLACEHOLDER GRAFIK GARIS DENGAN PENANDA LONJAKAN]"
+          h="h-80"
+        />
+      </Card>
+      <Card title="Peringatan Terbaru" className="mt-6">
+        <Table
+          head={["Tanggal", "Alat", "Normal", "Hari Ini", "Tingkat", "Aksi"]}
+          rows={d.map((r, i) => [
+            ...r.slice(0, 4),
+            <Badge strong={r[4] === "Tinggi"}>{r[4]}</Badge>,
+            ck.includes(i) ? (
+              <Badge>Sudah dicek</Badge>
+            ) : (
+              <Btn small variant="secondary" onClick={() => setCk([...ck, i])}>
+                Tandai Sudah Dicek
+              </Btn>
+            ),
+          ])}
+        />
+      </Card>
+    </>
+  )
+}
+
+function Katalog() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <PageTitle
+        title="Katalog Alat Listrik"
+        sub="Alat standar yang dapat dipilih penghuni saat menambah alat"
+      />
+      <Card>
+        <div className="flex justify-between mb-4">
+          <Search placeholder="Cari alat standar..." />
+          <Btn onClick={() => setOpen(true)}>+ Tambah Alat Standar</Btn>
+        </div>
+        <Table
+          head={["Nama", "Daya Default (W)", "Kategori", "Aksi"]}
+          rows={[
+            ["AC", "500 W", "Pendingin"],
+            ["Kipas Angin", "45 W", "Pendingin"],
+            ["Rice Cooker", "300 W", "Dapur"],
+            ["Lampu LED", "12 W", "Penerangan"],
+            ["Kulkas", "100 W", "Dapur"],
+            ["Setrika", "350 W", "Rumah Tangga"],
+          ].map(([n, w, k]) => [
+            <span className="font-medium">{n}</span>,
+            w,
+            <Badge>{k}</Badge>,
+            <Actions items={["Edit", "Hapus"]} />,
+          ])}
+        />
+      </Card>
+      {open && (
+        <Modal title="Tambah Alat Standar" onClose={() => setOpen(false)}>
+          <Field label="Nama Alat" placeholder="Contoh: Dispenser" />
+          <Field label="Daya Default" placeholder="350" suffix="W" />
+          <Field label="Kategori" placeholder="Pilih kategori" type="select" />
+        </Modal>
+      )}
+    </>
+  )
+}
+
+function Karbon() {
+  return (
+    <>
+      <PageTitle title="Jejak Karbon" />
+      <div className="grid grid-cols-3 gap-6">
+        <Stat label="Emisi Bulan Ini" value="38,5 kg CO₂" big />
+        <Card title="Faktor Emisi">
+          <Field label="Faktor" value="0,85" suffix="kg CO₂/kWh" />
+          <div className="flex justify-end mt-4">
+            <Btn>Simpan</Btn>
+          </div>
+        </Card>
+        <Stat
+          label="Perbandingan Bulan Lalu"
+          value="Turun 8,5%"
+          note="September: 42,1 kg CO₂"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-6 mt-6">
+        <Card title="Tren Emisi">
+          <Placeholder label="[PLACEHOLDER GRAFIK TREN EMISI]" h="h-64" />
+        </Card>
+        <Card title="Emisi per Alat">
+          <Table
+            head={["Alat", "Konsumsi kWh", "Estimasi Emisi"]}
+            align={["l", "r", "r"]}
+            rows={[
+              ["AC", "38,2 kWh", "32,47 kg CO₂"],
+              ["Kulkas", "12,1 kWh", "10,29 kg CO₂"],
+              ["Laptop", "8,6 kWh", "7,31 kg CO₂"],
+              ["Lampu", "5,2 kWh", "4,42 kg CO₂"],
+            ]}
+          />
+        </Card>
+      </div>
+    </>
+  )
+}
+
+export type PageDef = {
+  id: string
+  name: string
+  nav: string
+  admin?: boolean
+  C: (p: P) => ReactNode
+}
+
+export const pages: PageDef[] = [
+  { id: "01", name: "Beranda", nav: "01", C: Beranda },
+  { id: "02", name: "Alat Listrik", nav: "02", C: AlatListrik },
+  { id: "03", name: "Pemakaian Harian", nav: "03", C: PemakaianHarian },
+  { id: "04", name: "Estimasi Konsumsi", nav: "03", C: Estimasi },
+  { id: "05", name: "Alat Paling Boros", nav: "11", C: Boros },
+  { id: "06", name: "Token Listrik", nav: "06", C: Token },
+  { id: "07", name: "Rekap Pengeluaran Token", nav: "06", C: Rekap },
+  { id: "08", name: "Sisa kWh Meteran", nav: "06", C: Sisa },
+  { id: "09", name: "Prediksi Token Habis", nav: "06", C: Prediksi },
+  { id: "10", name: "Pengingat Token", nav: "06", C: Pengingat },
+  { id: "11", name: "Dashboard", nav: "11", C: Dashboard },
+  { id: "12", name: "Target Hemat", nav: "12", C: Target },
+  { id: "13", name: "Rekomendasi Hemat", nav: "12", C: Rekomendasi },
+  {
+    id: "14",
+    name: "Admin Kelola Tips Hemat",
+    nav: "14",
+    admin: true,
+    C: AdminTips,
+  },
+  { id: "15", name: "Laporan Bulanan", nav: "15", C: Laporan },
+  { id: "16", name: "Profil Kost", nav: "16", C: Profil },
+  { id: "17", name: "Simulasi Hemat", nav: "12", C: Simulasi },
+  { id: "18", name: "Perbandingan Pemakaian", nav: "11", C: Perbandingan },
+  { id: "19", name: "Estimasi Biaya Listrik", nav: "11", C: Biaya },
+  { id: "20", name: "Patungan Token", nav: "06", C: Patungan },
+  { id: "21", name: "Tantangan Hemat", nav: "21", C: Tantangan },
+  { id: "22", name: "Leaderboard", nav: "21", C: Leaderboard },
+  { id: "23", name: "Peringatan Lonjakan", nav: "11", C: Lonjakan },
+  {
+    id: "24",
+    name: "Admin Katalog Alat Listrik",
+    nav: "24",
+    admin: true,
+    C: Katalog,
+  },
+  { id: "25", name: "Jejak Karbon", nav: "15", C: Karbon },
+]

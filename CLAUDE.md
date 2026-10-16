@@ -51,7 +51,7 @@ Request  ->  routes/modules/<modul>.php
 - Flash message: `return redirect()->route(...)->with('sukses', 'Alat berhasil ditambahkan.')` — komponen layout sudah menampilkan `sukses` dan `gagal`.
 - Tampilan: pakai komponen Blade yang sudah ada (`<x-card>`, `<x-button>`, `<x-input>`, `<x-table>`, `<x-empty-state>`, `<x-alert>`, `<x-page-header>`). Jangan bikin warna/ukuran baru; pakai token Tailwind di `resources/css/app.css` (`bg-primary`, `text-muted`, dst) yang diambil dari Figma.
 - Saat menerjemahkan desain Figma (lewat MCP Figma), petakan ke komponen yang sudah ada dulu. Kalau butuh komponen baru yang dipakai >1 modul, beri tahu user (komponen dimiliki Pasangan 4).
-- Format tampilan: rupiah `Rp 1.444,70` / `Rp 50.000` (helper `rupiah()`), kWh `12,35 kWh` (helper `kwh()`), tanggal `14 Okt 2026` (Carbon `translatedFormat('d M Y')`). Helper ada di `app/Support/helpers.php`.
+- Format tampilan: rupiah `Rp1.444,70` / `Rp50.000` — tanpa spasi setelah `Rp`, sesuai desain (helper `rupiah()`), kWh `12,35 kWh` (helper `kwh()`), tanggal `14 Okt 2026` (Carbon `translatedFormat('d M Y')`). Helper ada di `app/Support/helpers.php`.
 
 ## Service bersama (kontrak — signature jangan diubah tanpa diskusi)
 

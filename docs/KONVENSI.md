@@ -61,7 +61,7 @@ Jangan pakai `$request->all()`. Model memakai `$fillable` (bukan `$guarded = []`
 - Setiap halaman: `<x-layouts.app title="Alat Listrik">` lalu `<x-page-header>` (judul + tombol aksi).
 - Tabel kosong → `<x-empty-state>` dengan tautan aksi (contoh: "Belum ada alat. Tambah alat pertama").
 - Hapus → form `DELETE` + konfirmasi `onsubmit="return confirm('Yakin hapus?')"` (UC-01 A2).
-- Angka di view selalu lewat helper: `{{ rupiah($x) }}`, `{{ kwh($x) }}`, `{{ angka($x, 2) }}`. Jangan `number_format` di view.
+- Angka di view selalu lewat helper: `{{ rupiah($x) }}` → `Rp50.000` (tanpa spasi setelah `Rp`; tarif: `rupiah($x, 2)` → `Rp1.444,70`), `{{ kwh($x) }}` → `12,35 kWh`, `{{ angka($x, 2) }}` → `1.444,70`. Jangan `number_format` di view.
 - Mobile-first: cek di lebar 375px. Tabel lebar dibungkus `overflow-x-auto`.
 - Teks UI Bahasa Indonesia, kalimat biasa (bukan HURUF BESAR semua).
 

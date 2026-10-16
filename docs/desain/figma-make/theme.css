@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+
+  --color-abyss: #03151d;
+  --color-abyss-2: #051c25;
+  --color-surface: #08242c;
+  --color-raised: #0c3038;
+  --color-deep: #0b4848;
+  --color-glass: rgba(255, 255, 255, 0.06);
+  --color-line: rgba(255, 255, 255, 0.1);
+  --color-line-strong: rgba(255, 255, 255, 0.18);
+  --color-secondary: #a8bdc0;
+  --color-muted: #6f8a8e;
+  --color-disabled: #4a6468;
+  --color-aqua: #25c6ac;
+  --color-aqua-hover: #1fae97;
+  --color-aqua-soft: rgba(37, 198, 172, 0.16);
+  --color-lime: #c9f24a;
+  --color-coral: #ff6b6b;
+  --color-coral-soft: rgba(255, 107, 107, 0.16);
+  --color-amber: #f5b84b;
+  --color-amber-soft: rgba(245, 184, 75, 0.16);
+
+  /* Compatibility aliases keep all 26 existing frames on one token set. */
+  --color-ink: #03151d;
+  --color-ink-2: #0b4848;
+  --color-mute: #a8bdc0;
+  --color-wash: #03151d;
+  --color-accent: #25c6ac;
+  --color-accent-hover: #1fae97;
+  --color-accent-soft: rgba(37, 198, 172, 0.16);
+  --color-lime-soft: rgba(37, 198, 172, 0.16);
+  --color-lime-deep: #25c6ac;
+  --color-lilac: #25c6ac;
+  --color-lilac-soft: rgba(37, 198, 172, 0.1);
+  --color-lilac-deep: #25c6ac;
+  --color-coral-text: #ff8b7f;
+  --color-sun: #f5b84b;
+  --color-sun-soft: rgba(245, 184, 75, 0.16);
+  --color-sun-text: #f5b84b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: white;
+  background: #020e13;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.font-display,
+.font-meter {
+  font-family: var(--font-sans);
+}
+
+.font-meter,
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+.energy-bg {
+  background-color: var(--color-abyss);
+  background-image:
+    radial-gradient(circle at 92% 2%, rgba(11, 72, 72, 0.5), transparent 42%),
+    repeating-linear-gradient(135deg, transparent 0 31px, rgba(255, 255, 255, 0.025) 32px);
+}
+
+.dot-grid {
+  background-image:
+    radial-gradient(circle at 80% 12%, rgba(37, 198, 172, 0.2), transparent 38%),
+    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: auto, 20px 20px;
+}
+
+.receipt {
+  position: relative;
+  background-image:
+    radial-gradient(circle at 0 12px, var(--color-abyss) 7px, transparent 7.5px),
+    radial-gradient(circle at 100% 12px, var(--color-abyss) 7px, transparent 7.5px);
+  background-position: 0 0, 100% 0;
+  background-size: 14px 24px;
+  background-repeat: repeat-y;
+}
+
+.range-wattkost {
+  accent-color: var(--color-aqua);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-disabled);
+  border-radius: 999px;
+}
