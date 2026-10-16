@@ -1,0 +1,998 @@
+import type { ReactNode } from "react"
+
+export type Go = (id: string) => void
+
+export const userMenu: [string, string][] = [
+  ["Beranda", "01"],
+  ["Alat Listrik", "02"],
+  ["Pemakaian Harian", "03"],
+  ["Token Listrik", "06"],
+  ["Dashboard", "11"],
+  ["Target Hemat", "12"],
+  ["Tantangan", "21"],
+  ["Laporan", "15"],
+  ["Profil Kost", "16"],
+]
+export const adminMenu: [string, string][] = [
+  ["Tips Hemat", "14"],
+  ["Katalog Alat", "24"],
+]
+
+type IconName = "bolt" | "home" | "plug" | "calendar" | "receipt" | "chart" | "target" | "trophy" | "file" | "building" | "bell" | "search" | "logout" | "leaf"
+
+const iconFor = (label = ""): IconName => {
+  if (label.includes("Beranda")) return "home"
+  if (label.includes("Alat") || label.includes("Katalog")) return "plug"
+  if (label.includes("Harian")) return "calendar"
+  if (label.includes("Token")) return "receipt"
+  if (
+    label.includes("Dashboard") ||
+    label.includes("Pemakaian") ||
+    label.includes("Biaya")
+  )
+    return "chart"
+  if (label.includes("Target") || label.includes("Tips")) return "target"
+  if (label.includes("Tantangan") || label.includes("Poin")) return "trophy"
+  if (label.includes("Laporan")) return "file"
+  if (label.includes("Kost")) return "building"
+  if (label.includes("Karbon") || label.includes("Emisi")) return "leaf"
+  return "bolt"
+}
+
+export function Icon({
+  className = "",
+  name = "bolt",
+}: {
+  className?: string
+  name?: IconName
+}) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.75,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  }
+  const paths: Record<IconName, ReactNode> = {
+    bolt: <path d="M9.5 1.8 4 9h4l-1 5.2L12.5 7h-4l1-5.2Z" />,
+    home: (
+      <>
+        <path d="m2 7 6-5 6 5v7H2V7Z" />
+        <path d="M6 14V9h4v5" />
+      </>
+    ),
+    plug: (
+      <>
+        <path d="M5 2v4M11 2v4M3.5 6h9v2A4.5 4.5 0 0 1 8 12.5V15" />
+        <path d="M6 9h4" />
+      </>
+    ),
+    calendar: (
+      <>
+        <rect x="2" y="3.5" width="12" height="10.5" rx="2" />
+        <path d="M5 2v3M11 2v3M2 7h12M5 10h2" />
+      </>
+    ),
+    receipt: (
+      <>
+        <path d="M3 2h10v13l-2-1.2L9 15l-2-1.2L5 15l-2-1.2V2Z" />
+        <path d="M6 6h4M6 9h4" />
+      </>
+    ),
+    chart: (
+      <>
+        <path d="M2 14V3M2 14h12" />
+        <path d="m4 11 3-3 2 2 4-5" />
+        <circle cx="13" cy="5" r="1" fill="#C9F24A" stroke="currentColor" />
+      </>
+    ),
+    target: (
+      <>
+        <circle cx="8" cy="8" r="6" />
+        <circle cx="8" cy="8" r="2.5" />
+        <path d="m10 6 4-4M11.5 2H14v2.5" />
+      </>
+    ),
+    trophy: (
+      <>
+        <path d="M5 2h6v3a3 3 0 0 1-6 0V2ZM8 8v3M5 14h6M6 11h4" />
+        <path d="M5 4H2v1a3 3 0 0 0 3 3M11 4h3v1a3 3 0 0 1-3 3" />
+      </>
+    ),
+    file: (
+      <>
+        <path d="M4 1.5h5L13 5v9.5H4v-13Z" />
+        <path d="M9 1.5V5h4M6.5 8h4M6.5 11h4" />
+      </>
+    ),
+    building: (
+      <>
+        <path d="M3 14V3h7v11M10 7h3v7M1.5 14h13" />
+        <path d="M5.5 6h2M5.5 9h2" />
+      </>
+    ),
+    bell: (
+      <>
+        <path d="M4 11.5V7a4 4 0 0 1 8 0v4.5l1.5 2h-11l1.5-2Z" />
+        <path d="M6.5 14a1.5 1.5 0 0 0 3 0" />
+      </>
+    ),
+    search: (
+      <>
+        <circle cx="7" cy="7" r="4.5" />
+        <path d="m10.5 10.5 3.5 3.5" />
+      </>
+    ),
+    logout: (
+      <>
+        <path d="M7 3H3v10h4M10 5l3 3-3 3M6 8h7" />
+      </>
+    ),
+    leaf: (
+      <>
+        <path d="M13.5 2.5C7 2.5 3 5.5 3 10c0 2 1.5 3.5 3.5 3.5 4.5 0 7-4 7-11Z" />
+        <path d="M4.5 12c2-2.5 4-4 7-6" />
+      </>
+    ),
+  }
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      className={`size-5 shrink-0 ${className}`}
+      {...common}
+    >
+      {paths[name]}
+    </svg>
+  )
+}
+
+export function Sidebar({
+  active,
+  go,
+  admin,
+}: {
+  active: string
+  go: Go
+  admin?: boolean
+}) {
+  const items = admin ? adminMenu : userMenu
+  return (
+    <aside className="w-60 shrink-0 bg-abyss-2 text-white flex flex-col border-r border-line">
+      <div className="h-16 flex items-center gap-3 px-6 border-b border-white/10">
+        <div className="size-9 rounded-xl bg-aqua text-abyss grid place-items-center">
+          <Icon name="bolt" />
+        </div>
+        <span className="font-display font-extrabold text-lg tracking-tight">
+          {admin ? "WattKost Admin" : "WattKost"}
+        </span>
+      </div>
+      <nav className="p-4 flex flex-col gap-2">
+        <p className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">
+          {admin ? "Workspace Admin" : "Menu Utama"}
+        </p>
+        {items.map(([label, id]) => {
+          const on = id === active
+          return (
+            <button
+              key={id}
+              onClick={() => go(id)}
+              className={`h-11 px-4 rounded-full flex items-center gap-3 text-sm font-semibold text-left transition-colors ${
+                on
+                  ? "bg-aqua-soft text-white border-l-[3px] border-aqua"
+                  : "text-secondary hover:bg-white/5 hover:text-white border-l-[3px] border-transparent"
+              }`}
+            >
+              <Icon name={iconFor(label)} />
+              {label}
+            </button>
+          )
+        })}
+      </nav>
+      <div className="mt-auto p-4 border-t border-white/10">
+        <button
+          onClick={() => go("00")}
+          className="h-11 px-4 w-full rounded-full flex items-center gap-3 text-sm font-semibold text-secondary hover:bg-white/5 hover:text-white"
+        >
+          <Icon name="logout" /> Keluar
+        </button>
+      </div>
+    </aside>
+  )
+}
+
+export function Header({ title, admin }: { title: string; admin?: boolean }) {
+  return (
+    <header className="h-16 shrink-0 bg-abyss/80 border-b border-line flex items-center justify-between px-8 backdrop-blur-xl">
+      <span className="font-display text-[28px] font-semibold">{title}</span>
+      <div className="flex items-center gap-4">
+        <button
+          aria-label="Notifikasi"
+          className="relative size-10 rounded-full bg-glass border border-line grid place-items-center text-white hover:border-aqua"
+        >
+          <Icon name="bell" />
+          <span className="absolute top-1.5 right-1.5 size-2.5 rounded-full bg-coral border-2 border-white" />
+        </button>
+        <div className="h-11 pl-1 pr-4 rounded-full bg-glass border border-line flex items-center gap-3">
+          <div
+            className={`size-9 rounded-full grid place-items-center text-xs font-bold ${
+              admin
+                ? "bg-amber-soft text-amber"
+                : "bg-aqua-soft text-aqua"
+            }`}
+          >
+            {admin ? "AD" : "PH"}
+          </div>
+          <div>
+            <p className="text-[10px] text-mute leading-none">Akun</p>
+            <p className="text-sm font-semibold mt-1">
+              {admin ? "Admin" : "Penghuni"}
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+export function PageTitle({
+  title,
+  sub,
+  children,
+}: {
+  title: string
+  sub?: string
+  children?: ReactNode
+}) {
+  if (!sub && !children) return null
+  return (
+    <div className="flex items-center justify-between gap-4 mb-6">
+      <div>
+        {sub && <p className="text-sm text-secondary">{sub}</p>}
+      </div>
+      {children && <div className="flex items-center gap-3">{children}</div>}
+    </div>
+  )
+}
+
+export function Btn({
+  children,
+  onClick,
+  variant = "primary",
+  small,
+}: {
+  children: ReactNode
+  onClick?: () => void
+  variant?: "primary" | "secondary" | "link" | "hero" | "danger"
+  small?: boolean
+}) {
+  const base = `${
+    small ? "h-8 px-3 text-xs" : "h-11 px-5 text-sm"
+  } rounded-full font-semibold inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus:outline-none focus:ring-4 focus:ring-accent-soft`
+  const v =
+    variant === "primary"
+      ? "bg-aqua text-abyss hover:bg-aqua-hover"
+      : variant === "hero"
+        ? "bg-aqua text-abyss hover:bg-lime"
+        : variant === "danger"
+          ? "bg-transparent border border-coral/30 text-coral hover:bg-coral-soft"
+        : variant === "link"
+          ? "text-aqua hover:text-lime px-0 h-auto focus:ring-0"
+          : "bg-transparent border border-line-strong text-white hover:bg-white/6 hover:border-aqua"
+  return (
+    <button onClick={onClick} className={`${base} ${v}`}>
+      {children}
+    </button>
+  )
+}
+
+export function Card({
+  title,
+  action,
+  children,
+  className = "",
+}: {
+  title?: string
+  action?: ReactNode
+  children: ReactNode
+  className?: string
+}) {
+  return (
+    <section
+      className={`bg-surface border border-line rounded-3xl p-6 ${className}`}
+    >
+      {(title || action) && (
+        <div className="flex items-center justify-between mb-5">
+          {title && <h2 className="font-display text-lg font-bold">{title}</h2>}
+          {action}
+        </div>
+      )}
+      {children}
+    </section>
+  )
+}
+
+const statTone = (label: string) =>
+  label.includes("Sisa") ||
+  label.includes("Total kWh") ||
+  label.includes("Estimasi Biaya")
+    ? "bg-gradient-to-br from-deep to-surface text-white border-line-strong"
+    : label.includes("Prediksi") || label.includes("Perbandingan")
+      ? "bg-surface border-line"
+      : label.includes("Pemakaian") ||
+          label.includes("Konsumsi") ||
+          label.includes("Emisi")
+        ? "bg-surface border-line"
+        : "bg-surface border-line"
+
+export function Stat({
+  label,
+  value,
+  note,
+  onClick,
+  big,
+}: {
+  label: string
+  value: string
+  note?: string
+  onClick?: () => void
+  big?: boolean
+}) {
+  const tone = statTone(label)
+  const dark = true
+  return (
+    <div
+      onClick={onClick}
+      className={`min-h-36 border rounded-3xl p-6 relative overflow-hidden ${tone} ${
+        onClick
+          ? "cursor-pointer transition-transform hover:-translate-y-0.5"
+          : ""
+      }`}
+    >
+      <div
+        className={`flex items-center gap-3 text-xs font-semibold ${
+          dark ? "text-white/75" : "text-mute"
+        }`}
+      >
+        <span
+          className={`size-9 rounded-xl grid place-items-center ${
+            dark ? "bg-aqua-soft text-aqua" : "bg-aqua-soft text-aqua"
+          }`}
+        >
+          <Icon name={iconFor(label)} />
+        </span>
+        {label}
+      </div>
+      <div
+        className={`${
+          big ? "text-[42px]" : "text-[28px]"
+        } font-meter font-medium mt-4 leading-none`}
+      >
+        {value}
+      </div>
+      {note && (
+        <div className={`text-xs mt-2 ${dark ? "text-white/70" : "text-mute"}`}>
+          {note}
+        </div>
+      )}
+      {onClick && (
+        <div
+          className={`text-xs mt-3 font-bold ${
+            dark ? "text-aqua" : "text-aqua"
+          }`}
+        >
+          Lihat detail →
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function Field({
+  label,
+  placeholder,
+  value,
+  suffix,
+  type,
+}: {
+  label: string
+  placeholder?: string
+  value?: string
+  suffix?: string
+  type?: "select" | "date" | "area"
+}) {
+  return (
+    <label className="flex flex-col gap-2">
+      {label && <span className="text-sm font-semibold">{label}</span>}
+      {type === "area" ? (
+        <div className="h-24 rounded-[14px] border border-line bg-white/4 px-4 py-3 text-sm text-mute focus-within:border-aqua">
+          {value ?? placeholder}
+        </div>
+      ) : (
+        <div className="h-12 rounded-[14px] border border-line bg-white/4 px-4 flex items-center justify-between gap-3 text-sm hover:border-line-strong focus-within:border-aqua focus-within:ring-4 focus-within:ring-aqua-soft">
+          <span className={value ? "text-white" : "text-mute"}>
+            {value ?? placeholder}
+          </span>
+          <span className="flex items-center gap-2 text-mute text-xs">
+            {suffix}
+            {type === "select" && "⌄"}
+            {type === "date" && <Icon name="calendar" />}
+          </span>
+        </div>
+      )}
+    </label>
+  )
+}
+
+export function Select({ value, label }: { value: string; label?: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      {label && (
+        <span className="text-sm font-semibold text-mute">{label}</span>
+      )}
+      <div className="h-12 min-w-44 rounded-[14px] border border-line bg-white/4 px-4 flex items-center justify-between gap-4 text-sm font-medium">
+        {value}
+        <span className="text-mute">⌄</span>
+      </div>
+    </div>
+  )
+}
+
+export function Search({ placeholder }: { placeholder: string }) {
+  return (
+    <div className="h-12 w-80 rounded-[14px] border border-line bg-white/4 px-4 flex items-center gap-3 text-sm text-mute">
+      <Icon name="search" />
+      {placeholder}
+    </div>
+  )
+}
+
+export function Tabs({
+  items,
+  value,
+  onChange,
+}: {
+  items: string[]
+  value: string
+  onChange: (v: string) => void
+}) {
+  return (
+    <div className="inline-flex p-1 rounded-full bg-white/6 gap-1">
+      {items.map((t) => (
+        <button
+          key={t}
+          onClick={() => onChange(t)}
+          className={`h-9 px-4 rounded-full text-sm font-semibold transition-colors ${
+            t === value ? "bg-white text-abyss" : "text-secondary hover:text-white"
+          }`}
+        >
+          {t}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+export function Badge({
+  children,
+  strong,
+}: {
+  children: ReactNode
+  strong?: boolean
+}) {
+  const text = String(children).toLowerCase()
+  const positive =
+    strong || /lunas|on track|sudah|tercapai|terbit|baru/.test(text)
+  const danger = /belum|tinggi|melebihi|draf/.test(text)
+  const warning = /sedang/.test(text)
+  const tone = danger
+    ? "bg-coral-soft text-coral"
+    : warning
+      ? "bg-amber-soft text-amber"
+      : positive
+        ? "bg-aqua-soft text-aqua"
+        : "bg-aqua-soft text-aqua"
+  return (
+    <span
+      className={`inline-flex items-center h-7 px-3 rounded-full text-xs font-bold ${tone}`}
+    >
+      {children}
+    </span>
+  )
+}
+
+export function Progress({ value, max = 100 }: { value: number; max?: number }) {
+  const filled = Math.round(Math.min(1, value / max) * 20)
+  return (
+    <div
+      className="grid grid-cols-[repeat(20,minmax(0,1fr))] gap-1"
+      aria-label={`${Math.round((value / max) * 100)}%`}
+    >
+      {Array.from({ length: 20 }, (_, i) => (
+        <span
+          key={i}
+          className={`h-3 rounded-sm ${i < filled ? "bg-gradient-to-r from-aqua to-lime" : "bg-white/10"}`}
+        />
+      ))}
+    </div>
+  )
+}
+
+export function Gauge({
+  value,
+  label = "kWh",
+  compact = false,
+}: {
+  value: string
+  label?: string
+  compact?: boolean
+}) {
+  const ticks = Array.from({ length: 19 }, (_, i) => i)
+  return (
+    <div className={`relative ${compact ? "size-24" : "w-64 h-44"}`}>
+      <svg viewBox="0 0 260 180" className="size-full" aria-label={`${value} ${label}`}>
+        <defs>
+          <linearGradient id="gaugeGradient" x1="30" y1="0" x2="230" y2="0">
+            <stop offset="0%" stopColor="#25C6AC" />
+            <stop offset="100%" stopColor="#C9F24A" />
+          </linearGradient>
+        </defs>
+        {ticks.map((tick) => {
+          const angle = -210 + tick * (240 / 18)
+          const radians = (angle * Math.PI) / 180
+          const x1 = 130 + Math.cos(radians) * 112
+          const y1 = 136 + Math.sin(radians) * 112
+          const x2 = 130 + Math.cos(radians) * 120
+          const y2 = 136 + Math.sin(radians) * 120
+          return (
+            <line
+              key={tick}
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              stroke="rgba(255,255,255,.24)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          )
+        })}
+        <path
+          d="M37 190 A105 105 0 1 1 223 190"
+          pathLength="100"
+          fill="none"
+          stroke="rgba(255,255,255,.1)"
+          strokeWidth="14"
+          strokeLinecap="round"
+        />
+        <path
+          d="M37 190 A105 105 0 1 1 223 190"
+          pathLength="100"
+          fill="none"
+          stroke="url(#gaugeGradient)"
+          strokeWidth="14"
+          strokeLinecap="round"
+          strokeDasharray="64 100"
+        />
+      </svg>
+      <div className="absolute inset-x-0 bottom-3 text-center">
+        <span className={`${compact ? "text-lg" : "text-[42px]"} font-semibold tabular-nums`}>
+          {value}
+        </span>
+        <span className={`${compact ? "text-[10px]" : "text-base"} text-secondary ml-1`}>
+          {label}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+export function HouseIllustration({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 320 190"
+      className={className}
+      fill="none"
+      role="img"
+      aria-label="Ilustrasi rumah kost dengan panel surya"
+    >
+      <ellipse cx="160" cy="168" rx="132" ry="16" fill="#03151D" opacity=".55" />
+      <path d="m52 85 96-50 112 54-97 52L52 85Z" fill="#0C3038" stroke="#25C6AC" />
+      <path d="m52 85 111 56v35L52 119V85Z" fill="#08242C" stroke="#41636A" />
+      <path d="m163 141 97-52v35l-97 52v-35Z" fill="#0B4848" stroke="#41636A" />
+      <path d="m91 67 57-30 68 33-58 30-67-33Z" fill="#052B35" stroke="#25C6AC" />
+      {[0, 1, 2].map((i) => (
+        <path
+          key={i}
+          d={`m${104 + i * 19} ${62 - i * 10} 34 17 12-6-34-17-12 6Z`}
+          fill="#0A5558"
+          stroke="#25C6AC"
+          strokeWidth=".7"
+        />
+      ))}
+      {[0, 1, 2].map((i) => (
+        <rect key={i} x={78 + i * 31} y="104" width="18" height="25" rx="3" fill="#F5B84B" opacity=".82" />
+      ))}
+      <rect x="188" y="119" width="20" height="29" rx="3" fill="#F5B84B" opacity=".75" />
+      <rect x="220" y="102" width="18" height="27" rx="3" fill="#F5B84B" opacity=".75" />
+    </svg>
+  )
+}
+
+function LineChart({
+  spike = false,
+  carbon = false,
+  projection = false,
+}: {
+  spike?: boolean
+  carbon?: boolean
+  projection?: boolean
+}) {
+  const line = "#25C6AC"
+  const fill = "url(#areaFill)"
+  const points = projection
+    ? "54,45 150,70 246,92 342,120 438,146 534,176 630,205 726,235"
+    : "54,190 130,172 206,180 282,132 358,152 434,82 510,120 586,104 662,142 738,62"
+  return (
+    <svg
+      viewBox="0 0 800 260"
+      className="size-full"
+      preserveAspectRatio="none"
+      role="img"
+      aria-label="Grafik data WattKost"
+    >
+      <defs>
+        <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#25C6AC" stopOpacity=".24" />
+          <stop offset="100%" stopColor="#25C6AC" stopOpacity="0" />
+        </linearGradient>
+        <filter id="nodeGlow" x="-200%" y="-200%" width="400%" height="400%">
+          <feGaussianBlur stdDeviation="4" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      {[48, 96, 144, 192, 240].map((y) => (
+        <line
+          key={y}
+          x1="50"
+          y1={y}
+          x2="760"
+          y2={y}
+          stroke="rgba(255,255,255,.08)"
+          strokeDasharray="5 7"
+        />
+      ))}
+      {!projection && (
+        <path d={`M${points} L738,240 L54,240 Z`} fill={fill} opacity=".75" />
+      )}
+      <polyline
+        points={points}
+        fill="none"
+        stroke={line}
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {projection && (
+        <polyline
+          points="438,146 534,176 630,205 726,235"
+          fill="none"
+          stroke="rgba(255,255,255,.6)"
+          strokeWidth="3"
+          strokeDasharray="9 8"
+          strokeLinecap="round"
+        />
+      )}
+      {spike && (
+        <>
+          <line
+            x1="50"
+            y1="112"
+            x2="760"
+            y2="112"
+            stroke="#FF6B57"
+            strokeDasharray="7 7"
+          />
+          <circle
+            cx="434"
+            cy="82"
+            r="8"
+            fill="#FF6B57"
+            stroke="#FFFFFF"
+            strokeWidth="3"
+          />
+          <g transform="translate(402 34)">
+            <rect width="82" height="30" rx="15" fill="#0C3038" />
+            <text x="41" y="20" textAnchor="middle" fill="white" fontSize="11">
+              7,8 kWh
+            </text>
+          </g>
+        </>
+      )}
+      {!spike && !projection && (
+        <>
+          <circle
+            cx="738"
+            cy="62"
+            r="8"
+            fill="#FFFFFF"
+            stroke="#25C6AC"
+            strokeWidth="3"
+            filter="url(#nodeGlow)"
+          />
+          <g transform="translate(696 16)">
+            <rect width="84" height="30" rx="15" fill="#0C3038" />
+            <text x="42" y="20" textAnchor="middle" fill="white" fontSize="11">
+              {carbon ? "38,5 kg" : "9,2 kWh"}
+            </text>
+          </g>
+        </>
+      )}
+      {projection && (
+        <>
+          <circle
+            cx="726"
+            cy="235"
+            r="8"
+            fill="#FF6B57"
+            stroke="#FFFFFF"
+            strokeWidth="3"
+          />
+          <text x="700" y="220" fill="#FF6B6B" fontSize="11" fontWeight="600">
+            Habis · 14 Okt
+          </text>
+        </>
+      )}
+      {["01 Okt", "03 Okt", "05 Okt", "07 Okt", "09 Okt"].map((x, i) => (
+        <text key={x} x={54 + i * 171} y="257" fill="#A8BDC0" fontSize="11">
+          {x}
+        </text>
+      ))}
+    </svg>
+  )
+}
+
+function BarChart({ compare = false }: { compare?: boolean }) {
+  const vals = compare
+    ? [176, 155, 142, 126, 108, 92, 82, 72]
+    : [82, 150, 150, 196]
+  return (
+    <svg
+      viewBox="0 0 800 260"
+      className="size-full"
+      preserveAspectRatio="none"
+      role="img"
+      aria-label="Grafik batang WattKost"
+    >
+      {[48, 96, 144, 192, 240].map((y) => (
+        <line
+          key={y}
+          x1="45"
+          y1={y}
+          x2="765"
+          y2={y}
+          stroke="rgba(255,255,255,.08)"
+          strokeDasharray="5 7"
+        />
+      ))}
+      {vals.map((v, i) => (
+        <rect
+          key={i}
+          x={compare ? 70 + i * 84 : 105 + i * 170}
+          y={240 - v}
+          width={compare ? 28 : 64}
+          height={v}
+          rx="8"
+          fill={
+            compare
+              ? i % 2
+                ? "#25C6AC"
+                : "rgba(255,255,255,.24)"
+              : i === 3
+                ? "#25C6AC"
+                : "rgba(255,255,255,.14)"
+          }
+        />
+      ))}
+      {!compare &&
+        ["Juli", "Agustus", "September", "Oktober"].map((x, i) => (
+          <text
+            key={x}
+            x={137 + i * 170}
+            y="258"
+            textAnchor="middle"
+            fill="#A8BDC0"
+            fontSize="11"
+          >
+            {x}
+          </text>
+        ))}
+      {!compare && (
+        <text
+          x="647"
+          y="34"
+          textAnchor="middle"
+          fill="#FFFFFF"
+          fontSize="12"
+          fontWeight="700"
+        >
+          Rp100.000
+        </text>
+      )}
+      {compare && (
+        <>
+          <text x="90" y="22" fill="#A8BDC0" fontSize="12" fontWeight="600">
+            September · 94,4 kWh
+          </text>
+          <text x="610" y="22" fill="#25C6AC" fontSize="12" fontWeight="600">
+            Oktober · 86,4 kWh
+          </text>
+        </>
+      )}
+    </svg>
+  )
+}
+
+export function Placeholder({
+  label,
+  h = "h-72",
+}: {
+  label: string
+  h?: string
+}) {
+  const bar = label.includes("BATANG") || label.includes("LAPORAN")
+  const compare = label.includes("PERBANDINGAN") || label.includes("LAPORAN")
+  return (
+    <div className={`${h} rounded-2xl bg-abyss/45 border border-line p-3 overflow-hidden`}>
+      {bar ? (
+        <BarChart compare={compare} />
+      ) : (
+        <LineChart
+          spike={label.includes("LONJAKAN")}
+          carbon={label.includes("EMISI")}
+          projection={label.includes("PROYEKSI")}
+        />
+      )}
+    </div>
+  )
+}
+
+export function Table({
+  head,
+  rows,
+  highlight,
+  align,
+}: {
+  head: string[]
+  rows: ReactNode[][]
+  highlight?: number
+  align?: ("l" | "r")[]
+}) {
+  return (
+    <div className="border border-line rounded-2xl overflow-hidden">
+      <table className="w-full text-sm">
+        <thead className="bg-white/4">
+          <tr>
+            {head.map((h, i) => (
+              <th
+                key={h}
+                className={`h-11 px-4 font-bold text-mute text-[11px] uppercase tracking-[0.08em] ${
+                  align?.[i] === "r" ? "text-right" : "text-left"
+                }`}
+              >
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, ri) => (
+            <tr
+              key={ri}
+              className={`border-t border-line transition-colors hover:bg-aqua/6 ${
+                ri === highlight ? "bg-aqua-soft outline outline-1 -outline-offset-1 outline-aqua/50" : "bg-surface"
+              }`}
+            >
+              {r.map((c, ci) => (
+                <td
+                  key={ci}
+                  className={`h-13 px-4 ${
+                    ci > 0 ? "font-mono text-[13px]" : ""
+                  } ${align?.[ci] === "r" ? "text-right" : ""}`}
+                >
+                  {c}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+export function Modal({
+  title,
+  onClose,
+  children,
+}: {
+  title: string
+  onClose: () => void
+  children: ReactNode
+}) {
+  return (
+    <div
+      className="absolute inset-0 z-20 bg-abyss/75 backdrop-blur-md grid place-items-center"
+      onClick={onClose}
+    >
+      <div
+        className="w-[480px] bg-raised rounded-[28px] border border-line-strong shadow-[0_24px_48px_rgba(0,0,0,.35)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="h-16 px-6 flex items-center justify-between border-b border-line">
+          <h2 className="font-display text-xl font-bold">{title}</h2>
+          <button
+            aria-label="Tutup"
+            onClick={onClose}
+            className="size-9 rounded-full bg-white/6 text-mute text-xl"
+          >
+            ×
+          </button>
+        </div>
+        <div className="p-6 flex flex-col gap-4">{children}</div>
+        <div className="px-6 py-4 border-t border-line flex justify-end gap-3">
+          <Btn variant="secondary" onClick={onClose}>
+            Batal
+          </Btn>
+          <Btn onClick={onClose}>Simpan</Btn>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
+  return (
+    <button
+      onClick={onChange}
+      className={`w-12 h-7 rounded-full p-1 transition-colors ${
+        on ? "bg-aqua" : "bg-white/16"
+      }`}
+    >
+      <span
+        className={`block size-5 rounded-full bg-white transition-transform ${
+          on ? "translate-x-5" : ""
+        }`}
+      />
+    </button>
+  )
+}
+
+export function Check({ label, on }: { label: string; on?: boolean }) {
+  return (
+    <label className="flex items-center gap-2 text-sm">
+      <span
+        className={`size-5 rounded-md border grid place-items-center text-xs ${
+          on ? "bg-aqua border-aqua text-abyss" : "border-line-strong"
+        }`}
+      >
+        {on && "✓"}
+      </span>
+      {label}
+    </label>
+  )
+}
+
+export function Actions({ items }: { items: string[] }) {
+  return (
+    <div className="flex gap-2">
+      {items.map((a) => (
+        <Btn key={a} variant={a === "Hapus" ? "danger" : "secondary"} small>
+          {a}
+        </Btn>
+      ))}
+    </div>
+  )
+}
