@@ -9,6 +9,8 @@ Pemilik: **Pasangan 3** (Luthfan & Dhias). Semua migration di bawah dibuat di Mi
 - Uang (rupiah): `unsignedBigInteger` (rupiah utuh, tanpa desimal). Tarif per kWh: `decimal(10,2)`. kWh: `decimal(8,2)`. Jam: `decimal(4,2)`. Watt: `unsignedInteger`.
 - Semua tabel punya `timestamps()`.
 - **Tabel hasil hitungan TIDAK dibuat** (lihat bagian akhir).
+- **Query kolom date/datetime WAJIB pakai Carbon atau `whereDate()`:** `whereDate('tanggal', $tgl)`, `whereBetween('tanggal', [$awal, $akhir])` dengan Carbon, `updateOrCreate(['tanggal' => Carbon])` (Carbon jam 00:00, mis. `today()` / `Carbon::parse('2026-10-15')`). **Jangan** `where('tanggal', '2026-10-15')` dengan string, karena gagal di test SQLite (SQLite menyimpan `2026-10-15 00:00:00`). Bukti: `tests/Feature/Database/QueryTanggalTest.php`.
+- Kolom yang menunjuk pemilik (`user_id`) **tidak** ada di `$fillable`. Buat data lewat relasi: `$request->user()->alatListrik()->create(...)`. `users.role` juga tidak fillable (set lewat `forceFill()` / factory `->admin()`).
 
 ## Tabel
 
@@ -16,8 +18,9 @@ Pemilik: **Pasangan 3** (Luthfan & Dhias). Semua migration di bawah dibuat di Mi
 | Kolom | Tipe | Keterangan |
 |---|---|---|
 | id | bigint PK | |
-| name | string(100) | nama tampilan |
+| name | string (255) | nama tampilan; validasi maks 100 di form |
 | email | string unique | |
+| email_verified_at | timestamp nullable | bawaan Laravel, belum dipakai |
 | password | string | di-hash (cast `hashed`) |
 | role | string(20) default `'penghuni'` | `penghuni` \| `admin` — pakai konstanta `User::ROLE_ADMIN`, `User::ROLE_PENGHUNI` |
 | remember_token, timestamps | | |
