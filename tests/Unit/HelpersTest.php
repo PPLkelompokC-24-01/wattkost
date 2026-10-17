@@ -2,11 +2,19 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Support\Carbon;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class HelpersTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow();
+
+        parent::tearDown();
+    }
+
     public static function contohRupiah(): array
     {
         return [
@@ -30,6 +38,57 @@ class HelpersTest extends TestCase
         $this->assertSame('12,35 kWh', kwh(12.345));
         $this->assertSame('86,40 kWh', kwh(86.4));
         $this->assertSame('1.250,00 kWh', kwh(1250));
+    }
+
+    public function test_periode_bulan_mengembalikan_awal_dan_akhir_bulan(): void
+    {
+        Carbon::setTestNow('2026-10-17 15:30:00');
+
+        [$awal, $akhir] = periodeBulan('2026-08');
+
+        $this->assertSame('2026-08-01 00:00:00', $awal->toDateTimeString());
+        $this->assertSame('2026-08-31 23:59:59', $akhir->toDateTimeString());
+    }
+
+    public function test_periode_bulan_februari_tahun_kabisat(): void
+    {
+        Carbon::setTestNow('2026-10-17');
+
+        // 2024 kabisat (habis dibagi 4) → 29 hari
+        $this->assertSame('2024-02-29', periodeBulan('2024-02')[1]->toDateString());
+    }
+
+    public function test_periode_bulan_berjalan_tetap_diterima(): void
+    {
+        Carbon::setTestNow('2026-10-17');
+
+        $this->assertSame('2026-10-01', periodeBulan('2026-10')[0]->toDateString());
+    }
+
+    public static function contohPeriodeTidakValid(): array
+    {
+        return [
+            'null' => [null],
+            'kosong' => [''],
+            'sampah' => ['abc'],
+            'bulan 13' => ['2026-13'],
+            'bulan 00' => ['2026-00'],
+            'tanpa nol depan' => ['2026-8'],
+            'tanggal lengkap' => ['2026-08-01'],
+            'bulan depan (masa depan)' => ['2026-11'],
+            'tahun depan (masa depan)' => ['2027-05'],
+        ];
+    }
+
+    #[DataProvider('contohPeriodeTidakValid')]
+    public function test_periode_bulan_tidak_valid_atau_masa_depan_jatuh_ke_bulan_berjalan(?string $nilai): void
+    {
+        Carbon::setTestNow('2026-10-17 15:30:00');
+
+        [$awal, $akhir] = periodeBulan($nilai);
+
+        $this->assertSame('2026-10-01 00:00:00', $awal->toDateTimeString());
+        $this->assertSame('2026-10-31 23:59:59', $akhir->toDateTimeString());
     }
 
     public function test_angka_format_indonesia(): void

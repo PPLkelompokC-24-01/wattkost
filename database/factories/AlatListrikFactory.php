@@ -24,11 +24,11 @@ class AlatListrikFactory extends Factory
         ['Laptop', 'Elektronik', 65],
         ['TV LED 32"', 'Elektronik', 50],
         ['Router WiFi', 'Elektronik', 10],
-        ['Lampu LED', 'Pencahayaan', 10],
-        ['Lampu meja LED', 'Pencahayaan', 5],
-        ['Setrika', 'Perawatan Diri', 350],
-        ['Hair dryer', 'Perawatan Diri', 600],
-        ['Mesin cuci mini', 'Lainnya', 250],
+        ['Lampu LED', 'Penerangan', 10],
+        ['Lampu meja LED', 'Penerangan', 5],
+        ['Setrika', 'Rumah Tangga', 350],
+        ['Hair dryer', 'Rumah Tangga', 600],
+        ['Mesin cuci mini', 'Rumah Tangga', 250],
     ];
 
     public function definition(): array

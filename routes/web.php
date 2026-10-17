@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\Dev\KomponenController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/beranda');
@@ -15,5 +16,10 @@ foreach (['alat', 'token', 'analisis', 'profil', 'admin', 'sprint2'] as $modul) 
 
 // Katalog komponen UI (contoh pemakaian komponen untuk semua pasangan). Hanya lokal & test.
 if (app()->environment(['local', 'testing'])) {
-    Route::view('/dev/komponen', 'dev.komponen')->name('dev.komponen');
+    Route::controller(KomponenController::class)->prefix('dev/komponen')->name('dev.')->group(function () {
+        Route::get('/', 'index')->name('komponen');
+        Route::post('/contoh', 'store')->name('contoh.store');
+        Route::put('/contoh/{id}', 'update')->whereNumber('id')->name('contoh.update');
+        Route::delete('/contoh/{id}', 'destroy')->whereNumber('id')->name('contoh.destroy');
+    });
 }

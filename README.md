@@ -4,20 +4,20 @@
 
 Aplikasi web pemantau & penghemat token listrik untuk penghuni kost — Proyek Perangkat Lunak, Kelompok C SI2401, S1 Sistem Informasi.
 
-Stack: Laravel 13 · PHP 8.3+ · MySQL · Blade + Tailwind CSS v4 · Chart.js · DomPDF
+Stack: Laravel 12 · PHP 8.2+ · MySQL · Blade + Tailwind CSS v4 · Chart.js · DomPDF
 
 ## Menyiapkan laptop (sekali saja)
 
 | Kebutuhan | Versi | Cek |
 |---|---|---|
-| PHP | **≥ 8.3** (ekstensi: pdo_mysql, mbstring, openssl, fileinfo, zip, gd, sqlite3) | `php -v` |
+| PHP | **≥ 8.2** (ekstensi: pdo_mysql, mbstring, openssl, fileinfo, zip, gd, sqlite3) | `php -v` |
 | Composer | 2.x | `composer -V` |
 | Node.js | 20 LTS atau 22 LTS | `node -v` |
 | MySQL / MariaDB | MySQL 8 / MariaDB 10.6+ | |
 | Git | terbaru, `git config --global core.autocrlf input` | `git --version` |
 | Claude Code | terbaru | `claude --version` |
 
-> ⚠️ **XAMPP versi terbaru masih membawa PHP 8.2**, sedangkan Laravel 13 butuh PHP 8.3. Pilihan: (a) **Laravel Herd** (gratis, PHP 8.3/8.4) untuk PHP + MySQL dari XAMPP/Laragon; atau (b) Laragon dengan PHP 8.3+ ditambahkan; atau (c) ganti PHP di XAMPP manual. Semua anggota harus mendapat `php -v` ≥ 8.3.
+> ✅ PHP 8.2 dari XAMPP/Laragon sudah cukup untuk Laravel 12.
 
 ## Menjalankan proyek
 

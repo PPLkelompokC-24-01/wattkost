@@ -23,7 +23,7 @@ Dipilih berdasarkan **ketergantungan data**: Sprint 1 membangun semua fitur yang
 | 18 | Estimasi Biaya Listrik | Perhitungan dasar rupiah |
 | 23 | Katalog Alat (admin) | Dipakai form PBI 1 (isi daya otomatis) |
 
-Ditambah **Fondasi** (bukan PBI, tapi wajib): instalasi Laravel 13, login/logout/registrasi, role admin, layout + komponen Tailwind dari Figma, semua migration Sprint 1, seeder.
+Ditambah **Fondasi** (bukan PBI, tapi wajib): instalasi Laravel 12, login/logout/registrasi, role admin, layout + komponen Tailwind dari Figma, semua migration Sprint 1, seeder.
 
 **Sprint 2:** PBI 9, 10, 11, 12, 14, 16, 17, 19, 20, 21, 22, 24.
 
@@ -71,7 +71,7 @@ Rincian harian per pasangan, gerbang tiap tahap, daftar PR, dan rencana darurat 
 
 | Minggu | Tanggal | Target | Merge ke `develop` |
 |---|---|---|---|
-| **1 – Fondasi** | 14–20 Okt | P4: Laravel 13 + Tailwind + auth + layout + komponen + menu. P3: semua migration, model, relasi, factory, seeder, CI. P1 & P2: kontrak service (signature + unit test merah), slicing desain Figma modulnya jadi daftar komponen, siapkan data uji. | Kamis 15 Okt: kerangka Laravel (P4) → Sabtu 17 Okt: migration+model (P3) → Senin 19 Okt: layout+auth (P4). **Selasa 20 Okt: semua orang `git pull`, `migrate --seed`, login berhasil.** |
+| **1 – Fondasi** | 14–20 Okt | P4: Laravel 12 + Tailwind + auth + layout + komponen + menu. P3: semua migration, model, relasi, factory, seeder, CI. P1 & P2: kontrak service (signature + unit test merah), slicing desain Figma modulnya jadi daftar komponen, siapkan data uji. | Kamis 15 Okt: kerangka Laravel (P4) → Sabtu 17 Okt: migration+model (P3) → Senin 19 Okt: layout+auth (P4). **Selasa 20 Okt: semua orang `git pull`, `migrate --seed`, login berhasil.** |
 | **2 – Input data (CRUD)** | 21–27 Okt | PBI 1, 2 (P1) · 5, 7 (P2) · 15, 23, 13 (P4) · P3: `PrediksiTokenService` & `EstimasiBiayaService` + unit test pakai factory | PR kecil per PBI, target merge Jumat 23 & Selasa 27 Okt |
 | **3 – Perhitungan** | 28 Okt–3 Nov | PBI 3 (P1) · 6 (P2) · 4, 8, 18 (P3, setelah PBI 3 merge) · P4: integrasi katalog→form alat (A5 di UC-01) bersama P1, polish UI | PBI 3 merge paling lambat **Kamis 29 Okt** (dibutuhkan P3) |
 | **4 – Integrasi & uji** | 4–10 Nov | Freeze fitur Rabu 4 Nov. Uji menyeluruh (pakai skenario test), perbaikan bug, data demo, README. Selasa 10 Nov: `develop` → `main`, tag `v0.1-sprint1`. | Hanya PR perbaikan bug |

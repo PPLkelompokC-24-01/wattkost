@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'kategori_alat' => ['Pendingin', 'Dapur', 'Elektronik', 'Pencahayaan', 'Perawatan Diri', 'Lainnya'],
+    'kategori_alat' => ['Pendingin', 'Dapur', 'Elektronik', 'Penerangan', 'Rumah Tangga', 'Lainnya'],
     'golongan_tarif' => [ // tarif PLN berlaku Okt 2026 (sumber: PLN/ESDM, cek ulang tiap triwulan)
         'R-1/TR 450 VA (subsidi)' => ['daya_va' => 450,  'tarif' => 415.00],
         'R-1/TR 900 VA (subsidi)' => ['daya_va' => 900,  'tarif' => 605.00],

@@ -2,6 +2,7 @@
 <x-layouts.app title="Katalog Komponen">
     <x-page-header sub="Halaman pengembang: bandingkan setiap komponen dengan desain Figma.">
         <x-button variant="secondary" href="#beranda">Contoh Beranda</x-button>
+        <x-button variant="secondary" href="#contoh-crud">Contoh CRUD</x-button>
         <x-button href="#komponen">Daftar Komponen</x-button>
     </x-page-header>
 
@@ -28,9 +29,10 @@
                 <x-slot:action>
                     <x-button variant="link" href="#">Buka Dashboard →</x-button>
                 </x-slot:action>
-                <div
-                    class="h-80 rounded-2xl bg-abyss/45 border border-line p-3 grid place-items-center text-sm text-mute">
-                    Grafik Chart.js dengan data asli menyusul (bukan bagian paket ini)
+                <div class="rounded-2xl bg-abyss/45 border border-line p-3">
+                    <x-chart :labels="$contohGrafik['hari']"
+                        :datasets="[['label' => 'Pemakaian', 'data' => $contohGrafik['kwhHarian']]]" satuan="kWh"
+                        :tinggi="296" />
                 </div>
             </x-card>
             <x-card title="Ringkasan Pemakaian">
@@ -47,6 +49,52 @@
                 </div>
             </x-card>
         </div>
+    </section>
+
+    {{-- ========== Contoh CRUD dengan modal (pola wajib, lihat "Pola halaman" di docs/KONVENSI.md) ========== --}}
+    <section id="contoh-crud" class="scroll-mt-20 mt-12">
+        <h2 class="font-display text-[28px] font-semibold mb-4">Contoh CRUD</h2>
+        <x-card title="Daftar Alat (data contoh)">
+            <x-slot:action>
+                <x-button data-buka-modal="modal-tambah-contoh">+ Tambah Alat</x-button>
+            </x-slot:action>
+            <p class="text-sm text-secondary mb-4">
+                Coba: simpan dengan isian kosong → modal terbuka lagi berisi error. Edit → URL
+                <code>?ubah=ID</code> dan modal ubah terbuka tanpa JS tambahan.
+            </p>
+            <x-table :head="['Alat', 'Kategori', 'Daya', 'Aksi']" :align="['l', 'l', 'r', 'l']">
+                @foreach ($contohAlat as $alat)
+                    <tr @if ($ubah?->id === $alat->id) data-sorot @endif>
+                        <td class="font-medium">{{ $alat->nama_alat }}</td>
+                        <td>{{ $alat->kategori }}</td>
+                        <td class="text-right">{{ $alat->daya_watt }} W</td>
+                        <td>
+                            <div class="flex gap-2">
+                                <x-button small variant="secondary"
+                                    :href="route('dev.komponen', ['ubah' => $alat->id]).'#contoh-crud'">Edit</x-button>
+                                <form method="POST" action="{{ route('dev.contoh.destroy', $alat->id) }}"
+                                    onsubmit="return confirm(@js('Yakin hapus '.$alat->nama_alat.'?'))">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-button small variant="danger" type="submit">Hapus</x-button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </x-table>
+        </x-card>
+
+        <x-form-modal id="modal-tambah-contoh" title="Tambah Alat" :action="route('dev.contoh.store')">
+            @include('dev.partials.form-contoh', ['alat' => null])
+        </x-form-modal>
+
+        @if ($ubah)
+            <x-form-modal id="modal-ubah-contoh" title="Ubah Alat" form="ubah" method="PUT" buka
+                :action="route('dev.contoh.update', $ubah->id)">
+                @include('dev.partials.form-contoh', ['alat' => $ubah])
+            </x-form-modal>
+        @endif
     </section>
 
     {{-- ========== Semua komponen ========== --}}
@@ -114,6 +162,7 @@
                         <option>Jul – Okt 2026</option>
                         <option>Jan – Jun 2026</option>
                     </x-select>
+                    <x-pilih-bulan />
                     <x-search placeholder="Cari alat..." />
                     <x-tabs :items="[
                         'Komponen' => route('dev.komponen'),
@@ -129,6 +178,33 @@
                         <x-checkbox name="demo_kanal[]" value="email" label="Email" />
                     </div>
                 </div>
+            </x-card>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <x-card title="Grafik garis (x-chart type=line)">
+                <x-chart :labels="$contohGrafik['hari']"
+                    :datasets="[['label' => 'Pemakaian', 'data' => $contohGrafik['kwhHarian']]]" satuan="kWh" />
+            </x-card>
+            <x-card title="Grafik garis + proyeksi (2 dataset → legend)">
+                <x-chart :labels="['01 Okt', '03 Okt', '05 Okt', '07 Okt', '09 Okt', '11 Okt', '13 Okt', '15 Okt']"
+                    :datasets="[
+                        ['label' => 'Sisa kWh', 'data' => [69.2, 62.1, 55.4, 48.0, 42.5]],
+                        ['label' => 'Proyeksi', 'data' => [null, null, null, null, 42.5, 33.1, 23.6, 14.2]],
+                    ]" satuan="kWh" />
+            </x-card>
+            <x-card title="Grafik batang (data terakhir disorot)">
+                <x-chart type="bar" :labels="['Juli', 'Agustus', 'September', 'Oktober']"
+                    :datasets="[['label' => 'Pengeluaran token', 'data' => [40000, 75000, 75000, 100000]]]"
+                    satuan="Rp" />
+            </x-card>
+            <x-card title="Grafik batang perbandingan & data kosong">
+                <x-chart type="bar" :labels="['AC', 'Kulkas', 'Rice cooker', 'Laptop']" :tinggi="200"
+                    :datasets="[
+                        ['label' => 'September', 'data' => [41.3, 12.4, 10.2, 8.6]],
+                        ['label' => 'Oktober', 'data' => [38.2, 12.0, 9.1, 8.6]],
+                    ]" satuan="kWh" />
+                <x-chart :labels="[]" :datasets="[]" kosong="Catat pemakaian alat untuk melihat grafik." />
             </x-card>
         </div>
 

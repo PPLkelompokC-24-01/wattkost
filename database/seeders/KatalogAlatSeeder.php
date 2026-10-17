@@ -23,12 +23,12 @@ class KatalogAlatSeeder extends Seeder
         ['Router WiFi', 'Elektronik', 10],
         ['Monitor 24"', 'Elektronik', 25],
         ['Speaker bluetooth', 'Elektronik', 10],
-        ['Lampu LED', 'Pencahayaan', 10],
-        ['Lampu meja LED', 'Pencahayaan', 5],
-        ['Setrika', 'Perawatan Diri', 350],
-        ['Hair dryer', 'Perawatan Diri', 600],
-        ['Catokan rambut', 'Perawatan Diri', 45],
-        ['Mesin cuci mini', 'Lainnya', 250],
+        ['Lampu LED', 'Penerangan', 10],
+        ['Lampu meja LED', 'Penerangan', 5],
+        ['Setrika', 'Rumah Tangga', 350],
+        ['Hair dryer', 'Rumah Tangga', 600],
+        ['Catokan rambut', 'Rumah Tangga', 45],
+        ['Mesin cuci mini', 'Rumah Tangga', 250],
     ];
 
     public function run(): void

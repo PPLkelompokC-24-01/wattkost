@@ -30,7 +30,7 @@ class DatabaseSeederTest extends TestCase
 
         $this->assertSame(3, User::count());
         $this->assertSame(20, KatalogAlat::count());
-        $this->assertSame(10, TipsHemat::count());
+        $this->assertSame(11, TipsHemat::count());
 
         $demo = UserSeeder::userDemo();
         $this->assertNotNull($demo->profilKost);
@@ -38,6 +38,19 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(8 * 30, $demo->pemakaianHarian()->count());
         $this->assertSame(3, $demo->pembelianToken()->count());
         $this->assertSame(14, $demo->sisaKwh()->count());
+    }
+
+    public function test_setiap_kategori_alat_punya_minimal_satu_tips_dan_tidak_ada_kategori_asing(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $kategoriAlat = config('wattkost.kategori_alat');
+        $kategoriTips = TipsHemat::pluck('kategori')->unique();
+
+        // PBI 12 mencocokkan tips dengan kategori alat: kategori tanpa tips = tidak ada rekomendasi.
+        $this->assertSame([], array_values(array_diff($kategoriAlat, $kategoriTips->all())), 'Kategori tanpa tips');
+        $this->assertSame([], $kategoriTips->diff([...$kategoriAlat, 'Umum'])->values()->all(), 'Tips berkategori asing');
+        $this->assertSame(0, KatalogAlat::whereNotIn('kategori', $kategoriAlat)->count(), 'Katalog berkategori asing');
     }
 
     public function test_akun_seeder_bisa_login_dengan_role_yang_benar(): void

@@ -3,7 +3,7 @@
 Bukan PBI di proposal, tapi semua PBI bergantung padanya. Dikerjakan **P4** (aplikasi, auth, UI) dan **P3** (database). P1 & P2 menyiapkan kontrak service dan data uji.
 
 ## Bagian A — P4: kerangka aplikasi (target merge Kamis 15 Okt)
-1. `composer create-project laravel/laravel wattkost` (Laravel 13, PHP ≥ 8.3). Pilih PHPUnit, database MySQL.
+1. `composer create-project laravel/laravel:^12.0 wattkost` (Laravel 12, PHP ≥ 8.2). Pilih PHPUnit, database MySQL.
 2. Pasang sekaligus (supaya lock file tidak berubah lagi): `composer require barryvdh/laravel-dompdf` · `composer require --dev laravel/boost` lalu `php artisan boost:install` (pilih Claude Code; **jangan** biarkan menimpa `CLAUDE.md` kita — kalau ditimpa, gabungkan: bagian Boost ditaruh di bawah) · `npm install chart.js`. Tailwind v4 sudah bawaan starter Laravel (cek `vite.config.js` memakai `@tailwindcss/vite`).
 3. Salin isi paket starter ini (CLAUDE.md, .mcp.json, .claude/, .github/, docs/) ke root repo.
 4. `.env.example`: `APP_NAME=WattKost`, `APP_LOCALE=id`, `APP_FALLBACK_LOCALE=en`, `APP_TIMEZONE`→ set di `config/app.php` `'timezone' => 'Asia/Jakarta'`, `DB_CONNECTION=mysql`, `DB_DATABASE=wattkost`, `QUEUE_CONNECTION=sync`, `MAIL_MAILER=log`.

@@ -18,6 +18,8 @@ Dokumen ini menjelaskan bagian implementasi yang **sengaja** berbeda dari propos
 | 12 | UC-01 | Hapus alat | Soft delete | Riwayat pemakaian & laporan bulan lalu tidak hilang | Tim | 2026-10-14 |
 | 14 | 5.2 Tim Pengembang (PBI per orang) | PBI dibagi per orang | Kerja **berpasangan**; P1 Eca+Tata (PBI 1,2,3), P2 Rafa+Habiebie (5,6,7), P3 Luthfan+Dhias (4,8,18), P4 Puti+Tika (13,15,23 + fondasi). Peran Scrum (PM, PO, SM, UI/UX) tetap | Pair programming mengurangi error & konflik; Puti+Tika memulai kerangka lebih dulu | Tim | 2026-10-14 |
 | 13 | Auth | Login & logout | Ditambah registrasi penghuni (mockup Login memuat opsi daftar); akun admin dibuat lewat seeder | — | Tim | 2026-10-14 |
+| 15 | TK-01 / TK-02 Versi framework & bahasa | Rancangan awal tim: Laravel 13, PHP 8.3 | **Laravel 12, PHP 8.2** (CI ikut `php-version: '8.2'`) | PHP bawaan XAMPP/Laragon di laptop tim adalah 8.2; Laravel 12 masih menerima perbaikan keamanan sampai Februari 2027 (melewati akhir proyek) | Tim (P4) | 2026-10-17 |
+| 16 | Kategori alat (`config/wattkost.php`, dipakai PBI 1, 12, 13, 23) | Pendingin, Dapur, Elektronik, Pencahayaan, Perawatan Diri, Lainnya | Pendingin, Dapur, Elektronik, **Penerangan**, **Rumah Tangga**, Lainnya. Setrika, hair dryer, catokan & mesin cuci mini → Rumah Tangga (katalog & seeder); tips mesin cuci ikut Rumah Tangga dan ditambah 1 tips untuk Lainnya (total 11) | Mengikuti desain Figma (halaman Katalog & Tips Hemat) | Tim (P4) | 2026-10-17 |
 
 ## Tabel tools AI per sprint (pengganti 6.3)
 
