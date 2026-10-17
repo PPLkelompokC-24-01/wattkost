@@ -162,3 +162,9 @@ Lalu jalankan npm run build.
 </pasted_content id="a56d">
 ```
 
+## 15:48 — Puti Azzahra Navita
+
+```text
+/cek-sebelum-pr
+```
+
