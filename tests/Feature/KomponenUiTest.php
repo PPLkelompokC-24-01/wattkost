@@ -71,6 +71,29 @@ class KomponenUiTest extends TestCase
             ->assertSee('bg-surface border-line', false);
     }
 
+    public function test_stat_card_hanya_bisa_diklik_dan_naik_saat_hover_kalau_punya_href(): void
+    {
+        $this->blade('<x-stat-card label="Sisa kWh" value="42,5 kWh" href="/meteran" />')
+            ->assertSee('href="/meteran"', false)
+            ->assertSee('cursor-pointer', false)
+            ->assertSee('hover:-translate-y-0.5', false)
+            ->assertSee('Lihat detail →');
+
+        $this->blade('<x-stat-card label="Sisa kWh" value="—" note="Belum ada data" />')
+            ->assertDontSee('href=', false)
+            ->assertDontSee('cursor-pointer', false)
+            ->assertDontSee('hover:-translate-y-0.5', false)
+            ->assertDontSee('Lihat detail');
+    }
+
+    public function test_layout_guest_ilustrasi_di_alur_normal_dan_tersembunyi_di_layar_pendek(): void
+    {
+        $html = (string) $this->blade('<x-layouts.guest title="Masuk">Form</x-layouts.guest>');
+
+        $this->assertMatchesRegularExpression('/data-ilustrasi-login class="[^"]*\[@media\(max-height:699px\)\]:hidden/', $html);
+        $this->assertStringNotContainsString('absolute w-[540px]', $html);
+    }
+
     public function test_input_memakai_old_dan_menampilkan_error(): void
     {
         $this->blade('<x-input label="Daya" name="daya_watt" suffix="W" value="100" />')
