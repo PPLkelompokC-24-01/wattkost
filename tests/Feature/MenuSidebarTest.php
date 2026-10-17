@@ -43,8 +43,7 @@ class MenuSidebarTest extends TestCase
         $this->renderLayout()
             ->assertSee('Menu Utama')
             ->assertDontSee('Alat Listrik')
-            ->assertDontSee('Token Listrik')
-            ->assertDontSee('Keluar');
+            ->assertDontSee('Token Listrik');
     }
 
     public function test_item_menu_muncul_setelah_route_didaftarkan(): void
@@ -107,11 +106,8 @@ class MenuSidebarTest extends TestCase
             ->assertSee('PH');
     }
 
-    public function test_tombol_keluar_muncul_kalau_route_logout_ada(): void
+    public function test_tombol_keluar_mengarah_ke_route_logout(): void
     {
-        Route::post('/logout', fn () => 'ok')->name('logout');
-        Route::getRoutes()->refreshNameLookups();
-
         $this->renderLayout()
             ->assertSee('Keluar')
             ->assertSee('action="'.route('logout').'"', false);
