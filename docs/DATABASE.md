@@ -114,7 +114,7 @@ Cast wajib: `tanggal`, `tanggal_beli` → `date`; `dicatat_pada` → `datetime`;
 ## Isi `config/wattkost.php` (dibuat P4, dipakai semua)
 ```php
 return [
-    'kategori_alat' => ['Pendingin', 'Dapur', 'Elektronik', 'Pencahayaan', 'Perawatan Diri', 'Lainnya'],
+    'kategori_alat' => ['Pendingin', 'Dapur', 'Elektronik', 'Penerangan', 'Rumah Tangga', 'Lainnya'],
     'golongan_tarif' => [ // tarif PLN berlaku Okt 2026 (sumber: PLN/ESDM, cek ulang tiap triwulan)
         'R-1/TR 450 VA (subsidi)'  => ['daya_va' => 450,  'tarif' => 415.00],
         'R-1/TR 900 VA (subsidi)'  => ['daya_va' => 900,  'tarif' => 605.00],
@@ -131,7 +131,7 @@ return [
 ## Data seeder (Minggu 1)
 - 1 admin: `admin@wattkost.test` / `password`; 2 penghuni: `penghuni1@wattkost.test`, `penghuni2@wattkost.test` / `password` (hanya lokal!)
 - `KatalogAlatSeeder`: ±20 alat umum kost (Kipas angin 45 W, Rice cooker 350 W, Charger HP 15 W, Laptop 65 W, Lampu LED 10 W, Kulkas mini 75 W, Setrika 350 W, Dispenser 350 W, AC 1/2 PK 400 W, Hair dryer 600 W, Magic com warmer 40 W, TV LED 32" 50 W, Router WiFi 10 W, ...)
-- `TipsHematSeeder`: ±10 tips (minimal 1 per kategori + 2 Umum)
+- `TipsHematSeeder`: 11 tips (minimal 1 per kategori — dicek `DatabaseSeederTest` — + 4 Umum)
 - Seeder modul (`AlatListrikSeeder`, `PemakaianHarianSeeder` 30 hari terakhir, `TokenSeeder`, `SisaKwhSeeder` 14 hari terakhir) untuk `penghuni1` agar halaman analisis punya data demo.
 
 ## Entitas ERD proposal yang TIDAK dijadikan tabel di Sprint 1

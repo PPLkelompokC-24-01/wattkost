@@ -59,8 +59,42 @@
  * tetap bisa menimpanya (CSS di luar layer selalu menang di Tailwind v4).
  */
 @layer base {
+    /* Kontrol bawaan browser (daftar pilihan select, kalender input date, scrollbar) ikut tema gelap. */
+    :root {
+        color-scheme: dark;
+    }
+
     * {
         box-sizing: border-box;
+    }
+
+    /*
+     * Daftar pilihan <select>: tanpa ini sebagian browser memakai latar putih bawaan
+     * sementara teks option ikut putih (tidak terbaca). Warna solid, bukan *-soft (transparan),
+     * karena popup option digambar di atas latar bawaan browser.
+     */
+    select option,
+    select optgroup {
+        background-color: var(--color-raised);
+        color: white;
+    }
+
+    select option:checked {
+        background-color: var(--color-deep);
+    }
+
+    select option:disabled {
+        color: var(--color-disabled);
+    }
+
+    /* Ikon kalender input date/datetime-local: sudah terang karena color-scheme dark, dibuat jelas bisa diklik. */
+    input::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.75;
+    }
+
+    input::-webkit-calendar-picker-indicator:hover {
+        opacity: 1;
     }
 
     body {
@@ -71,7 +105,9 @@
     }
 
     button,
-    input {
+    input,
+    select,
+    textarea {
         font: inherit;
     }
 

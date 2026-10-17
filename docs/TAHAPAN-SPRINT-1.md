@@ -60,7 +60,7 @@ Karena itu `KonsumsiService` dikerjakan lebih awal (diimplementasikan di Tahap 2
 
 | Siapa | Tugas | Selesai kalau |
 |---|---|---|
-| Semua (8 orang) | Pasang PHP ≥ 8.3 (Herd/Laragon), Composer, Node 22, Git, Claude Code. `git config --global core.autocrlf input`. Buat akun GitHub kalau belum. | Kirim screenshot `php -v`, `node -v`, `claude --version` di grup |
+| Semua (8 orang) | Pasang PHP ≥ 8.2 (XAMPP/Laragon), Composer, Node 22, Git, Claude Code. `git config --global core.autocrlf input`. Buat akun GitHub kalau belum. | Kirim screenshot `php -v`, `node -v`, `claude --version` di grup |
 | PM Habiebie | Buat repo **publik** `wattkost` di GitHub, undang 7 anggota, buat GitHub Project (papan Kanban: Todo / Doing / Review / Done) berisi 12 PBI + fondasi | Semua anggota menerima undangan |
 | P4 Puti + Tika | `composer create-project laravel/laravel` → pasang paket (Boost, DomPDF, Chart.js) → salin paket starter (CLAUDE.md, .mcp.json, .claude/, .github/, docs/) → `.gitattributes`, `.gitignore`, `.env.example` → push ke `main`, buat branch `develop` | PR **F1** di-merge |
 | PM + SM Reysha | Pasang branch protection `main` & `develop` (lihat `GIT-WORKFLOW.md`) — **setelah** F1 masuk | Push langsung ke `develop` ditolak |

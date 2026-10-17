@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class KomponenUiTest extends TestCase
@@ -175,6 +176,163 @@ class KomponenUiTest extends TestCase
         $this->blade('<x-empty-state judul="Belum ada alat" href="/alat/create" aksi="Tambah" />')
             ->assertSee('Belum ada alat')
             ->assertSee('href="/alat/create"', false);
+    }
+
+    public function test_form_modal_menangani_csrf_method_dan_penanda_form(): void
+    {
+        $html = (string) $this->blade('<x-form-modal id="m-ubah" title="Ubah" action="/alat/1" method="put" form="ubah">Isi</x-form-modal>');
+
+        $this->assertStringContainsString('<form id="m-ubah-form" method="POST" action="/alat/1"', $html);
+        $this->assertStringContainsString('name="_token"', $html);
+        $this->assertStringContainsString('name="_method" value="PUT"', $html);
+        $this->assertStringContainsString('name="_form" value="ubah"', $html);
+        $this->assertStringContainsString('form="m-ubah-form"', $html);
+        $this->assertStringNotContainsString('data-buka-otomatis', $html);
+
+        $tambah = (string) $this->blade('<x-form-modal id="m-tambah" title="Tambah" action="/alat">Isi</x-form-modal>');
+        $this->assertStringNotContainsString('name="_method"', $tambah);
+        $this->assertStringContainsString('name="_form" value="tambah"', $tambah);
+    }
+
+    public function test_form_modal_terbuka_kalau_diminta(): void
+    {
+        $this->blade('<x-form-modal id="m" title="Ubah" action="/x" form="ubah" buka>Isi</x-form-modal>')
+            ->assertSee('data-buka-otomatis', false);
+    }
+
+    public function test_empty_state_bisa_membuka_modal(): void
+    {
+        $this->blade('<x-empty-state judul="Belum ada alat" modal="modal-tambah" aksi="+ Tambah" />')
+            ->assertSee('data-buka-modal="modal-tambah"', false)
+            ->assertDontSee('href=', false);
+    }
+
+    public function test_contoh_crud_menampilkan_daftar_dan_modal_tambah_tertutup(): void
+    {
+        $this->get(route('dev.komponen'))
+            ->assertOk()
+            ->assertSee('Contoh CRUD')
+            ->assertSee('Rice cooker')
+            ->assertSee('id="modal-tambah-contoh"', false)
+            ->assertDontSee('id="modal-ubah-contoh"', false);
+    }
+
+    public function test_contoh_crud_parameter_ubah_membuka_modal_ubah_berisi_data(): void
+    {
+        $html = $this->get(route('dev.komponen', ['ubah' => 2]))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<dialog id="modal-ubah-contoh"[^>]*data-buka-otomatis/', $html);
+        $this->assertStringContainsString('action="'.route('dev.contoh.update', 2).'"', $html);
+        $this->assertStringContainsString('value="Rice cooker"', $html);
+    }
+
+    public function test_contoh_crud_parameter_ubah_yang_tidak_ada_404(): void
+    {
+        $this->get(route('dev.komponen', ['ubah' => 99]))->assertNotFound();
+    }
+
+    public function test_contoh_crud_simpan_tidak_valid_kembali_dengan_error_dan_penanda_form(): void
+    {
+        $this->from(route('dev.komponen'))
+            ->post(route('dev.contoh.store'), ['_form' => 'tambah', 'nama_alat' => '', 'daya_watt' => 0])
+            ->assertRedirect(route('dev.komponen'))
+            ->assertSessionHasErrors(['nama_alat', 'kategori', 'daya_watt'])
+            ->assertSessionHasInput('_form', 'tambah');
+
+        $html = $this->get(route('dev.komponen'))->assertSee('Kolom nama alat wajib diisi.')->getContent();
+        $this->assertMatchesRegularExpression('/<dialog id="modal-tambah-contoh"[^>]*data-buka-otomatis/', $html);
+    }
+
+    public function test_contoh_crud_ubah_tidak_valid_membuka_modal_ubah_bukan_modal_tambah(): void
+    {
+        $halamanUbah = route('dev.komponen', ['ubah' => 1]);
+
+        $this->from($halamanUbah)
+            ->put(route('dev.contoh.update', 1), ['_form' => 'ubah', 'nama_alat' => 'Kipas baru', 'daya_watt' => ''])
+            ->assertRedirect($halamanUbah)
+            ->assertSessionHasErrors('daya_watt');
+
+        $html = $this->get($halamanUbah)->getContent();
+        $this->assertMatchesRegularExpression('/<dialog id="modal-ubah-contoh"[^>]*data-buka-otomatis/', $html);
+        $this->assertDoesNotMatchRegularExpression('/<dialog id="modal-tambah-contoh"[^>]*data-buka-otomatis/', $html);
+        $this->assertStringContainsString('value="Kipas baru"', $html); // old() menang atas data asli
+    }
+
+    public function test_contoh_crud_simpan_ubah_dan_hapus_valid(): void
+    {
+        $data = ['nama_alat' => 'Setrika', 'kategori' => 'Rumah Tangga', 'daya_watt' => 350];
+
+        $this->post(route('dev.contoh.store'), $data)
+            ->assertRedirect(route('dev.komponen').'#contoh-crud')
+            ->assertSessionHas('sukses');
+        $this->put(route('dev.contoh.update', 1), $data)->assertSessionHas('sukses');
+        $this->put(route('dev.contoh.update', 99), $data)->assertNotFound();
+        $this->delete(route('dev.contoh.destroy', 3))->assertSessionHas('sukses');
+    }
+
+    public function test_pilih_bulan_menampilkan_12_bulan_terakhir_dan_menandai_pilihan(): void
+    {
+        Carbon::setTestNow('2026-10-17');
+
+        $html = $this->get(route('dev.komponen', ['bulan' => '2026-08', 'tab' => 'harian']))->getContent();
+
+        $this->assertMatchesRegularExpression('/<option value="2026-08" selected>\s*Agustus 2026/', $html);
+        $this->assertStringContainsString('Oktober 2026', $html);
+        $this->assertStringContainsString('value="2025-11"', $html);   // bulan ke-12 ke belakang
+        $this->assertStringNotContainsString('value="2025-10"', $html);
+        $this->assertStringNotContainsString('value="2026-11"', $html);
+        $this->assertStringContainsString('data-kirim-otomatis', $html);
+        $this->assertStringContainsString('<input type="hidden" name="tab" value="harian">', $html);
+    }
+
+    public function test_pilih_bulan_nilai_masa_depan_menandai_bulan_berjalan(): void
+    {
+        Carbon::setTestNow('2026-10-17');
+
+        $this->get(route('dev.komponen', ['bulan' => '2027-01']))
+            ->assertSee('<option value="2026-10" selected>', false);
+    }
+
+    public function test_chart_mengirim_data_lewat_atribut_json(): void
+    {
+        $html = (string) $this->blade(
+            '<x-chart type="bar" :labels="$labels" :datasets="$datasets" :tinggi="240" satuan="kWh" />',
+            ['labels' => ['Sep', 'Okt'], 'datasets' => [['label' => 'Pemakaian', 'data' => ['a' => 94.4, 'b' => 86.4]]]],
+        );
+
+        $this->assertStringContainsString('style="height: 240px"', $html);
+        preg_match('/data-chart="([^"]+)"/', $html, $cocok);
+        $this->assertSame([
+            'type' => 'bar',
+            'labels' => ['Sep', 'Okt'],
+            'datasets' => [['label' => 'Pemakaian', 'data' => [94.4, 86.4]]], // kunci array dibuang
+            'satuan' => 'kWh',
+        ], json_decode(html_entity_decode($cocok[1]), true));
+    }
+
+    public function test_chart_tipe_tidak_dikenal_jadi_garis(): void
+    {
+        $this->blade('<x-chart type="pie" :labels="[\'A\']" :datasets="[[\'label\' => \'X\', \'data\' => [1]]]" />')
+            ->assertSee('&quot;type&quot;:&quot;line&quot;', false)
+            ->assertSee('Grafik garis: X');
+    }
+
+    public function test_chart_data_kosong_menampilkan_empty_state(): void
+    {
+        $this->blade('<x-chart :labels="[]" :datasets="[]" kosong="Catat pemakaian dulu." />')
+            ->assertDontSee('data-chart', false)
+            ->assertSee('Belum ada data')
+            ->assertSee('Catat pemakaian dulu.');
+
+        $this->blade('<x-chart :labels="[\'Okt\']" :datasets="[[\'label\' => \'X\', \'data\' => []]]" />')
+            ->assertDontSee('data-chart', false);
+    }
+
+    public function test_halaman_komponen_memuat_contoh_grafik(): void
+    {
+        $this->get(route('dev.komponen'))
+            ->assertSee('data-chart=', false)
+            ->assertSee('Catat pemakaian alat untuk melihat grafik.');
     }
 
     public function test_page_header_kosong_tidak_dirender(): void

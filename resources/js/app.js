@@ -23,6 +23,17 @@ document.querySelectorAll('[data-buka-modal]').forEach((tombol) => {
     tombol.addEventListener('click', () => document.getElementById(tombol.dataset.bukaModal)?.showModal());
 });
 
+// Grafik (<x-chart>): Chart.js (resources/js/grafik.js) hanya dimuat kalau halaman punya [data-chart].
+const kanvasGrafik = document.querySelectorAll('[data-chart]');
+if (kanvasGrafik.length) {
+    import('./grafik').then(({ gambarSemuaGrafik }) => gambarSemuaGrafik(kanvasGrafik));
+}
+
+// Filter otomatis: <select data-kirim-otomatis> mengirim form-nya saat pilihan berubah (<x-pilih-bulan>).
+document.querySelectorAll('[data-kirim-otomatis]').forEach((el) => {
+    el.addEventListener('change', () => el.form?.requestSubmit());
+});
+
 document.querySelectorAll('dialog').forEach((dialog) => {
     dialog.addEventListener('click', (e) => {
         if (e.target === dialog) dialog.close();
