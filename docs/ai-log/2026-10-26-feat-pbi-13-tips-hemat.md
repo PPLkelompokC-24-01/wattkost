@@ -194,3 +194,19 @@ Lalu jalankan php artisan test --filter=TipsHemat dan php artisan test
 /cek-sebelum-pr
 ```
 
+## 20:57 — kartyka
+
+```text
+<pasted_content id="c826">
+Sekarang aku sudah di feat/pbi-13-tips-hemat dan git merge
+origin/develop sedang berjalan dengan konflik di
+routes/modules/admin.php. Hasil akhir yang kamu tunjukkan tadi
+(dua use: KatalogAlatController + TipsHematController, dua
+Route::resource katalog + tips, baris Puti tidak diubah) sudah aku
+setujui. Selesaikan konfliknya persis seperti itu, pastikan tidak ada
+sisa <<<<<<< ======= >>>>>>>, lalu jalankan
+php artisan route:list --name=admin dan php artisan test.
+Tunjukkan isi akhir file dan hasilnya. Jangan commit, biar aku yang commit.
+</pasted_content id="c826">
+```
+
