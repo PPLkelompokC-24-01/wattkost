@@ -29,12 +29,7 @@
             <x-card :title="'Input Jam Pemakaian · '.$tanggal->translatedFormat('d M Y')" class="lg:col-span-2 min-w-0">
                 @if ($jamTercatat->isNotEmpty())
                     <x-slot:action>
-                        <form method="POST" action="{{ route('pemakaian.destroy', $tanggal->toDateString()) }}"
-                            onsubmit="return confirm(@js('Yakin hapus semua catatan pemakaian tanggal '.$tanggal->translatedFormat('d M Y').'?'))">
-                            @csrf
-                            @method('DELETE')
-                            <x-button small variant="danger" type="submit">Hapus</x-button>
-                        </form>
+                        @include('pemakaian.partials.tombol-hapus', ['tanggal' => $tanggal])
                     </x-slot:action>
                 @endif
                 {{-- Tombol Simpan ada di page header (form="form-pemakaian"), sesuai desain --}}
@@ -77,6 +72,28 @@
                     <span class="text-sm font-medium">Total Jam Pemakaian</span>
                     <span class="text-lg font-bold tabular-nums" data-total-jam>{{ angka($jamTercatat->sum()) }} jam</span>
                 </div>
+            </x-card>
+
+            {{-- Hari ini − 6 s.d. hari ini, hanya tanggal yang punya catatan. Kolom kWh menyusul setelah KonsumsiService merge. --}}
+            <x-card title="Riwayat 7 Hari" class="min-w-0">
+                @forelse ($riwayat as $hari => $totalJam)
+                    @php($tanggalRiwayat = \Illuminate\Support\Carbon::parse($hari))
+                    <div class="flex items-center justify-between gap-3 py-3 border-b border-line last:border-0 text-sm">
+                        <div class="min-w-0">
+                            <p @class(['font-medium', 'text-aqua' => $tanggalRiwayat->isSameDay($tanggal)])>
+                                {{ $tanggalRiwayat->translatedFormat('d M') }}
+                            </p>
+                            <p class="text-mute tabular-nums">{{ angka($totalJam) }} jam</p>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <x-button small variant="secondary" :href="route('pemakaian.index', ['tanggal' => $hari])">Ubah</x-button>
+                            @include('pemakaian.partials.tombol-hapus', ['tanggal' => $tanggalRiwayat])
+                        </div>
+                    </div>
+                @empty
+                    <x-empty-state judul="Belum ada riwayat" pesan="Belum ada catatan pemakaian dalam 7 hari terakhir."
+                        icon="calendar" class="py-6" />
+                @endforelse
             </x-card>
         </div>
 

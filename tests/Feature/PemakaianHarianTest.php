@@ -247,15 +247,57 @@ class PemakaianHarianTest extends TestCase
 
     public function test_halaman_tidak_menampilkan_data_user_lain(): void
     {
-        AlatListrik::factory()->for($this->penghuni)->create(['nama_alat' => 'Laptop']);
+        $laptop = AlatListrik::factory()->for($this->penghuni)->create(['nama_alat' => 'Laptop']);
+        PemakaianHarian::factory()->for($this->penghuni)->for($laptop)
+            ->create(['tanggal' => Carbon::parse('2026-10-13'), 'jam_pakai' => 2]);
         $alatLain = AlatListrik::factory()->create(['nama_alat' => 'AC Tetangga']);
-        PemakaianHarian::factory()->for($alatLain->user)->for($alatLain)
-            ->create(['tanggal' => today(), 'jam_pakai' => 7.75]);
+        foreach (['2026-10-14' => 7.75, '2026-10-13' => 5, '2026-10-11' => 9.5] as $tanggal => $jam) {
+            PemakaianHarian::factory()->for($alatLain->user)->for($alatLain)
+                ->create(['tanggal' => Carbon::parse($tanggal), 'jam_pakai' => $jam]);
+        }
 
         $this->actingAs($this->penghuni)->get(route('pemakaian.index'))
             ->assertOk()
+            // input jam tanggal terpilih
             ->assertDontSee('AC Tetangga')
             ->assertDontSee('7.75')
-            ->assertSee('0,00 jam');
+            ->assertSee('0,00 jam')
+            // riwayat: tanggal 13 hanya jam milik sendiri (bukan 2 + 5), tanggal 11 & 14 milik orang lain tidak muncul
+            ->assertSee('2,00 jam')
+            ->assertDontSee('7,00 jam')
+            ->assertDontSee('9,50 jam')
+            ->assertDontSee('7,75 jam')
+            ->assertDontSee(route('pemakaian.index', ['tanggal' => '2026-10-11']))
+            ->assertDontSee(route('pemakaian.destroy', '2026-10-14'));
+    }
+
+    public function test_riwayat_7_hari_muncul(): void
+    {
+        $kipas = AlatListrik::factory()->for($this->penghuni)->create();
+        $laptop = AlatListrik::factory()->for($this->penghuni)->create();
+        $catat = fn (AlatListrik $alat, string $tanggal, float $jam) => PemakaianHarian::factory()
+            ->for($this->penghuni)->for($alat)->create(['tanggal' => Carbon::parse($tanggal), 'jam_pakai' => $jam]);
+
+        $catat($kipas, '2026-10-14', 8);
+        $catat($laptop, '2026-10-14', 4.25);   // 14 Okt: 8 + 4,25 = 12,25 jam
+        $catat($kipas, '2026-10-08', 6.5);     // hari ini − 6 → masih masuk
+        $catat($kipas, '2026-10-07', 3.75);    // hari ini − 7 → tidak masuk
+
+        // Rentang selalu berakhir di hari ini, walau tanggal terpilih tanggal lama.
+        $this->actingAs($this->penghuni)->get(route('pemakaian.index', ['tanggal' => '2026-10-01']))
+            ->assertOk()
+            ->assertSeeInOrder(['Riwayat 7 Hari', '14 Okt', '12,25 jam', '08 Okt', '6,50 jam'])
+            ->assertSee(route('pemakaian.index', ['tanggal' => '2026-10-08']))      // tautan ubah
+            ->assertSee(route('pemakaian.destroy', '2026-10-08'))                   // tombol hapus
+            ->assertDontSee('3,75 jam')
+            ->assertDontSee(route('pemakaian.index', ['tanggal' => '2026-10-07']));
+    }
+
+    public function test_riwayat_kosong_menampilkan_pesan(): void
+    {
+        AlatListrik::factory()->for($this->penghuni)->create();
+
+        $this->actingAs($this->penghuni)->get(route('pemakaian.index'))
+            ->assertSee('Belum ada catatan pemakaian dalam 7 hari terakhir.');
     }
 }

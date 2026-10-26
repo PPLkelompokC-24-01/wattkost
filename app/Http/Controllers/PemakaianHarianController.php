@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PemakaianHarian\StorePemakaianHarianRequest;
+use App\Models\PemakaianHarian;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -24,6 +27,7 @@ class PemakaianHarianController extends Controller
             'daftarAlat' => $user->alatListrik()->orderBy('nama_alat')->get(),
             // [alat_listrik_id => jam_pakai] untuk mengisi nilai lama (UC-02 A1)
             'jamTercatat' => $user->pemakaianHarian()->whereDate('tanggal', $tanggal)->pluck('jam_pakai', 'alat_listrik_id'),
+            'riwayat' => $this->riwayatTujuhHari($user),
         ]);
     }
 
@@ -56,6 +60,22 @@ class PemakaianHarianController extends Controller
 
         return redirect()->route('pemakaian.index', ['tanggal' => $hari->toDateString()])
             ->with('sukses', 'Catatan pemakaian tanggal '.$hari->translatedFormat('d M Y').' dihapus.');
+    }
+
+    /**
+     * Total jam per tanggal, hari ini − 6 s.d. hari ini, terbaru dulu: ['2026-10-14' => 27.5, ...].
+     * Hanya tanggal yang punya catatan. Dijumlah di PHP (bukan GROUP BY tanggal) supaya sama di MySQL & SQLite.
+     *
+     * @return Collection<string, float>
+     */
+    private function riwayatTujuhHari(User $user): Collection
+    {
+        return $user->pemakaianHarian()
+            ->whereBetween('tanggal', [today()->subDays(6), today()->endOfDay()])
+            ->get(['tanggal', 'jam_pakai'])
+            ->groupBy(fn (PemakaianHarian $catatan) => $catatan->tanggal->toDateString())
+            ->map(fn (Collection $catatan) => (float) $catatan->sum('jam_pakai'))
+            ->sortKeysDesc();
     }
 
     /** "2026-10-14" → Carbon 00:00; null kalau bukan tanggal Y-m-d yang benar (mis. 2026-02-31). */
