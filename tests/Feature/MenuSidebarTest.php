@@ -40,20 +40,24 @@ class MenuSidebarTest extends TestCase
 
     public function test_item_menu_tersembunyi_kalau_route_belum_ada(): void
     {
+        // Pakai menu Sprint 2 (Dashboard = PBI 10, Laporan = PBI 14) yang route-nya
+        // belum ada, supaya test tidak merah setiap kali PBI Sprint 1 di-merge.
         $this->renderLayout()
             ->assertSee('Menu Utama')
-            ->assertDontSee('Alat Listrik')
-            ->assertDontSee('Token Listrik');
+            ->assertDontSee('Dashboard')
+            ->assertDontSee('Laporan');
     }
 
     public function test_item_menu_muncul_setelah_route_didaftarkan(): void
     {
         $this->daftarkanRoute(['alat.index' => '/alat-listrik']);
 
+        // Pakai menu Sprint 2 (Laporan = PBI 14) yang route-nya belum ada,
+        // supaya test tidak merah setiap kali PBI Sprint 1 di-merge.
         $this->renderLayout()
             ->assertSee('Alat Listrik')
             ->assertSee('href="'.route('alat.index').'"', false)
-            ->assertDontSee('Token Listrik');
+            ->assertDontSee('Laporan');
     }
 
     public function test_item_aktif_juga_untuk_halaman_anak(): void
