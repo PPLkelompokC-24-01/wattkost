@@ -28,7 +28,114 @@ class PemakaianHarianTest extends TestCase
 
     public function test_tamu_diarahkan_ke_login(): void
     {
+        $alat = AlatListrik::factory()->create();
+
         $this->get(route('pemakaian.index'))->assertRedirect(route('login'));
+        $this->post(route('pemakaian.store'), ['tanggal' => '2026-10-14', 'jam' => [$alat->id => 3]])
+            ->assertRedirect(route('login'));
+        $this->assertDatabaseCount('pemakaian_harian', 0);
+    }
+
+    public function test_simpan_data_valid(): void
+    {
+        $kipas = AlatListrik::factory()->for($this->penghuni)->create();
+        $laptop = AlatListrik::factory()->for($this->penghuni)->create();
+
+        $this->actingAs($this->penghuni)
+            ->post(route('pemakaian.store'), ['tanggal' => '2026-10-13', 'jam' => [$kipas->id => 8, $laptop->id => 5.25]])
+            ->assertRedirect(route('pemakaian.index', ['tanggal' => '2026-10-13']))
+            ->assertSessionHas('sukses', 'Pemakaian tanggal 13 Okt 2026 berhasil disimpan.');
+
+        $this->assertEquals(8, $this->jamTercatat($kipas, '2026-10-13'));
+        $this->assertEquals(5.25, $this->jamTercatat($laptop, '2026-10-13'));
+        $this->assertSame($this->penghuni->id, PemakaianHarian::first()->user_id);
+    }
+
+    public function test_simpan_data_tidak_valid_menampilkan_error(): void
+    {
+        $alat = AlatListrik::factory()->for($this->penghuni)->create();
+
+        $this->actingAs($this->penghuni)->from(route('pemakaian.index'))
+            ->post(route('pemakaian.store'), ['tanggal' => '', 'jam' => [$alat->id => 'lama']])
+            ->assertRedirect(route('pemakaian.index'))
+            ->assertSessionHasErrors(['tanggal', "jam.{$alat->id}"])
+            ->assertSessionHasInput("jam.{$alat->id}", 'lama');
+
+        $this->assertDatabaseCount('pemakaian_harian', 0);
+    }
+
+    public function test_tidak_bisa_mengakses_data_user_lain(): void
+    {
+        $alatSaya = AlatListrik::factory()->for($this->penghuni)->create();
+        $alatLain = AlatListrik::factory()->create();
+
+        $this->actingAs($this->penghuni)
+            ->post(route('pemakaian.store'), ['tanggal' => '2026-10-14', 'jam' => [$alatSaya->id => 2, $alatLain->id => 5]])
+            ->assertSessionHasErrors('jam');
+
+        // seluruh simpanan ditolak, termasuk jam untuk alat sendiri
+        $this->assertDatabaseCount('pemakaian_harian', 0);
+    }
+
+    public function test_simpan_ulang_tanggal_sama_mengupdate_bukan_menambah(): void
+    {
+        $alat = AlatListrik::factory()->for($this->penghuni)->create();
+        PemakaianHarian::factory()->for($this->penghuni)->for($alat)
+            ->create(['tanggal' => Carbon::parse('2026-10-14'), 'jam_pakai' => 3]);
+
+        $this->actingAs($this->penghuni)
+            ->post(route('pemakaian.store'), ['tanggal' => '2026-10-14', 'jam' => [$alat->id => 4.5]])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('pemakaian_harian', 1);
+        $this->assertEquals(4.5, $this->jamTercatat($alat, '2026-10-14'));
+    }
+
+    public function test_jam_kosong_atau_nol_menghapus_catatan_lama(): void
+    {
+        $kipas = AlatListrik::factory()->for($this->penghuni)->create();
+        $laptop = AlatListrik::factory()->for($this->penghuni)->create();
+        foreach ([$kipas, $laptop] as $alat) {
+            PemakaianHarian::factory()->for($this->penghuni)->for($alat)
+                ->create(['tanggal' => Carbon::parse('2026-10-14'), 'jam_pakai' => 3]);
+        }
+
+        $this->actingAs($this->penghuni)
+            ->post(route('pemakaian.store'), ['tanggal' => '2026-10-14', 'jam' => [$kipas->id => 0, $laptop->id => null]])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('pemakaian_harian', 0);
+    }
+
+    public function test_jam_lebih_dari_24_ditolak(): void
+    {
+        $alat = AlatListrik::factory()->for($this->penghuni)->create();
+
+        foreach ([24.25, -1] as $jam) {
+            $this->actingAs($this->penghuni)
+                ->post(route('pemakaian.store'), ['tanggal' => '2026-10-14', 'jam' => [$alat->id => $jam]])
+                ->assertSessionHasErrors("jam.{$alat->id}");
+        }
+
+        $this->assertDatabaseCount('pemakaian_harian', 0);
+    }
+
+    public function test_tanggal_masa_depan_ditolak(): void
+    {
+        $alat = AlatListrik::factory()->for($this->penghuni)->create();
+
+        $this->actingAs($this->penghuni)
+            ->post(route('pemakaian.store'), ['tanggal' => '2026-10-15', 'jam' => [$alat->id => 3]])
+            ->assertSessionHasErrors(['tanggal' => 'Tanggal tidak boleh melewati hari ini.']);
+
+        $this->assertDatabaseCount('pemakaian_harian', 0);
+    }
+
+    private function jamTercatat(AlatListrik $alat, string $tanggal): ?float
+    {
+        $jam = $alat->pemakaianHarian()->whereDate('tanggal', Carbon::parse($tanggal))->value('jam_pakai');
+
+        return $jam === null ? null : (float) $jam;
     }
 
     public function test_halaman_tampil_untuk_penghuni(): void

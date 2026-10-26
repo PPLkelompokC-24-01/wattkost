@@ -13,4 +13,5 @@ Route::middleware('auth')->group(function () {
 
     // PBI-02: satu halaman per tanggal (?tanggal=YYYY-MM-DD)
     Route::get('pemakaian', [PemakaianHarianController::class, 'index'])->name('pemakaian.index');
+    Route::post('pemakaian', [PemakaianHarianController::class, 'store'])->name('pemakaian.store');
 });

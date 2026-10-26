@@ -6,7 +6,17 @@
                 aria-label="Pilih tanggal" data-kirim-otomatis />
             <noscript><x-button type="submit" variant="secondary" small>Tampilkan</x-button></noscript>
         </form>
+        @if ($daftarAlat->isNotEmpty())
+            <x-button type="submit" form="form-pemakaian">Simpan</x-button>
+        @endif
     </x-page-header>
+
+    {{-- Error yang tidak menempel ke satu baris alat (tanggal, alat bukan milik user) --}}
+    @foreach (['tanggal', 'jam'] as $kolom)
+        @error($kolom)
+            <x-alert tone="gagal" class="mb-6">{{ $message }}</x-alert>
+        @enderror
+    @endforeach
 
     @if ($daftarAlat->isEmpty())
         {{-- UC-02 A2 --}}
@@ -17,36 +27,41 @@
     @else
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <x-card :title="'Input Jam Pemakaian · '.$tanggal->translatedFormat('d M Y')" class="lg:col-span-2 min-w-0">
-                <x-table :head="['Alat', 'Daya', 'Jam Pakai/Hari']" :align="['l', 'r', 'l']">
-                    @foreach ($daftarAlat as $alat)
-                        @php
-                            $error = $errors->first("jam.{$alat->id}");
-                            $jamLama = isset($jamTercatat[$alat->id]) ? (float) $jamTercatat[$alat->id] : '';
-                        @endphp
-                        <tr>
-                            <td class="font-medium whitespace-nowrap">{{ $alat->nama_alat }}</td>
-                            <td class="text-right whitespace-nowrap">
-                                {{ angka($alat->daya_watt, 0) }} W{{ $alat->jumlah > 1 ? ' × '.$alat->jumlah : '' }}
-                            </td>
-                            <td class="py-2">
-                                <div @class([
-                                    'w-32 h-9 rounded-lg border px-3 flex items-center justify-between gap-2 focus-within:ring-4',
-                                    'border-line focus-within:border-aqua focus-within:ring-aqua-soft' => ! $error,
-                                    'border-coral focus-within:ring-coral-soft' => $error,
-                                ])>
-                                    <input type="number" name="jam[{{ $alat->id }}]" value="{{ old("jam.{$alat->id}", $jamLama) }}"
-                                        min="0" max="24" step="0.25" inputmode="decimal" placeholder="0" data-jam
-                                        aria-label="Jam pakai {{ $alat->nama_alat }}"
-                                        class="w-full min-w-0 bg-transparent text-white placeholder:text-mute focus:outline-none">
-                                    <span class="text-xs text-mute">jam</span>
-                                </div>
-                                @if ($error)
-                                    <span class="mt-1 block text-xs text-coral font-sans">{{ $error }}</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </x-table>
+                {{-- Tombol Simpan ada di page header (form="form-pemakaian"), sesuai desain --}}
+                <form id="form-pemakaian" method="POST" action="{{ route('pemakaian.store') }}">
+                    @csrf
+                    <input type="hidden" name="tanggal" value="{{ $tanggal->toDateString() }}">
+                    <x-table :head="['Alat', 'Daya', 'Jam Pakai/Hari']" :align="['l', 'r', 'l']">
+                        @foreach ($daftarAlat as $alat)
+                            @php
+                                $error = $errors->first("jam.{$alat->id}");
+                                $jamLama = isset($jamTercatat[$alat->id]) ? (float) $jamTercatat[$alat->id] : '';
+                            @endphp
+                            <tr>
+                                <td class="font-medium whitespace-nowrap">{{ $alat->nama_alat }}</td>
+                                <td class="text-right whitespace-nowrap">
+                                    {{ angka($alat->daya_watt, 0) }} W{{ $alat->jumlah > 1 ? ' × '.$alat->jumlah : '' }}
+                                </td>
+                                <td class="py-2">
+                                    <div @class([
+                                        'w-32 h-9 rounded-lg border px-3 flex items-center justify-between gap-2 focus-within:ring-4',
+                                        'border-line focus-within:border-aqua focus-within:ring-aqua-soft' => ! $error,
+                                        'border-coral focus-within:ring-coral-soft' => $error,
+                                    ])>
+                                        <input type="number" name="jam[{{ $alat->id }}]" value="{{ old("jam.{$alat->id}", $jamLama) }}"
+                                            min="0" max="24" step="0.25" inputmode="decimal" placeholder="0" data-jam
+                                            aria-label="Jam pakai {{ $alat->nama_alat }}"
+                                            class="w-full min-w-0 bg-transparent text-white placeholder:text-mute focus:outline-none">
+                                        <span class="text-xs text-mute">jam</span>
+                                    </div>
+                                    @if ($error)
+                                        <span class="mt-1 block text-xs text-coral font-sans">{{ $error }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </x-table>
+                </form>
 
                 <div class="mt-4 flex justify-between items-center gap-4 rounded-lg bg-wash p-4">
                     <span class="text-sm font-medium">Total Jam Pemakaian</span>
