@@ -67,3 +67,9 @@ Oke, lanjut tahap 4 (feature test semua skenario dari rencana).
 Setelah hijau, jalankan seluruh php artisan test dan pint.
 ```
 
+## 19:47 — Puti Azzahra Navita
+
+```text
+/cek-sebelum-pr
+```
+
