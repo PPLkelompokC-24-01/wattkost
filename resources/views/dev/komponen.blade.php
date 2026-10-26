@@ -109,9 +109,9 @@
             </div>
         </x-card>
 
-        <x-card title="Ikon (14)">
+        <x-card title="Ikon (15)">
             <div class="grid grid-cols-4 sm:grid-cols-7 gap-4 text-xs text-secondary">
-                @foreach (['bolt', 'home', 'plug', 'calendar', 'receipt', 'chart', 'target', 'trophy', 'file', 'building', 'bell', 'search', 'logout', 'leaf'] as $ikon)
+                @foreach (['bolt', 'home', 'plug', 'calendar', 'receipt', 'chart', 'target', 'trophy', 'file', 'building', 'bell', 'search', 'logout', 'leaf', 'users'] as $ikon)
                     <div class="flex flex-col items-center gap-2">
                         <span class="size-9 rounded-xl grid place-items-center bg-aqua-soft text-aqua">
                             <x-icon :name="$ikon" />

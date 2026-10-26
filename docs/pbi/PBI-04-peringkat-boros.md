@@ -1,5 +1,6 @@
 # PBI-04 Peringkat Peralatan Boros
-**Pasangan:** P3 · **UC:** UC-04 · **Mockup:** 05 Alat Paling Boros · **KF:** KF-04
+**Pasangan:** P1 (pindah dari P3, revisi 26 Okt) · **UC:** UC-04 · **Mockup:** 05 Alat Paling Boros · **KF:** KF-04
+**Serah terima:** `PeringkatAlatService` buatan P3 tetap dipakai; P3 me-merge PR service-nya apa adanya, lalu P1 membuat halaman (controller, view, feature test). Route ditulis di `routes/modules/alat.php`, nama route tetap `analisis.peringkat`. Lihat `REVISI-PBI-SPRINT-1.md` §3.
 **Bergantung pada:** `KonsumsiService::estimasiBulanan` (PBI 3). Sebelum PBI 3 merge: tulis service + test pakai *mock* `KonsumsiService` (`$this->mock(KonsumsiService::class, ...)`).
 
 ## Service: `PeringkatAlatService::peringkat(User, tahun, bulan, ?batas)`

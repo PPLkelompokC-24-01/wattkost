@@ -10,7 +10,7 @@ require __DIR__.'/modules/auth.php';
 
 Route::middleware('auth')->get('/beranda', BerandaController::class)->name('beranda');
 
-foreach (['alat', 'token', 'analisis', 'profil', 'admin', 'sprint2'] as $modul) {
+foreach (['alat', 'token', 'analisis', 'profil', 'admin', 'target', 'perbandingan', 'karbon', 'pengguna', 'sprint2'] as $modul) {
     require __DIR__."/modules/{$modul}.php";
 }
 
