@@ -12,4 +12,7 @@ return [
     ],
     'default_kwh_harian' => 3.0,   // fallback prediksi token (PBI 8 A2)
     'min_hari_data_prediksi' => 3, // minimal hari data agar rata-rata dianggap valid
+    // kg CO2 per kWh, sistem Jawa-Madura-Bali. Sumber: Kepmen ESDM No. 163.K/HK.02/MEM.S/2021
+    // (Faktor Emisi GRK Sistem Ketenagalistrikan, data 2019). Sementara; angka lampiran dicek P2 (PBI 24).
+    'faktor_emisi_default' => 0.87,
 ];
