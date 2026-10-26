@@ -47,6 +47,17 @@ class PemakaianHarianController extends Controller
             ->with('sukses', 'Pemakaian tanggal '.$tanggal->translatedFormat('d M Y').' berhasil disimpan.');
     }
 
+    /** Hapus semua catatan milik user login di satu tanggal (REVISI-PBI-SPRINT-1.md §4). */
+    public function destroy(Request $request, string $tanggal): RedirectResponse
+    {
+        $hari = $this->bacaTanggal($tanggal) ?? abort(404); // mis. 2026-02-31
+
+        $request->user()->pemakaianHarian()->whereDate('tanggal', $hari)->delete();
+
+        return redirect()->route('pemakaian.index', ['tanggal' => $hari->toDateString()])
+            ->with('sukses', 'Catatan pemakaian tanggal '.$hari->translatedFormat('d M Y').' dihapus.');
+    }
+
     /** "2026-10-14" → Carbon 00:00; null kalau bukan tanggal Y-m-d yang benar (mis. 2026-02-31). */
     private function bacaTanggal(mixed $nilai): ?Carbon
     {

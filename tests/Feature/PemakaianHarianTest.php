@@ -34,6 +34,10 @@ class PemakaianHarianTest extends TestCase
         $this->post(route('pemakaian.store'), ['tanggal' => '2026-10-14', 'jam' => [$alat->id => 3]])
             ->assertRedirect(route('login'));
         $this->assertDatabaseCount('pemakaian_harian', 0);
+
+        PemakaianHarian::factory()->for($alat->user)->for($alat)->create(['tanggal' => today()]);
+        $this->delete(route('pemakaian.destroy', '2026-10-14'))->assertRedirect(route('login'));
+        $this->assertDatabaseCount('pemakaian_harian', 1);
     }
 
     public function test_simpan_data_valid(): void
@@ -79,8 +83,10 @@ class PemakaianHarianTest extends TestCase
 
     public function test_simpan_ulang_tanggal_sama_mengupdate_bukan_menambah(): void
     {
+        // Catatan lama dibuat lewat factory (bukan POST), supaya terbukti updateOrCreate cocok dengan
+        // tanggal yang tersimpan di SQLite ("2026-10-14 00:00:00"), bukan hanya dengan buatannya sendiri.
         $alat = AlatListrik::factory()->for($this->penghuni)->create();
-        PemakaianHarian::factory()->for($this->penghuni)->for($alat)
+        $lama = PemakaianHarian::factory()->for($this->penghuni)->for($alat)
             ->create(['tanggal' => Carbon::parse('2026-10-14'), 'jam_pakai' => 3]);
 
         $this->actingAs($this->penghuni)
@@ -88,7 +94,7 @@ class PemakaianHarianTest extends TestCase
             ->assertSessionHasNoErrors();
 
         $this->assertDatabaseCount('pemakaian_harian', 1);
-        $this->assertEquals(4.5, $this->jamTercatat($alat, '2026-10-14'));
+        $this->assertEquals(4.5, $lama->fresh()->jam_pakai); // baris yang sama di-update, bukan dihapus lalu dibuat ulang
     }
 
     public function test_jam_kosong_atau_nol_menghapus_catatan_lama(): void
@@ -129,6 +135,62 @@ class PemakaianHarianTest extends TestCase
             ->assertSessionHasErrors(['tanggal' => 'Tanggal tidak boleh melewati hari ini.']);
 
         $this->assertDatabaseCount('pemakaian_harian', 0);
+    }
+
+    public function test_tombol_hapus_hanya_muncul_kalau_tanggal_itu_ada_catatan(): void
+    {
+        $alat = AlatListrik::factory()->for($this->penghuni)->create();
+        PemakaianHarian::factory()->for($this->penghuni)->for($alat)
+            ->create(['tanggal' => Carbon::parse('2026-10-14'), 'jam_pakai' => 3]);
+
+        $this->actingAs($this->penghuni)->get(route('pemakaian.index'))
+            ->assertSee(route('pemakaian.destroy', '2026-10-14'));
+        $this->actingAs($this->penghuni)->get(route('pemakaian.index', ['tanggal' => '2026-10-13']))
+            ->assertDontSee(route('pemakaian.destroy', '2026-10-13'));
+    }
+
+    public function test_hapus_catatan_satu_tanggal(): void
+    {
+        $kipas = AlatListrik::factory()->for($this->penghuni)->create();
+        $laptop = AlatListrik::factory()->for($this->penghuni)->create();
+        foreach ([$kipas, $laptop] as $alat) {
+            PemakaianHarian::factory()->for($this->penghuni)->for($alat)
+                ->create(['tanggal' => Carbon::parse('2026-10-14'), 'jam_pakai' => 3]);
+        }
+        $kemarin = PemakaianHarian::factory()->for($this->penghuni)->for($kipas)
+            ->create(['tanggal' => Carbon::parse('2026-10-13'), 'jam_pakai' => 5]);
+
+        $this->actingAs($this->penghuni)->delete(route('pemakaian.destroy', '2026-10-14'))
+            ->assertRedirect(route('pemakaian.index', ['tanggal' => '2026-10-14']))
+            ->assertSessionHas('sukses', 'Catatan pemakaian tanggal 14 Okt 2026 dihapus.');
+
+        // hanya tanggal 14 yang terhapus; catatan tanggal 13 tetap ada
+        $this->assertDatabaseCount('pemakaian_harian', 1);
+        $this->assertModelExists($kemarin);
+    }
+
+    public function test_hapus_tidak_menyentuh_data_user_lain(): void
+    {
+        $alatSaya = AlatListrik::factory()->for($this->penghuni)->create();
+        PemakaianHarian::factory()->for($this->penghuni)->for($alatSaya)->create(['tanggal' => Carbon::parse('2026-10-14')]);
+        $alatLain = AlatListrik::factory()->create();
+        $catatanLain = PemakaianHarian::factory()->for($alatLain->user)->for($alatLain)
+            ->create(['tanggal' => Carbon::parse('2026-10-14')]);
+
+        $this->actingAs($this->penghuni)->delete(route('pemakaian.destroy', '2026-10-14'))
+            ->assertRedirect();
+
+        $this->assertDatabaseCount('pemakaian_harian', 1);
+        $this->assertModelExists($catatanLain);
+    }
+
+    public function test_hapus_tanggal_tidak_valid_404(): void
+    {
+        $this->actingAs($this->penghuni);
+
+        $this->delete(route('pemakaian.destroy', '2026-02-31'))->assertNotFound(); // format benar, tanggal tidak ada
+        $this->delete('/pemakaian/kemarin')->assertNotFound();                     // ditolak pola route
+        $this->delete('/pemakaian/14-10-2026')->assertNotFound();
     }
 
     private function jamTercatat(AlatListrik $alat, string $tanggal): ?float

@@ -27,6 +27,16 @@
     @else
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <x-card :title="'Input Jam Pemakaian · '.$tanggal->translatedFormat('d M Y')" class="lg:col-span-2 min-w-0">
+                @if ($jamTercatat->isNotEmpty())
+                    <x-slot:action>
+                        <form method="POST" action="{{ route('pemakaian.destroy', $tanggal->toDateString()) }}"
+                            onsubmit="return confirm(@js('Yakin hapus semua catatan pemakaian tanggal '.$tanggal->translatedFormat('d M Y').'?'))">
+                            @csrf
+                            @method('DELETE')
+                            <x-button small variant="danger" type="submit">Hapus</x-button>
+                        </form>
+                    </x-slot:action>
+                @endif
                 {{-- Tombol Simpan ada di page header (form="form-pemakaian"), sesuai desain --}}
                 <form id="form-pemakaian" method="POST" action="{{ route('pemakaian.store') }}">
                     @csrf
