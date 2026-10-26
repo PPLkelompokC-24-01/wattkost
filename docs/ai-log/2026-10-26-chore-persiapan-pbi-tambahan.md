@@ -67,3 +67,20 @@ Setuju, pakai sisi HEAD untuk kedua file. Lanjut hapus penanda konflik,
 cek, lalu kasih perintah git add dan commit-nya.
 ```
 
+## 16:02 — Puti Azzahra Navita
+
+```text
+<pasted_content id="ca4d">
+Tambahan kecil untuk PR C1: di routes/modules/admin.php buat grup
+admin kosong kalau belum ada:
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // PBI 23 Katalog (Puti): Route::resource('katalog', ...) di baris ini
+
+    // PBI 13 Tips (Tika): Route::resource('tips', ...) di baris ini
+});
+Kalau grupnya sudah ada, cukup tambahkan dua komentar penanda itu
+dengan satu baris kosong di antaranya. Jangan tambah route lain.
+Jalankan route:list dan test, lalu tunjukkan hasilnya.
+</pasted_content id="ca4d">
+```
+
