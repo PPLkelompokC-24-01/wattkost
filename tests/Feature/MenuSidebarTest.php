@@ -38,26 +38,38 @@ class MenuSidebarTest extends TestCase
         return User::factory()->make(['name' => $nama])->forceFill(['role' => $role]);
     }
 
+    /**
+     * Timpa menu penghuni dengan item palsu yang route-nya tidak akan pernah dibuat,
+     * supaya test tidak merah saat route menu asli (Sprint 1 maupun Sprint 2) di-merge.
+     */
+    private function pakaiMenuPalsu(array $itemTambahan = []): void
+    {
+        config(['menu.penghuni' => [
+            ...$itemTambahan,
+            ['label' => 'Menu Contoh Belum Ada', 'route' => 'contoh.belum-ada', 'ikon' => 'home'],
+        ]]);
+    }
+
     public function test_item_menu_tersembunyi_kalau_route_belum_ada(): void
     {
-        // Pakai menu Sprint 2 (Dashboard = PBI 10, Laporan = PBI 14) yang route-nya
-        // belum ada, supaya test tidak merah setiap kali PBI Sprint 1 di-merge.
+        $this->pakaiMenuPalsu();
+
         $this->renderLayout()
             ->assertSee('Menu Utama')
-            ->assertDontSee('Dashboard')
-            ->assertDontSee('Laporan');
+            ->assertDontSee('Menu Contoh Belum Ada');
     }
 
     public function test_item_menu_muncul_setelah_route_didaftarkan(): void
     {
+        $this->pakaiMenuPalsu([
+            ['label' => 'Alat Listrik', 'route' => 'alat.index', 'ikon' => 'plug'],
+        ]);
         $this->daftarkanRoute(['alat.index' => '/alat-listrik']);
 
-        // Pakai menu Sprint 2 (Laporan = PBI 14) yang route-nya belum ada,
-        // supaya test tidak merah setiap kali PBI Sprint 1 di-merge.
         $this->renderLayout()
             ->assertSee('Alat Listrik')
             ->assertSee('href="'.route('alat.index').'"', false)
-            ->assertDontSee('Laporan');
+            ->assertDontSee('Menu Contoh Belum Ada');
     }
 
     public function test_item_aktif_juga_untuk_halaman_anak(): void
