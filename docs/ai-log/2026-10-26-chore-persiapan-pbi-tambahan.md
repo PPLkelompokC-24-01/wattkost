@@ -54,3 +54,16 @@ Ikon sudah aku cek, oke. Jalankan /cek-sebelum-pr sekarang, tapi
 jangan commit dan jangan push. Aku yang commit sendiri.
 ```
 
+## 14:54 — Puti Azzahra Navita
+
+```text
+/selesaikan-konflik
+```
+
+## 14:56 — Puti Azzahra Navita
+
+```text
+Setuju, pakai sisi HEAD untuk kedua file. Lanjut hapus penanda konflik,
+cek, lalu kasih perintah git add dan commit-nya.
+```
+
