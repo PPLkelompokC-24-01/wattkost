@@ -153,3 +153,9 @@ terbaru. Jangan ubah file apa pun dulu. Tolong tunjukkan:
 </pasted_content id="c826">
 ```
 
+## 21:25 — kartyka
+
+```text
+/cek-sebelum-pr
+```
+
