@@ -188,3 +188,9 @@ Lalu jalankan php artisan test --filter=TipsHemat dan php artisan test
 </pasted_content id="c826">
 ```
 
+## 17:13 — kartyka
+
+```text
+/cek-sebelum-pr
+```
+
