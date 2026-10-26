@@ -70,3 +70,44 @@ dan tunjukkan hasil tiap langkah sebelum lanjut.
 </pasted_content id="c826">
 ```
 
+## 18:08 — kartyka
+
+```text
+<pasted_content id="c826">
+Langkah 1 oke.
+
+D8: Setuju, tidak membuat Policy. Test isolasi tetap ditulis.
+D9: Setuju, tambah baris Golongan (tampil "—" kalau kosong).
+D10: Setuju, cukup middleware auth sesuai spesifikasi.
+Soal lang/id/validation.php: dibiarkan dulu, jangan diubah di PR
+ini. Nanti dibuat PR kecil terpisah setelah koordinasi tim.
+
+Aku sudah commit. Lanjut langkah 2: controller + route di
+routes/modules/profil.php (hanya profil.show dan profil.update).
+Jalankan php artisan route:list --name=profil dan php artisan test
+(semua, terutama BerandaTest), lalu tunjukkan isi controller, diff
+route, dan hasilnya sebelum lanjut ke view.
+</pasted_content id="c826">
+```
+
+## 18:11 — kartyka
+
+```text
+<pasted_content id="c826">
+Langkah 2 oke.
+
+D4 diganti: pakai <script> inline di profil/show.blade.php, ikut gaya
+P1 (alat/index.blade.php). JANGAN mengubah resources/js/app.js.
+Data golongan (daya_va & tarif) dikirim ke script lewat @json atau
+data-* di <option>. Isian daya & tarif tetap bisa diubah manual
+setelah terisi otomatis.
+
+Lanjut langkah 3: view profil/show.blade.php sesuai rencana (kartu
+Data Kost berisi form + kartu Informasi Tarif dengan baris Tarif,
+Daya, Golongan; empty state kalau profil belum ada; teks sumber tarif;
+tautan "Digunakan oleh" hanya kalau route ada). Pakai komponen yang
+sudah ada saja. Setelah selesai tunjukkan isi view-nya, lalu berhenti
+sebelum menulis test supaya aku cek di browser dulu.
+</pasted_content id="c826">
+```
+
