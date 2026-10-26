@@ -12,7 +12,7 @@ Setiap tahap punya **gerbang**: syarat yang harus terpenuhi di branch `develop` 
 | P1 Tata + Eca | 01 alat, 02 pemakaian (+hapus), 03 estimasi, **04 peringkat** | 01, 02 | Tata 01+03 · Eca 02+04 |
 | P2 Rafa + Beden | 05 token, 06 rekap, 07 sisa kWh (+ubah), **24 jejak karbon** | 05, 07 | Rafa 05+06 · Beden 07+24 |
 | P3 Luthfan + Dhias | 08 prediksi, 18 biaya, **11 target hemat**, **25 kelola pengguna** | 11, 25 | Luthfan 08+11 · Dhias 18+25 |
-| P4 Puti + Tika | 13 tips, 15 profil, 23 katalog, **17 perbandingan** | 13, 23 | Puti 23+15 · Tika 13+17 |
+| P4 Puti + Tika | 13 tips, 15 profil, 23 katalog, **17 perbandingan** | 13, 23 | Tika 13+15 · Puti 23+17 |
 
 ```mermaid
 gantt

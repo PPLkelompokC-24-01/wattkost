@@ -29,7 +29,7 @@ Dokumen ini dibaca Claude di **chat claude.ai** (bukan Claude Code) supaya bisa 
 | P3 | Luthfan + Dhias | 8 prediksi, 18 biaya, **11 target hemat**, **25 kelola pengguna (admin)** | 11, 25 | Pemilik skema DB & CI; membuat migration baru PR M1 |
 | P4 | Puti + Tika (Kartika, PO) | 13 tips, 15 profil & tarif, 23 katalog, **17 perbandingan** | 13, 23 | Pemilik fondasi: layout, komponen, auth, menu, route, config |
 
-Usulan per orang (boleh ditukar asal tiap orang pegang 1 CRUD): Tata 01+03, Eca 02+04, Rafa 05+06, Beden 07+24, Luthfan 08+11, Dhias 18+25, Puti 23+15, Tika 13+17.
+Usulan per orang (boleh ditukar asal tiap orang pegang 1 CRUD): Tata 01+03, Eca 02+04, Rafa 05+06, Beden 07+24, Luthfan 08+11, Dhias 18+25, Tika 13+15, Puti 23+17.
 
 Review PR: P1 me-review P2, P2 → P3, P3 → P4, P4 → P1.
 
