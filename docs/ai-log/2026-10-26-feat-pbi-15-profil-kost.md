@@ -138,3 +138,18 @@ dengan keputusan D1–D10. Tunjukkan hasilnya.
 /selesaikan-konflik
 ```
 
+## 21:20 — kartyka
+
+```text
+<pasted_content id="c826">
+Aku sekarang di feat/pbi-15-profil-kost dan sudah merge develop
+terbaru. Jangan ubah file apa pun dulu. Tolong tunjukkan:
+1. Daftar nama test di tests/Feature/ProfilKostTest.php,
+   dikelompokkan (5 skenario wajib, spesifikasi, tambahan).
+2. Diff docs/pbi/PBI-15-profil-kost.md (catatan keputusan D1–D10).
+3. Hasil php artisan test --filter=ProfilKost dan php artisan test
+   (semua).
+4. git status dan git log --oneline -5.
+</pasted_content id="c826">
+```
+
