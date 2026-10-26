@@ -145,3 +145,46 @@ ada). Silakan:
 </pasted_content id="c826">
 ```
 
+## 16:47 — kartyka
+
+```text
+<pasted_content id="c826">
+Langkah 2 setuju. Untuk catatan 404: tambahkan di bagian Perilaku
+PBI-13-tips-hemat.md bahwa Sprint 1 memakai halaman 404 bawaan
+Laravel, dan halaman 404 ramah menyusul di PR terpisah (keputusan
+26 Okt 2026).
+
+Aku sudah commit pekerjaan sejauh ini. Lanjut ke langkah 3: view
+admin/tips/index.blade.php dan admin/tips/partials/form.blade.php
+sesuai rencana (P2–P6). Ingat:
+- Hanya komponen yang sudah ada, tanpa warna/komponen baru.
+- Isian tabel dari database, bukan data contoh desain.
+- Hapus pakai confirm(@js(...)).
+- Pagination: tombol Sebelumnya/Berikutnya <x-button
+  variant="secondary" small>, sembunyikan kalau hanya 1 halaman.
+Setelah selesai, tunjukkan isi kedua file view, lalu berhenti sebelum
+menulis test supaya aku bisa cek tampilannya di browser dulu.
+</pasted_content id="c826">
+```
+
+## 17:06 — kartyka
+
+```text
+<pasted_content id="c826">
+filter_kategori disetujui. Sudah aku cek di browser (daftar,
+pagination, cari, filter, tambah kosong/valid, edit, hapus, 375px):
+oke semua. Catatan: composer run dev tidak jalan di Windows, aku
+pakai php artisan serve + npm run dev.
+
+Lanjut langkah 4: tests/Feature/TipsHematTest.php sesuai rencana
+(5 skenario wajib + tambah/lihat/ubah/hapus), ditambah:
+- test bahwa dibuat_oleh yang dikirim dari form diabaikan
+  (tetap id admin yang login),
+- test filter memakai parameter filter_kategori,
+- test error validasi tambah tidak membuat dropdown filter ikut error
+  tidak perlu (cukup cek assertSessionHasInput('_form', 'tambah')).
+Lalu jalankan php artisan test --filter=TipsHemat dan php artisan test
+(semua), tunjukkan hasilnya.
+</pasted_content id="c826">
+```
+

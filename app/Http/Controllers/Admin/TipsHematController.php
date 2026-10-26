@@ -19,7 +19,8 @@ class TipsHematController extends Controller
     public function index(Request $request): View
     {
         $daftarTips = TipsHemat::query()
-            ->when($request->filled('kategori'), fn ($query) => $query->where('kategori', $request->query('kategori')))
+            // filter_kategori (bukan kategori) supaya error validasi field kategori tidak ikut tampil di filter
+            ->when($request->filled('filter_kategori'), fn ($query) => $query->where('kategori', $request->query('filter_kategori')))
             ->when($request->filled('q'), fn ($query) => $query->where('judul', 'like', '%'.$request->query('q').'%'))
             ->latest('updated_at')->latest('id')
             ->paginate(10)->withQueryString();
