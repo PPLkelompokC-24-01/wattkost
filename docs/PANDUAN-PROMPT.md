@@ -165,13 +165,19 @@ Boleh mulai setelah **login & layout (Paket 2 P4)** ada di `develop`.
 | P1 | 03 Estimasi konsumsi (halaman) | `feat/pbi-03-estimasi-konsumsi` | `Estimasi` |
 | P2 | 05 Catat token | `feat/pbi-05-catat-token` | `Token` |
 | P2 | 06 Rekap token (halaman) | `feat/pbi-06-rekap-token` | `Rekap` |
+| P1 | 04 Alat paling boros (halaman; service dari P3) | `feat/pbi-04-peringkat-boros` | `Boros` |
 | P2 | 07 Sisa kWh | `feat/pbi-07-sisa-kwh` | `Sisa` |
-| P3 | 04 Alat paling boros | `feat/pbi-04-peringkat-boros` | `Boros` |
+| P2 | 24 Jejak karbon | `feat/pbi-24-jejak-karbon` | `Karbon` |
 | P3 | 08 Prediksi token | `feat/pbi-08-prediksi-token` | `Prediksi` |
 | P3 | 18 Estimasi biaya | `feat/pbi-18-estimasi-biaya` | `Biaya` |
+| P3 | 11 Target hemat | `feat/pbi-11-target-hemat` | `Target` |
+| P3 | 25 Kelola pengguna (admin) | `feat/pbi-25-kelola-pengguna` | — (belum ada; ikuti gaya `Katalog`) |
 | P4 | 15 Profil kost & tarif | `feat/pbi-15-profil-kost` | `Profil` |
 | P4 | 23 Katalog alat (admin) | `feat/pbi-23-katalog-alat` | `Katalog` |
 | P4 | 13 Tips hemat (admin) | `feat/pbi-13-tips-hemat` | `AdminTips` |
+| P4 | 17 Perbandingan pemakaian | `feat/pbi-17-perbandingan-pemakaian` | `Perbandingan` |
+
+Pembagian di atas mengikuti revisi 26 Okt (`docs/REVISI-PBI-SPRINT-1.md`).
 
 Urutan yang disarankan ada di `docs/TAHAPAN-SPRINT-1.md`.
 
