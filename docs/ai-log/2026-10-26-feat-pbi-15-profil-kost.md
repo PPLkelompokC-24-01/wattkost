@@ -111,3 +111,30 @@ sebelum menulis test supaya aku cek di browser dulu.
 </pasted_content id="c826">
 ```
 
+## 18:18 — kartyka
+
+```text
+<pasted_content id="c826">
+Langkah 3 oke, sudah aku cek di browser (penghuni2: isi otomatis
+golongan, simpan pertama, banner Beranda hilang; penghuni1: error
+validasi; 375px). Aku sudah commit.
+
+Lanjut langkah 4: tests/Feature/ProfilKostTest.php sesuai rencana
+(5 skenario wajib + profil_kosong_menampilkan_form +
+tarif_negatif_ditolak + tambahan). Pastikan ada test:
+- simpan kedua kali tetap 1 baris profil untuk user itu,
+- user_id yang dikirim dari form diabaikan,
+- banner Beranda hilang setelah profil disimpan (cukup cek teks banner
+  tidak tampil di beranda setelah update).
+Lalu jalankan pint --dirty, php artisan test --filter=ProfilKost, dan
+php artisan test (semua), dan perbarui docs/pbi/PBI-15-profil-kost.md
+dengan keputusan D1–D10. Tunjukkan hasilnya.
+</pasted_content id="c826">
+```
+
+## 20:50 — kartyka
+
+```text
+/selesaikan-konflik
+```
+
