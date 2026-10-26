@@ -27,3 +27,18 @@ Jangan ubah file apa pun. Aku butuh laporan singkat:
 </pasted_content id="4050">
 ```
 
+## 17:55 — luthfandz
+
+```text
+<pasted_content id="4050">
+angan ubah file apa pun. Review PR #10 (cabang origin/feat/pbi-13-tips-hemat) terhadap origin/develop. Jalankan git fetch origin lalu baca git diff origin/develop...origin/feat/pbi-13-tips-hemat. Cek terhadap docs/pbi/PBI-13-tips-hemat.md dan aturan di CLAUDE.md:
+
+Apakah hanya mengubah file milik P4? Sebutkan kalau ada file bersama/milik pasangan lain.
+Apakah CRUD penuh (tambah, lihat, ubah, hapus) ada dan teruji?
+Apakah 5 feature test wajib ada (tamu → login, halaman tampil, simpan valid, simpan tidak valid, akses ditolak/penghuni biasa ditolak)?
+Apakah ada migration, package, atau komponen baru?
+Bug atau hal yang perlu dibenerin.
+Beri ringkasan singkat dan draf komentar review yang bisa aku tempel di GitHub.
+</pasted_content id="4050">
+```
+
