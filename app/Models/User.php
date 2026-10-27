@@ -88,4 +88,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(SisaKwh::class);
     }
+
+    /** @return HasMany<TargetHemat, $this> */
+    public function targetHemat(): HasMany
+    {
+        return $this->hasMany(TargetHemat::class);
+    }
+
+    /** @return HasOne<PengaturanPengguna, $this> */
+    public function pengaturanPengguna(): HasOne
+    {
+        return $this->hasOne(PengaturanPengguna::class);
+    }
 }
