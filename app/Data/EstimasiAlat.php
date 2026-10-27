@@ -1,9 +1,8 @@
 <?php
 
-// SEMENTARA P3 - hapus sebelum merge (file asli milik P1, PR 3a)
-
 namespace App\Data;
 
+/** Hasil estimasi konsumsi satu alat (KonsumsiService, PBI 3). Tidak disimpan ke database. */
 final readonly class EstimasiAlat
 {
     public function __construct(
