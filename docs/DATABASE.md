@@ -9,6 +9,8 @@ Pemilik: **Pasangan 3** (Luthfan & Dhias). Semua migration di bawah dibuat di Mi
 - Uang (rupiah): `unsignedBigInteger` (rupiah utuh, tanpa desimal). Tarif per kWh: `decimal(10,2)`. kWh: `decimal(8,2)`. Jam: `decimal(4,2)`. Watt: `unsignedInteger`.
 - Semua tabel punya `timestamps()`.
 - **Tabel hasil hitungan TIDAK dibuat** (lihat bagian akhir).
+- **Query kolom date/datetime WAJIB pakai Carbon atau `whereDate()`:** `whereDate('tanggal', $tgl)`, `whereBetween('tanggal', [$awal, $akhir])` dengan Carbon, `updateOrCreate(['tanggal' => Carbon])` (Carbon jam 00:00, mis. `today()` / `Carbon::parse('2026-10-15')`). **Jangan** `where('tanggal', '2026-10-15')` dengan string, karena gagal di test SQLite (SQLite menyimpan `2026-10-15 00:00:00`). Bukti: `tests/Feature/Database/QueryTanggalTest.php`.
+- Kolom yang menunjuk pemilik (`user_id`) **tidak** ada di `$fillable`. Buat data lewat relasi: `$request->user()->alatListrik()->create(...)`. `users.role` juga tidak fillable (set lewat `forceFill()` / factory `->admin()`).
 
 ## Tabel
 
@@ -16,8 +18,9 @@ Pemilik: **Pasangan 3** (Luthfan & Dhias). Semua migration di bawah dibuat di Mi
 | Kolom | Tipe | Keterangan |
 |---|---|---|
 | id | bigint PK | |
-| name | string(100) | nama tampilan |
+| name | string (255) | nama tampilan; validasi maks 100 di form |
 | email | string unique | |
+| email_verified_at | timestamp nullable | bawaan Laravel, belum dipakai |
 | password | string | di-hash (cast `hashed`) |
 | role | string(20) default `'penghuni'` | `penghuni` \| `admin` — pakai konstanta `User::ROLE_ADMIN`, `User::ROLE_PENGHUNI` |
 | remember_token, timestamps | | |
@@ -95,23 +98,47 @@ Data **tidak di-overwrite**: setiap input = baris baru. "Sisa kWh terkini" = bar
 | kategori | string(30) | `config('wattkost.kategori_alat')` + `Umum` |
 | dibuat_oleh | FK users nullable, nullOnDelete | admin pembuat |
 
+## Tabel tambahan revisi 26 Okt (PR M1)
+Dibuat lewat migration **baru** (`2026_10_27_*`), migration Sprint 1 di atas tidak diubah. Lihat `docs/REVISI-PBI-SPRINT-1.md` §6.
+
+### `target_hemat` (PBI 11)
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | PK | |
+| user_id | FK users, cascadeOnDelete | tidak fillable |
+| tahun | unsignedSmallInteger | |
+| bulan | unsignedTinyInteger | 1–12 |
+| jenis | string(10) | `kwh` \| `rupiah` — pakai konstanta `TargetHemat::JENIS_KWH`, `TargetHemat::JENIS_RUPIAH` |
+| nilai | decimal(12,2) | batas maksimal pemakaian bulan itu (kWh atau rupiah) |
+| | **unique(user_id, tahun, bulan)** | satu target per bulan |
+
+### `pengaturan_pengguna` (PBI 24; Sprint 2 menambah kolom lain lewat migration baru) — 1 user : 1 baris
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | PK | |
+| user_id | FK users, **unique**, cascadeOnDelete | tidak fillable |
+| faktor_emisi | decimal(6,4) nullable | kg CO₂/kWh; null → `config('wattkost.faktor_emisi_default')` |
+
 ## Relasi Eloquent (wajib ada di model)
 ```
-User         hasOne  ProfilKost      | hasMany AlatListrik, PemakaianHarian, PembelianToken, SisaKwh
+User         hasOne  ProfilKost, PengaturanPengguna | hasMany AlatListrik, PemakaianHarian, PembelianToken, SisaKwh, TargetHemat
 AlatListrik  belongsTo User, KatalogAlat | hasMany PemakaianHarian | use SoftDeletes
 PemakaianHarian belongsTo User, AlatListrik (->withTrashed())
 PembelianToken  belongsTo User
 SisaKwh         belongsTo User
 KatalogAlat  hasMany AlatListrik
 TipsHemat    belongsTo User as 'pembuat' (foreignKey: dibuat_oleh)
+TargetHemat  belongsTo User
+PengaturanPengguna belongsTo User
 ```
 
 Cast wajib: `tanggal`, `tanggal_beli` → `date`; `dicatat_pada` → `datetime`; kolom decimal → `decimal:2`; `password` → `hashed`.
+**Pengecualian:** `pengaturan_pengguna.faktor_emisi` → `decimal:4` (kolom `decimal(6,4)`; dengan `decimal:2` nilai 0,8723 terbaca 0,87).
 
 ## Isi `config/wattkost.php` (dibuat P4, dipakai semua)
 ```php
 return [
-    'kategori_alat' => ['Pendingin', 'Dapur', 'Elektronik', 'Pencahayaan', 'Perawatan Diri', 'Lainnya'],
+    'kategori_alat' => ['Pendingin', 'Dapur', 'Elektronik', 'Penerangan', 'Rumah Tangga', 'Lainnya'],
     'golongan_tarif' => [ // tarif PLN berlaku Okt 2026 (sumber: PLN/ESDM, cek ulang tiap triwulan)
         'R-1/TR 450 VA (subsidi)'  => ['daya_va' => 450,  'tarif' => 415.00],
         'R-1/TR 900 VA (subsidi)'  => ['daya_va' => 900,  'tarif' => 605.00],
@@ -128,7 +155,7 @@ return [
 ## Data seeder (Minggu 1)
 - 1 admin: `admin@wattkost.test` / `password`; 2 penghuni: `penghuni1@wattkost.test`, `penghuni2@wattkost.test` / `password` (hanya lokal!)
 - `KatalogAlatSeeder`: ±20 alat umum kost (Kipas angin 45 W, Rice cooker 350 W, Charger HP 15 W, Laptop 65 W, Lampu LED 10 W, Kulkas mini 75 W, Setrika 350 W, Dispenser 350 W, AC 1/2 PK 400 W, Hair dryer 600 W, Magic com warmer 40 W, TV LED 32" 50 W, Router WiFi 10 W, ...)
-- `TipsHematSeeder`: ±10 tips (minimal 1 per kategori + 2 Umum)
+- `TipsHematSeeder`: 11 tips (minimal 1 per kategori — dicek `DatabaseSeederTest` — + 4 Umum)
 - Seeder modul (`AlatListrikSeeder`, `PemakaianHarianSeeder` 30 hari terakhir, `TokenSeeder`, `SisaKwhSeeder` 14 hari terakhir) untuk `penghuni1` agar halaman analisis punya data demo.
 
 ## Entitas ERD proposal yang TIDAK dijadikan tabel di Sprint 1
@@ -141,4 +168,5 @@ return [
 | Tarif_Listrik | digabung ke `profil_kost.tarif_per_kwh` + daftar di config | proposal UC-15 menaruh tarif di profil kost |
 | Pemakaian_Listrik (meter awal/akhir) | diganti `sisa_kwh` (riwayat) | sama-sama data meteran; menghindari dua sumber kebenaran |
 | Perbandingan_Pemakaian, Laporan_Bulanan, Jejak_Karbon, Simulasi | Sprint 2, kemungkinan besar dihitung (bukan tabel) | |
-| Riwayat_Unduh, Notifikasi, Pengaturan_Token, Target_Hemat, Patungan_Token, Anggota_Patungan, Tantangan, Poin | Sprint 2 — migration baru | |
+| Target_Hemat | **dijadikan tabel** `target_hemat` di PR M1 (revisi 26 Okt) | PBI 11 dipindah ke Sprint 1 |
+| Riwayat_Unduh, Notifikasi, Pengaturan_Token, Patungan_Token, Anggota_Patungan, Tantangan, Poin | Sprint 2 — migration baru | |

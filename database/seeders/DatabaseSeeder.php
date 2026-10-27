@@ -2,24 +2,29 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+    // Observer Sprint 2 (pengingat, lonjakan) tidak boleh terpicu saat seeding.
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Seed the application's database. Urutan penting: induk dulu,
+     * SisaKwhSeeder terakhir karena dihitung dari pemakaian & token.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            UserSeeder::class,
+            KatalogAlatSeeder::class,
+            TipsHematSeeder::class,
+            ProfilKostSeeder::class,
+            AlatListrikSeeder::class,
+            PemakaianHarianSeeder::class,
+            TokenSeeder::class,
+            SisaKwhSeeder::class,
         ]);
     }
 }

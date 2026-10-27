@@ -6,7 +6,7 @@ Bahasa komunikasi dengan tim: **Bahasa Indonesia**. Nama domain (model, tabel, v
 
 ## Stack (jangan diganti tanpa persetujuan tim)
 
-- PHP **8.3+**, Laravel **13**, MySQL 8 / MariaDB (dev & produksi), SQLite in-memory (hanya untuk test)
+- PHP **8.2+**, Laravel **12**, MySQL 8 / MariaDB (dev & produksi), SQLite in-memory (hanya untuk test)
 - Blade + **Tailwind CSS v4** (via `@tailwindcss/vite`) + Vite. **Tidak** pakai Bootstrap, Livewire, Inertia, React, Vue.
 - Chart.js (dari npm) untuk grafik. DomPDF (`barryvdh/laravel-dompdf`) untuk PDF — baru dipakai Sprint 2.
 - Auth: dibuat manual (session, `Auth::attempt`). **Tidak** pakai Breeze/Jetstream/Fortify.
@@ -51,7 +51,7 @@ Request  ->  routes/modules/<modul>.php
 - Flash message: `return redirect()->route(...)->with('sukses', 'Alat berhasil ditambahkan.')` — komponen layout sudah menampilkan `sukses` dan `gagal`.
 - Tampilan: pakai komponen Blade yang sudah ada (`<x-card>`, `<x-button>`, `<x-input>`, `<x-table>`, `<x-empty-state>`, `<x-alert>`, `<x-page-header>`). Jangan bikin warna/ukuran baru; pakai token Tailwind di `resources/css/app.css` (`bg-primary`, `text-muted`, dst) yang diambil dari Figma.
 - Saat menerjemahkan desain Figma (lewat MCP Figma), petakan ke komponen yang sudah ada dulu. Kalau butuh komponen baru yang dipakai >1 modul, beri tahu user (komponen dimiliki Pasangan 4).
-- Format tampilan: rupiah `Rp 1.444,70` / `Rp 50.000` (helper `rupiah()`), kWh `12,35 kWh` (helper `kwh()`), tanggal `14 Okt 2026` (Carbon `translatedFormat('d M Y')`). Helper ada di `app/Support/helpers.php`.
+- Format tampilan: rupiah `Rp1.444,70` / `Rp50.000` — tanpa spasi setelah `Rp`, sesuai desain (helper `rupiah()`), kWh `12,35 kWh` (helper `kwh()`), tanggal `14 Okt 2026` (Carbon `translatedFormat('d M Y')`). Helper ada di `app/Support/helpers.php`.
 
 ## Service bersama (kontrak — signature jangan diubah tanpa diskusi)
 
@@ -70,7 +70,7 @@ Signature lengkap ada di `docs/ARSITEKTUR.md`. Kalau service belum jadi, pakai d
 - Setelah selesai satu bagian, jalankan: `php vendor/bin/pint --dirty` lalu `php artisan test --filter=<NamaModul>`. Jangan bilang "selesai" kalau test merah.
 - Setiap PBI wajib punya feature test untuk: halaman tampil (200), simpan valid, simpan tidak valid (error validasi), tidak bisa akses data user lain, dan tamu diarahkan ke login.
 - Jelaskan kode yang kamu tulis dengan singkat dalam Bahasa Indonesia — tim harus bisa menjelaskan kodenya saat sprint review.
-- Gunakan MCP `laravel-boost` untuk cek skema DB, daftar route, dan dokumentasi Laravel 13 sebelum menebak.
+- Gunakan MCP `laravel-boost` untuk cek skema DB, daftar route, dan dokumentasi Laravel 12 sebelum menebak. Jangan memakai fitur yang hanya ada di Laravel 13.
 
 ## Perintah yang sering dipakai
 

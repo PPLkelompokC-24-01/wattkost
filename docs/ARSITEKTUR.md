@@ -1,6 +1,6 @@
 # Arsitektur & Kontrak Service
 
-Monolit Laravel 13, pola MVC + **Service layer**. Sesuai proposal 4.3 (three-tier), dengan dua penyesuaian setelah presentasi: **tanpa cron/scheduler** dan **Tailwind CSS** (bukan Bootstrap).
+Monolit Laravel 12, pola MVC + **Service layer**. Sesuai proposal 4.3 (three-tier), dengan dua penyesuaian setelah presentasi: **tanpa cron/scheduler** dan **Tailwind CSS** (bukan Bootstrap).
 
 ```
 Browser (Blade + Tailwind + Chart.js)

@@ -1,249 +1,177 @@
-# Tahapan Sprint 1 — dari Nol sampai 12 PBI Selesai
+# Tahapan Sprint 1 — 16 PBI (revisi 26 Oktober 2026)
 
-**14 Oktober – 11 November 2026** · 4 pasangan · 12 PBI + fondasi · ±30 Pull Request kecil
+**14 Oktober – 11 November 2026** · 4 pasangan · 16 PBI + fondasi
 
-Dokumen ini adalah urutan kerja harian. Setiap tahap punya **gerbang (G0–G4)**: daftar syarat yang harus terpenuhi di branch `develop` sebelum tahap berikutnya dimulai. Kalau gerbang belum lolos, **jangan lanjut**. Perbaiki dulu, karena masalah fondasi yang dibawa ke tahap berikutnya akan berlipat jadi konflik dan error.
+> **Revisi 26 Okt:** dosen mewajibkan **2 PBI per anggota per sprint** dengan **minimal 1 PBI CRUD penuh** per anggota. Sprint 1 jadi **16 PBI** (4 per pasangan, 2 CRUD per pasangan). Tahap 0–1 (fondasi) sudah selesai. Jadwal Tahap 2–4 di bawah menggantikan jadwal lama. Rincian aturan & label CRUD: `docs/REVISI-PBI-SPRINT-1.md`.
 
-Hari Sabtu–Minggu adalah **cadangan** (boleh dipakai mengejar ketertinggalan, tidak wajib). Satu pengecualian: **P3 sebaiknya menyelesaikan PR F2 pada Sabtu 17 Okt**, karena semua pasangan menunggu tabel database. Kalau tidak bisa, batas akhirnya Senin 19 Okt pukul 10.00.
+Setiap tahap punya **gerbang**: syarat yang harus terpenuhi di branch `develop` sebelum lanjut. Sabtu–Minggu adalah cadangan.
+
+## Pembagian
+| Pasangan | PBI | CRUD penuh | Usulan per orang |
+|---|---|---|---|
+| P1 Tata + Eca | 01 alat, 02 pemakaian (+hapus), 03 estimasi, **04 peringkat** | 01, 02 | Tata 01+03 · Eca 02+04 |
+| P2 Rafa + Beden | 05 token, 06 rekap, 07 sisa kWh (+ubah), **24 jejak karbon** | 05, 07 | Rafa 05+06 · Beden 07+24 |
+| P3 Luthfan + Dhias | 08 prediksi, 18 biaya, **11 target hemat**, **25 kelola pengguna** | 11, 25 | Luthfan 08+11 · Dhias 18+25 |
+| P4 Puti + Tika | 13 tips, 15 profil, 23 katalog, **17 perbandingan** | 13, 23 | Tika 13+15 · Puti 23+17 |
 
 ```mermaid
 gantt
-  title Sprint 1 WattKost
+  title Sisa Sprint 1 WattKost (revisi)
   dateFormat YYYY-MM-DD
   axisFormat %d %b
-  section Tahap 0-1 Fondasi
-  Persiapan & kerangka Laravel (P4)   :t0, 2026-10-14, 2d
-  Migration, model, seeder, CI (P3)   :t1a, 2026-10-15, 3d
-  Auth, layout, komponen (P4)         :t1b, 2026-10-16, 4d
-  Kontrak service (P1, P2, P4)        :t1c, 2026-10-19, 2d
-  Gerbang G1                          :milestone, g1, 2026-10-20, 0d
-  section Tahap 2 Input data
-  P1 PBI 1, 2, service PBI 3          :p1a, 2026-10-21, 7d
-  P2 PBI 5, 7                         :p2a, 2026-10-21, 7d
-  P3 service PBI 4, 8, 18 (mock)      :p3a, 2026-10-21, 7d
-  P4 PBI 15, 23, 13                   :p4a, 2026-10-21, 7d
-  Gerbang G2                          :milestone, g2, 2026-10-27, 0d
-  section Tahap 3 Perhitungan
-  P1 halaman PBI 3 + katalog A5       :p1b, 2026-10-28, 7d
-  P2 PBI 6 + dokumen uji              :p2b, 2026-10-28, 7d
-  P3 halaman PBI 4, 8, 18             :p3b, 2026-10-29, 6d
-  P4 Beranda + polish UI              :p4b, 2026-10-28, 7d
-  Gerbang G3 (freeze fitur)           :milestone, g3, 2026-11-03, 0d
-  section Tahap 4 Uji & rilis
-  Uji silang & perbaikan bug          :t4, 2026-11-04, 6d
-  Rilis main + tag                    :milestone, g4, 2026-11-10, 0d
-  Sprint Review                       :milestone, rv, 2026-11-11, 0d
+  section Persiapan revisi
+  PR C1 dokumen, route, menu (P4)        :c1, 2026-10-27, 1d
+  PR M1 migration target & pengaturan (P3) :m1, 2026-10-27, 2d
+  section Service inti
+  KonsumsiService (P1)                   :ks, 2026-10-26, 4d
+  TokenService (P2)                      :ts, 2026-10-26, 4d
+  Gerbang service                        :milestone, gs, 2026-10-29, 0d
+  section P1
+  PBI 01, 02 (+hapus)                    :p1a, 2026-10-26, 6d
+  PBI 03 halaman, 04 halaman             :p1b, 2026-10-30, 6d
+  section P2
+  PBI 05, 07 (+ubah)                     :p2a, 2026-10-27, 6d
+  PBI 06, 24                             :p2b, 2026-10-30, 6d
+  section P3
+  PBI 25 kelola pengguna                 :p3a, 2026-10-28, 5d
+  PBI 11 target hemat                    :p3b, 2026-10-29, 5d
+  PBI 08, 18 halaman                     :p3c, 2026-10-30, 6d
+  section P4
+  PBI 23, 15, 13                         :p4a, 2026-10-27, 7d
+  PBI 17 perbandingan                    :p4b, 2026-10-31, 5d
+  section Uji & rilis
+  Freeze fitur (G3)                      :milestone, g3, 2026-11-05, 0d
+  Uji silang & perbaikan bug             :t4, 2026-11-06, 4d
+  Rilis main + tag                       :milestone, g4, 2026-11-10, 0d
+  Sprint Review                          :milestone, rv, 2026-11-11, 0d
 ```
 
 ---
 
-## Peta ketergantungan (kenapa urutannya begini)
+## Peta ketergantungan
 
 ```
-Fondasi P4 (Laravel, auth, layout) ─┐
-Fondasi P3 (semua tabel & model) ───┼──► PBI 1 alat ──► PBI 2 pemakaian ──► PBI 3 KonsumsiService ──┬──► PBI 4 peringkat
-                                    │        ▲                                                       ├──► PBI 8 prediksi ◄── PBI 7 sisa kWh
-                                    │   PBI 23 katalog (A5)                                          └──► PBI 18 biaya ◄── PBI 15 tarif
-                                    ├──► PBI 5 token ──► PBI 6 rekap ───────────────────────────────────────► PBI 18 (bandingkan token)
-                                    └──► PBI 13 tips (berdiri sendiri, dipakai PBI 12 di Sprint 2)
+PR C1 (P4: dokumen, route kosong, menu, config) ─┬─► PBI 25 kelola pengguna (P3)
+                                                 ├─► PBI 17 perbandingan (P4) ◄── KonsumsiService
+PR M1 (P3: tabel target_hemat, pengaturan) ──────┼─► PBI 11 target hemat (P3)  ◄── KonsumsiService + TarifService
+                                                 └─► PBI 24 jejak karbon (P2)  ◄── KonsumsiService
+
+PBI 1 → PBI 2 → KonsumsiService (P1) ──┬─► PBI 3, PBI 4 (P1)
+                                       ├─► PBI 8 prediksi (P3) ◄── TokenService (P2) ◄── PBI 5, 7
+                                       └─► PBI 18 biaya (P3) ◄── TarifService (P4) + TokenService::rekap
+PBI 13, 15, 23 (P4) berdiri sendiri
 ```
 
-**Jalur kritis** (kalau satu terlambat, semua mundur): Fondasi P3 → PBI 1 → PBI 2 → `KonsumsiService` → PBI 4/8/18.
-
-Karena itu `KonsumsiService` dikerjakan lebih awal (diimplementasikan di Tahap 2, bukan Tahap 3). P3 juga menulis service-nya memakai *mock* supaya tidak menunggu.
+**Jalur kritis:** `KonsumsiService` (P1) dan `TokenService` (P2). Keduanya **harus merge paling lambat Kamis 29 Okt**, karena 6 PBI menunggunya (04, 08, 11, 17, 18, 24). Sebelum itu, pasangan lain menulis unit test memakai *mock*, **tidak** menulis ulang rumusnya.
 
 ---
 
-## TAHAP 0 — Persiapan (Rabu 14 – Kamis 15 Okt)
-
-**Tujuan:** semua laptop siap, repo ada, kerangka Laravel jalan.
-
-| Siapa | Tugas | Selesai kalau |
-|---|---|---|
-| Semua (8 orang) | Pasang PHP ≥ 8.3 (Herd/Laragon), Composer, Node 22, Git, Claude Code. `git config --global core.autocrlf input`. Buat akun GitHub kalau belum. | Kirim screenshot `php -v`, `node -v`, `claude --version` di grup |
-| PM Habiebie | Buat repo **publik** `wattkost` di GitHub, undang 7 anggota, buat GitHub Project (papan Kanban: Todo / Doing / Review / Done) berisi 12 PBI + fondasi | Semua anggota menerima undangan |
-| P4 Puti + Tika | `composer create-project laravel/laravel` → pasang paket (Boost, DomPDF, Chart.js) → salin paket starter (CLAUDE.md, .mcp.json, .claude/, .github/, docs/) → `.gitattributes`, `.gitignore`, `.env.example` → push ke `main`, buat branch `develop` | PR **F1** di-merge |
-| PM + SM Reysha | Pasang branch protection `main` & `develop` (lihat `GIT-WORKFLOW.md`) — **setelah** F1 masuk | Push langsung ke `develop` ditolak |
-| Tata (Deswita, UI/UX) | Ekspor dari Figma: kode warna, font, ukuran radius & jarak. Tulis daftarnya di grup | P4 punya angka untuk `app.css` |
-| Semua pasangan | Buka mockup modul masing-masing di Figma, catat komponen yang dipakai (tabel, kartu angka, form, grafik) | Daftar dikirim ke P4 paling lambat Jumat 16 Okt |
-
-**Gerbang G0 (Kamis 15 Okt malam)**
-- [ ] Semua orang bisa `git clone` → `composer install` → `npm install` → `php artisan serve` → halaman welcome Laravel tampil
-- [ ] `claude` jalan di folder proyek, `/mcp` menunjukkan `laravel-boost` connected (Figma boleh menyusul)
-- [ ] Branch protection aktif, CI muncul di tab Actions
+## TAHAP 0–1 — Fondasi ✅ selesai
+Kerangka Laravel 12, database Sprint 1, komponen UI, auth, menu, pola CRUD modal, `x-pilih-bulan`, `x-chart`, `TarifService`, `PANDUAN-PROMPT.md`.
 
 ---
 
-## TAHAP 1 — Fondasi (Jumat 16 – Selasa 20 Okt)
+## TAHAP 1b — Persiapan revisi (Selasa 27 – Rabu 28 Okt)
 
-**Tujuan:** database, login, dan tampilan dasar selesai, sehingga 4 pasangan bisa bekerja paralel tanpa saling menunggu.
+| PR | Pemilik | Isi | Target merge |
+|---|---|---|---|
+| **C1** `chore/persiapan-pbi-tambahan` | P4 | `docs/REVISI-PBI-SPRINT-1.md`, spesifikasi PBI 11/17/24/25, update dokumen lama, file kosong `routes/modules/{target,perbandingan,karbon,pengguna}.php` + `require`, item menu baru, `faktor_emisi_default` | Sel 27 Okt |
+| **M1** `chore/migration-pbi-tambahan` | P3 | Migration baru `target_hemat` & `pengaturan_pengguna`, model, relasi, factory, update `DATABASE.md` | Rab 28 Okt |
 
-| Hari | P1 (Eca, Tata) | P2 (Rafa, Beden) | P3 (Luthfan, Dhias) | P4 (Puti, Tika) |
-|---|---|---|---|---|
-| **Jum 16** | Pelajari `PBI-01/02/03`, hitung ulang contoh angka PBI-03 dengan kalkulator | Pelajari `PBI-05/06/07`, kumpulkan 3 struk token asli untuk data uji | Migration semua tabel + model + relasi + cast | Auth: login, register, logout, middleware `role` |
-| **Sab 17** *(cadangan)* | — | — | Factory, seeder (katalog 20 alat, tips 10, data demo 30 hari) → **PR F2** | Lanjut auth + test |
-| **Sen 19** | Setelah F2 merge: **PR F5** kontrak `KonsumsiService` + unit test contoh angka (boleh `markTestIncomplete`) | Setelah F2 merge: **PR F6** kontrak `TokenService` + unit test | Review F3 & F4, perbaiki CI | **PR F3** auth · **PR F4** layout, komponen, `config/menu.php` (24 menu), helper `rupiah()`/`kwh()`, Beranda kosong, token warna Figma |
-| **Sel 20** | Merge F5 · uji login di laptop masing-masing | Merge F6 · uji login | Bantu anggota yang `migrate --seed` gagal | **PR F7** kontrak `TarifService` · merge F3, F4 |
-
-Urutan merge **wajib**: F1 → F2 → F3 → F4 → (F5, F6, F7 bebas urutan).
-
-**Gerbang G1 (Selasa 20 Okt malam) — Rapat singkat 20 menit**
-- [ ] Di `develop` terbaru, semua orang menjalankan `git pull && composer install && npm install && php artisan migrate:fresh --seed` (di DB lokal sendiri) tanpa error
-- [ ] Login sebagai `penghuni1@wattkost.test` → Beranda & sidebar tampil; login admin → menu Admin tampil; penghuni membuka `/admin/katalog` → 403
-- [ ] `php artisan test` hijau, CI hijau
-- [ ] Tampilan dicek di HP (lebar 375px) — sidebar berubah jadi menu HP
-- [ ] Ketiga kontrak service (`KonsumsiService`, `TokenService`, `TarifService`) ada di `develop` (isinya boleh belum jalan)
-- [ ] **Tidak ada lagi perubahan pada `routes/web.php`, `config/menu.php`, migration, `composer.json`, `package.json`** setelah titik ini kecuali lewat izin pemilik
-
-> Kalau G1 belum lolos Selasa malam: Rabu pagi semua pasangan **membantu P3/P4**, bukan mulai PBI. Lebih baik telat 1 hari di sini daripada konflik 2 minggu.
+**Gerbang G1b (Rabu 28 Okt malam)**
+- [ ] C1 dan M1 merge, `php artisan migrate:fresh --seed` jalan di laptop semua orang
+- [ ] Semua anggota sudah tahu 2 PBI miliknya dan PBI CRUD-nya (konfirmasi di grup)
 
 ---
 
-## TAHAP 2 — Input Data (Rabu 21 – Selasa 27 Okt)
-
-**Tujuan:** semua halaman yang *memasukkan data* selesai dan bisa dipakai end-to-end. Service perhitungan sudah diuji dengan unit test.
+## TAHAP 2 — Service inti & PBI CRUD (Senin 26 Okt – Senin 2 Nov)
 
 | Hari | P1 | P2 | P3 | P4 |
 |---|---|---|---|---|
-| **Rab 21** | PBI 1: route, request, controller, policy | PBI 5: route, request, controller | `PeringkatAlatService` + unit test (mock `KonsumsiService`) | PBI 15: form profil, `TarifService` asli, dropdown golongan tarif |
-| **Kam 22** | PBI 1: view daftar, form, cari, hapus + feature test → **PR 1a** | PBI 5: view form + riwayat + test → **PR 5a** | → **PR 4a** · mulai `PrediksiTokenService` | PBI 15: test → **PR 15a** · mulai PBI 23 |
-| **Jum 23** | PBI 2: halaman per tanggal, tabel alat + input jam | Review PR 1a · PBI 7: route, request, controller | `PrediksiTokenService`: 3 sumber rata-rata, `Carbon::setTestNow` | PBI 23: CRUD katalog + test → **PR 23a** |
-| **Sab 24** *(cadangan)* | | | | |
-| **Sen 26** | PBI 2: simpan `updateOrCreate`, riwayat 7 hari, JS total jam + test → **PR 2a** | PBI 7: view + `sisaTerkini()` + `kwhDibeliAntara()` + test → **PR 7a** | → **PR 8a** · `EstimasiBiayaService` + unit test | PBI 13: CRUD tips + test |
-| **Sel 27** | **`KonsumsiService` diimplementasikan** (`estimasiBulanan`, `estimasiHarian`, `kwhPerTanggal`), unit test PBI-03 hijau → **PR 3a** | Review PR 2a · siapkan `TokenService::rekap()` (dibutuhkan PBI 18) | → **PR 18a** · buat view PBI 4/8/18 dengan data contoh (belum disambung) | → **PR 13a** |
-
-Setiap pagi sebelum mulai: `git fetch origin && git merge origin/develop && php artisan migrate && php artisan test`.
-
-**Gerbang G2 (Selasa 27 Okt malam)**
-- [ ] Merge di `develop`: 1a, 2a, 5a, 7a, 15a, 23a, 13a, 4a, 8a, 18a
-- [ ] PR 3a terbuka dan sedang direview, target merge **Rabu 28**, paling lambat **Kamis 29 Okt**
-- [ ] Skenario end-to-end berhasil dilakukan oleh orang dari **pasangan lain**: daftar akun baru → isi profil kost → tambah 3 alat → isi pemakaian 3 hari → catat 1 pembelian token → input sisa kWh 2 kali
-- [ ] Admin bisa menambah katalog & tips; penghuni tidak bisa membuka halaman admin
-- [ ] Semua test hijau, CI hijau
-
-> **Kalau P1 terlambat:** PR 3a lebih penting daripada sempurnanya tampilan PBI 2. Merge PBI 2 yang fungsional dulu (polish di Tahap 3), lalu fokus ke `KonsumsiService`.
-
----
-
-## TAHAP 3 — Perhitungan & Tampilan Analisis (Rabu 28 Okt – Selasa 3 Nov)
-
-**Tujuan:** semua halaman yang *menampilkan hasil hitungan* selesai. Akhir tahap ini 12 PBI **lengkap** di `develop`.
-
-| Hari | P1 | P2 | P3 | P4 |
-|---|---|---|---|---|
-| **Rab 28** | Merge 3a · PBI 3: halaman estimasi (filter harian/bulanan) | PBI 6: `rekap()` + halaman rekap | Review 3a dengan teliti (hitung ulang contoh angka) | Kartu Beranda: sisa kWh terkini, kWh bulan ini |
-| **Kam 29** | PBI 3: empty state + test → **PR 3b** | PBI 6: stat card, tabel, empty state, validasi periode + test → **PR 6a** | Sambungkan PBI 4 ke service asli, hapus mock → **PR 4b** | Polish: cek semua halaman Tahap 2 vs Figma, catat selisih |
-| **Jum 30** | Integrasi katalog → form alat (UC-01 A5) bersama P4 | Mulai **dokumen skenario uji** (lihat Tahap 4) | PBI 8: halaman prediksi, warna status, A1/A2 | Bantu P1 untuk A5 |
+| **Sen 26 – Sel 27** | PBI 01 selesai → PR | `TokenService` + unit test → PR | Selesaikan PR service 04/08 (serahkan 04 ke P1) · PR M1 | PR C1 · mulai PBI 23 |
+| **Rab 28** | PBI 02 + tombol Hapus | PBI 05 | PBI 25 (route, request, controller) | PBI 23 → PR |
+| **Kam 29** | **`KonsumsiService` merge** | **`TokenService` merge** · PBI 05 → PR | PBI 25 view + test → PR | PBI 15 |
+| **Jum 30** | PBI 02 → PR | PBI 07 + Ubah | PBI 11 (`TargetHematService` + test) | PBI 15 → PR · mulai PBI 13 |
 | **Sab 31** *(cadangan)* | | | | |
-| **Sen 2 Nov** | → **PR 1b** (katalog A5) · perbaiki selisih Figma modul P1 | Grafik pengeluaran 6 bulan (opsional) → **PR 6b** · data demo lebih realistis | → **PR 8b** · PBI 18: halaman biaya | Kartu Beranda: prediksi habis, biaya bulan ini, banner profil belum diisi → **PR B1** |
-| **Sel 3 Nov** | Perbaiki temuan review | Selesaikan dokumen skenario uji | PBI 18: bandingkan dengan token, A2/A3/A4 + test → **PR 18b** | Perbaikan responsif HP semua halaman → **PR U1** |
+| **Sen 2 Nov** | PBI 03 halaman | PBI 07 → PR | PBI 11 halaman + test → PR | PBI 13 → PR |
 
-**Gerbang G3 (Selasa 3 Nov malam) — Feature freeze**
-- [ ] 12 PBI merge di `develop`: 1, 2, 3, 4, 5, 6, 7, 8, 13, 15, 18, 23 (cek di GitHub Project, semua kartu "Done")
-- [ ] Contoh angka di setiap spesifikasi PBI cocok dengan tampilan saat dicoba manual (PBI 3, 4, 6, 8, 18)
-- [ ] Semua alternative process (A1, A2, ...) di use case scenario bisa didemokan
-- [ ] Mulai Rabu 4 Nov: **tidak ada fitur baru**, hanya perbaikan bug
+**Gerbang G2 (Senin 2 Nov malam)** — 8 PBI CRUD (syarat dosen) + 15 merge: **01, 02, 05, 07, 11, 13, 15, 23, 25**. Skenario end-to-end dicoba orang dari pasangan lain.
 
 ---
 
-## TAHAP 4 — Uji Menyeluruh & Rilis (Rabu 4 – Selasa 10 Nov)
+## TAHAP 3 — Tampilan hitungan (Sabtu 31 Okt – Rabu 4 Nov)
+
+| Hari | P1 | P2 | P3 | P4 |
+|---|---|---|---|---|
+| **Sel 3 Nov** | PBI 03 → PR · PBI 04 halaman | PBI 06 → PR | PBI 08 halaman → PR | PBI 17 (`PerbandinganService` + halaman) |
+| **Rab 4 Nov** | PBI 04 → PR | PBI 24 → PR | PBI 18 halaman → PR | PBI 17 → PR · kartu Beranda |
+
+**Gerbang G3 (Kamis 5 Nov) — Freeze fitur**
+- [ ] 16 PBI merge di `develop`: 1, 2, 3, 4, 5, 6, 7, 8, 11, 13, 15, 17, 18, 23, 24, 25
+- [ ] Setiap PBI CRUD bisa didemokan tambah, lihat, ubah, hapus
+- [ ] Contoh angka di spesifikasi cocok saat dicoba manual (PBI 3, 4, 6, 8, 11, 17, 18, 24)
+- [ ] Mulai Jumat 6 Nov: hanya perbaikan bug
+
+---
+
+## TAHAP 4 — Uji & rilis (Jumat 6 – Rabu 11 Nov)
 
 | Hari | Kegiatan |
 |---|---|
-| **Rab 4** | **Uji silang.** Setiap pasangan menguji modul pasangan lain memakai dokumen skenario uji. Rotasi: P1 menguji P2, P2 menguji P3, P3 menguji P4, P4 menguji P1. Bug dicatat sebagai GitHub Issue berlabel `bug` dengan langkah reproduksi dan screenshot. |
-| **Kam 5** | Uji silang putaran 2 (rotasi bergeser). Uji di HP sungguhan & 2 browser (Chrome + Firefox/Edge). Uji keamanan sederhana: ubah ID di URL untuk membuka data orang lain → harus 403/404. |
-| **Jum 6** | Perbaikan bug prioritas tinggi (salah hitung, error 500, data bocor antar user). Branch `fix/...`, PR kecil. |
-| **Sen 9** | Perbaikan bug sisanya. P2: seeder data demo final (1 bulan data realistis untuk `penghuni1`). PM: README, `PERUBAHAN-RANCANGAN.md`, pastikan `docs/ai-log/` lengkap. |
-| **Sel 10** | **Gladi Sprint Review:** jalankan Claude (atau tool AI review yang terpilih) membaca repo & proposal, minta daftar ketidaksesuaian, perbaiki yang kecil, catat sisanya di `PERUBAHAN-RANCANGAN.md`. Lalu PM: PR `develop` → `main`, tag `v0.1-sprint1`. Susun naskah demo 10 menit (siapa mendemokan apa). |
-| **Rab 11** | **Sprint Review** + **Retrospective** (apa yang lancar, apa yang menghambat, apa yang diubah di Sprint 2) + **Sprint Planning 2** jika waktu cukup |
+| **Jum 6** | Uji silang: P1 menguji P2, P2 → P3, P3 → P4, P4 → P1. Bug dicatat sebagai GitHub Issue berlabel `bug` (langkah + screenshot). Uji keamanan: ubah ID di URL → harus 403/404. |
+| **Sen 9** | Perbaikan bug (`fix/...`, PR kecil). Seeder data demo final. README, `PERUBAHAN-RANCANGAN.md`, `docs/ai-log/` lengkap. |
+| **Sel 10** | Gladi Sprint Review (AI membaca repo & proposal, perbaiki yang kecil, catat sisanya). PM: PR `develop` → `main`, tag `v0.1-sprint1`. Naskah demo: tiap orang mendemokan 2 PBI-nya. |
+| **Rab 11** | **Sprint Review** + Retrospective + Sprint Planning 2 |
 
-**Dokumen skenario uji** (`docs/SKENARIO-UJI-SPRINT-1.md`, disusun P2 di Tahap 3, sesuai kolom Testing proposal): untuk setiap PBI, tabel berisi No, skenario (diambil dari Standard & Alternative Process), langkah, data uji, hasil yang diharapkan, hasil aktual, status, penguji.
-
-**Gerbang G4 (Selasa 10 Nov)**
-- [ ] Tidak ada issue `bug` prioritas tinggi yang masih terbuka
-- [ ] `main` = `develop`, tag `v0.1-sprint1` ada, CI hijau di `main`
-- [ ] Repo publik bisa di-clone orang luar dan dijalankan mengikuti README
-- [ ] Tidak ada `.env` atau rahasia di riwayat repo (`git log --all -- .env` kosong)
-- [ ] Log prompt AI lengkap untuk semua PR
+**Gerbang G4 (Selasa 10 Nov):** tidak ada bug prioritas tinggi terbuka · `main` = `develop`, CI hijau · repo bisa di-clone & dijalankan ikut README · tidak ada `.env` di riwayat · log prompt AI lengkap.
 
 ---
 
-## Daftar PR (pantau di GitHub Project)
-
+## Daftar PR tersisa
 | PR | Isi | Pasangan | Target merge | Bergantung pada |
 |---|---|---|---|---|
-| F1 | Kerangka Laravel + paket starter | P4 | Kam 15 Okt | — |
-| F2 | Migration, model, factory, seeder, CI | P3 | Sab 17 Okt (maks. Sen 19, 10.00) | F1 |
-| F3 | Auth + middleware role | P4 | Sen 19 Okt | F2 |
-| F4 | Layout, komponen, menu, helper, Beranda kosong | P4 | Sen 19 Okt | F3 |
-| F5 | Kontrak `KonsumsiService` | P1 | Sel 20 Okt | F2 |
-| F6 | Kontrak `TokenService` | P2 | Sel 20 Okt | F2 |
-| F7 | Kontrak `TarifService` | P4 | Sel 20 Okt | F2 |
-| 1a | PBI 1 Kelola alat | P1 | Kam 22 Okt | G1 |
-| 5a | PBI 5 Catat token | P2 | Kam 22 Okt | G1 |
-| 15a | PBI 15 Profil & tarif | P4 | Kam 22 Okt | G1 |
-| 4a | `PeringkatAlatService` (mock) | P3 | Kam 22 Okt | F5 |
-| 23a | PBI 23 Katalog alat | P4 | Jum 23 Okt | G1 |
-| 2a | PBI 2 Pemakaian harian | P1 | Sen 26 Okt | 1a |
-| 7a | PBI 7 Sisa kWh + `sisaTerkini`, `kwhDibeliAntara` | P2 | Sen 26 Okt | G1 |
-| 8a | `PrediksiTokenService` (mock) | P3 | Sen 26 Okt | F5, F6 |
-| 13a | PBI 13 Tips hemat | P4 | Sel 27 Okt | G1 |
-| 18a | `EstimasiBiayaService` (mock) | P3 | Sel 27 Okt | F5, F6, F7 |
-| **3a** | **`KonsumsiService` asli** | P1 | **Rab 28 Okt (maks. Kam 29)** | 2a |
-| 3b | PBI 3 Halaman estimasi konsumsi | P1 | Kam 29 Okt | 3a |
-| 6a | PBI 6 Rekap token | P2 | Kam 29 Okt | 5a |
-| 4b | PBI 4 Halaman peringkat | P3 | Kam 29 Okt | 3a |
-| 1b | Katalog → form alat (A5) | P1 + P4 | Sen 2 Nov | 1a, 23a |
-| 6b | Grafik pengeluaran (opsional) | P2 | Sen 2 Nov | 6a |
-| 8b | PBI 8 Halaman prediksi | P3 | Sen 2 Nov | 3a, 7a |
-| B1 | Kartu Beranda | P4 | Sen 2 Nov | 3a, 7a, 8b |
-| 18b | PBI 18 Halaman biaya | P3 | Sel 3 Nov | 3a, 6a, 15a |
-| U1 | Responsif & kesesuaian Figma | P4 | Sel 3 Nov | semua |
-| fix/* | Perbaikan bug | semua | 4–9 Nov | G3 |
-
-Total: P1 6 PR · P2 5 PR · P3 7 PR (+ fondasi DB) · P4 9 PR (+ fondasi UI). P3 dan P4 lebih padat di awal, P2 lebih ringan sehingga memegang dokumen uji dan data demo.
+| C1 | Persiapan PBI tambahan | P4 | Sel 27 Okt | — |
+| M1 | Migration target & pengaturan | P3 | Rab 28 Okt | C1 |
+| svc-P3 | `PeringkatAlatService`, `PrediksiTokenService` | P3 | Sel 27 Okt | — |
+| 1a | PBI 01 | P1 | Sel 27 Okt | — |
+| svc-P2 | `TokenService` | P2 | **Kam 29 Okt** | — |
+| 3a | `KonsumsiService` | P1 | **Kam 29 Okt** | — |
+| 23a | PBI 23 | P4 | Rab 28 Okt | — |
+| 25a | PBI 25 | P3 | Kam 29 Okt | C1 |
+| 5a | PBI 05 | P2 | Kam 29 Okt | — |
+| 2a | PBI 02 (+hapus) | P1 | Jum 30 Okt | 1a |
+| 15a | PBI 15 | P4 | Jum 30 Okt | — |
+| 7a | PBI 07 (+ubah) | P2 | Sen 2 Nov | svc-P2 |
+| 11a | PBI 11 | P3 | Sen 2 Nov | M1, 3a |
+| 13a | PBI 13 | P4 | Sen 2 Nov | — |
+| 3b | PBI 03 halaman | P1 | Sel 3 Nov | 3a |
+| 6a | PBI 06 | P2 | Sel 3 Nov | svc-P2 |
+| 8a | PBI 08 halaman | P3 | Sel 3 Nov | 3a, svc-P2 |
+| 4a | PBI 04 halaman | P1 | Rab 4 Nov | 3a, svc-P3 |
+| 24a | PBI 24 | P2 | Rab 4 Nov | M1, 3a |
+| 18a | PBI 18 | P3 | Rab 4 Nov | 3a, svc-P2 |
+| 17a | PBI 17 | P4 | Rab 4 Nov | C1, 3a |
+| B1 | Kartu Beranda | P4 | Rab 4 Nov | 3a, svc-P2 |
+| fix/* | Perbaikan bug | semua | 6–9 Nov | G3 |
 
 ---
 
-## Prompt Claude Code per tahap (contoh)
-
-| Tahap | Contoh prompt |
-|---|---|
-| Mulai PBI | `/mulai-pbi 05` |
-| Fondasi P3 | "Buat semua migration Sprint 1 persis sesuai docs/DATABASE.md, termasuk index dan unique. Tunjukkan rencana dulu." |
-| Service | "Implementasikan KonsumsiService::estimasiBulanan sesuai docs/pbi/PBI-03. Tulis unit test dulu memakai contoh angka di spesifikasi, jalankan sampai merah, baru implementasi." |
-| Tampilan dari Figma | "Ambil desain dari link Figma ini <link frame 02 Alat Listrik>. Bangun resources/views/alat/index.blade.php memakai komponen x-card, x-table, x-button yang sudah ada. Jangan buat warna baru." |
-| Sebelum PR | `/cek-sebelum-pr` |
-| Review | `/review-pr 14` |
-| Konflik | `/selesaikan-konflik` |
-| Gladi review | "Baca proposal (docs/proposal.pdf) dan bandingkan dengan kode di repo ini untuk 12 PBI Sprint 1. Daftar fitur/alternative process yang belum ada atau berbeda." |
-
-Biasakan: satu sesi Claude Code = satu bagian PR. Setelah PR dibuka, `/clear` sebelum mulai bagian berikutnya supaya konteks tidak tercampur.
-
----
-
-## Rencana darurat (kalau terlambat)
-
-Prioritas PBI kalau waktu tidak cukup (dibahas dengan PO Kartika):
-
-| Prioritas | PBI | Catatan |
+## Rencana darurat
+| Prioritas | PBI | Alasan |
 |---|---|---|
-| **Wajib** | 1, 2, 3, 5, 7, 8, 15, 18 | Inti aplikasi; jalur kritis |
-| **Penting** | 4, 6, 23 | Ringan, turunan langsung dari yang wajib |
-| **Bisa ditunda ke Sprint 2** | 13 | Berdiri sendiri; baru dipakai PBI 12 di Sprint 2 |
-
-Yang dipangkas lebih dulu (sebelum memindahkan PBI): grafik opsional (6b, proyeksi di PBI 8), filter tambahan, animasi/polish.
+| **Wajib (syarat dosen)** | 01, 02, 05, 07, 11, 13, 23, 25 (CRUD) | Tiap anggota harus punya 1 PBI CRUD penuh |
+| **Wajib (inti)** | 03, 15, 06, 08, 18 | Jalur hitungan utama |
+| **Penting** | 04, 17, 24 | Ringan, tinggal memanggil `KonsumsiService` |
 
 | Tanda bahaya | Tindakan |
 |---|---|
-| G1 lewat > 1 hari | Semua pasangan bantu P3/P4; tahap lain mundur, potong cadangan akhir pekan |
-| PR 3a belum merge Kamis 29 Okt | P1 berhenti dari pekerjaan lain; satu orang P3 ikut *pair* dengan P1 |
+| `KonsumsiService` / `TokenService` belum merge Kamis 29 Okt | Pasangan pemilik berhenti dari pekerjaan lain; satu orang P3 ikut *pair* |
+| C1 / M1 belum merge Rabu 28 Okt | P4/P3 prioritaskan; PBI 25 & 17 boleh mulai di cabang, merge setelah C1 |
 | PR menunggu review > 1 hari | Scrum Master menunjuk reviewer pengganti |
 | CI merah di `develop` | Semua berhenti merge sampai hijau; pemilik PR terakhir memperbaiki |
 | Konflik yang tidak bisa diselesaikan | Jangan dipaksa; kirim `git status` + `git diff` ke grup atau ke Claude di chat |
 
 ## Ritme rutin
-- **Setiap pagi:** `git fetch && git merge origin/develop`, Daily Scrum 15 menit di grup (kemarin / hari ini / hambatan / file orang lain yang perlu diubah)
-- **Setiap merge ke develop:** umumkan di grup
-- **Selasa malam tiap minggu:** cek gerbang (20 menit, dipimpin SM Reysha)
-- **Akhir tiap minggu:** PO Kartika memperbarui GitHub Project; PM mencatat progres untuk laporan
+- **Setiap pagi:** `git switch develop && git pull`, lalu di cabang kerja `git merge develop`. Daily Scrum 15 menit di grup.
+- **Setiap merge ke develop:** umumkan di grup.
+- **Akhir tiap minggu:** PO Tika memperbarui GitHub Project (16 kartu PBI); PM mencatat progres.
