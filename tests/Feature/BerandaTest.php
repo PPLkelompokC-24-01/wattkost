@@ -16,6 +16,19 @@ class BerandaTest extends TestCase
 
     private const BANNER = 'Lengkapi profil kost agar estimasi biaya bisa dihitung.';
 
+    /** Tombol pintasan Beranda: label => nama route (lihat beranda.blade.php). */
+    private const PINTASAN = [
+        'Catat Pemakaian' => 'pemakaian.index',
+        '+ Catat Token' => 'token.index',
+        'Buka Dashboard' => 'dashboard',
+        'Lihat Rekomendasi Hemat' => 'rekomendasi.index',
+        'Cek Peringatan Lonjakan' => 'lonjakan.index',
+        'Lihat Jejak Karbon' => 'karbon.index',
+    ];
+
+    /** Kartu statistik yang punya tautan "Lihat detail" kalau route-nya ada. */
+    private const KARTU = ['meteran.index', 'analisis.prediksi', 'konsumsi.index', 'analisis.peringkat'];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -83,14 +96,20 @@ class BerandaTest extends TestCase
             ->assertSee('href="'.route('profil.show').'"', false);
     }
 
-    public function test_tombol_modul_tersembunyi_kalau_route_belum_ada(): void
+    /** Memakai route asli: tetap hijau berapa pun route modul yang sudah di-merge. */
+    public function test_tombol_pintasan_mengikuti_route_yang_sudah_ada(): void
     {
-        $this->actingAs($this->penghuni('penghuni1@wattkost.test'))
+        $response = $this->actingAs($this->penghuni('penghuni1@wattkost.test'))
             ->get(route('beranda'))
-            ->assertDontSee('Buka Dashboard')
-            ->assertDontSee('Lihat Rekomendasi Hemat')
-            ->assertDontSee('Cek Peringatan Lonjakan')
-            ->assertDontSee('Lihat Jejak Karbon');
+            ->assertOk();
+
+        foreach (self::PINTASAN as $label => $nama) {
+            Route::has($nama) ? $response->assertSee($label) : $response->assertDontSee($label);
+        }
+
+        // Teks "Lihat detail" sama di semua kartu, jadi dihitung: satu per kartu yang route-nya ada
+        $jumlahAda = count(array_filter(self::KARTU, fn (string $nama) => Route::has($nama)));
+        $this->assertSame($jumlahAda, substr_count($response->getContent(), 'Lihat detail'));
     }
 
     public function test_tombol_modul_muncul_kalau_route_sudah_ada(): void
