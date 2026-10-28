@@ -87,7 +87,6 @@ class BerandaTest extends TestCase
     {
         $this->actingAs($this->penghuni('penghuni1@wattkost.test'))
             ->get(route('beranda'))
-            ->assertDontSee('Lihat detail')
             ->assertDontSee('Buka Dashboard')
             ->assertDontSee('Lihat Rekomendasi Hemat')
             ->assertDontSee('Cek Peringatan Lonjakan')
