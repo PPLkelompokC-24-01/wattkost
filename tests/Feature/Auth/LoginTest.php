@@ -4,7 +4,6 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -72,18 +71,8 @@ class LoginTest extends TestCase
         $this->post(route('login'), $data)->assertTooManyRequests();
     }
 
-    public function test_admin_ke_beranda_kalau_katalog_belum_ada(): void
-    {
-        User::factory()->admin()->create(['email' => 'admin@wattkost.test']);
-
-        $this->post(route('login'), ['email' => 'admin@wattkost.test', 'password' => 'password'])
-            ->assertRedirect(route('beranda'));
-    }
-
     public function test_admin_ke_katalog_kalau_route_sudah_ada(): void
     {
-        Route::middleware(['web', 'auth', 'role:admin'])->get('/admin/katalog', fn () => 'ok')->name('admin.katalog.index');
-        Route::getRoutes()->refreshNameLookups();
         User::factory()->admin()->create(['email' => 'admin@wattkost.test']);
 
         $this->post(route('login'), ['email' => 'admin@wattkost.test', 'password' => 'password'])
@@ -92,8 +81,6 @@ class LoginTest extends TestCase
 
     public function test_penghuni_tetap_ke_beranda_walau_katalog_ada(): void
     {
-        Route::middleware(['web', 'auth', 'role:admin'])->get('/admin/katalog', fn () => 'ok')->name('admin.katalog.index');
-        Route::getRoutes()->refreshNameLookups();
         User::factory()->create(['email' => 'puti@wattkost.test']);
 
         $this->post(route('login'), ['email' => 'puti@wattkost.test', 'password' => 'password'])

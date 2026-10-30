@@ -38,7 +38,7 @@ Dokumen ini **mengalahkan** pembagian lama di `SPRINT-1-PLAN.md` dan `TAHAPAN-SP
 | **P1** Tata + Eca | 01, 02, 03, **04** | 01, 02 | Tata: 01 + 03 · Eca: 02 + 04 | 02 ditambah Hapus. **04 pindah dari P3** (turunan langsung `KonsumsiService` milik P1) |
 | **P2** Rafa + Beden | 05, 06, 07, **24** | 05, 07 | Rafa: 05 + 06 · Beden: 07 + 24 | 07 ditambah Ubah. 24 dari Sprint 2 |
 | **P3** Luthfan + Dhias | 08, 18, **11**, **25** | 11, 25 | Luthfan: 08 + 11 · Dhias: 18 + 25 | 04 dilepas ke P1. 11 dari Sprint 2, 25 PBI baru |
-| **P4** Puti + Tika | 13, 15, 23, **17** | 13, 23 | Puti: 23 + 15 · Tika: 13 + 17 | 17 dari Sprint 2 |
+| **P4** Puti + Tika | 13, 15, 23, **17** | 13, 23 | Tika: 13 + 15 · Puti: 23 + 17 | 17 dari Sprint 2 |
 
 **Serah terima PBI 04 (P3 → P1):** `PeringkatAlatService` yang sudah dibuat P3 tetap dipakai. P3 menyelesaikan dan me-merge PR service-nya apa adanya. Setelah itu P1 membuat halaman 04 (controller, view, feature test). Kalau P3 sudah membuat file halaman 04 di cabangnya, beri tahu P1 dan serahkan cabangnya.
 
