@@ -6,6 +6,7 @@ use App\Models\ProfilKost;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 /** PBI 15 — Kelola Profil Kost & Tarif. */
@@ -14,6 +15,14 @@ class ProfilKostTest extends TestCase
     use RefreshDatabase;
 
     private const BANNER = 'Lengkapi profil kost agar estimasi biaya bisa dihitung.';
+
+    /** Tautan "Digunakan oleh": label => nama route (lihat profil/show.blade.php). */
+    private const DIGUNAKAN_OLEH = [
+        'Estimasi Konsumsi' => 'konsumsi.index',
+        'Estimasi Biaya' => 'analisis.biaya',
+        'Simulasi Hemat' => 'simulasi.index',
+        'Jejak Karbon' => 'karbon.index',
+    ];
 
     protected function setUp(): void
     {
@@ -223,16 +232,26 @@ class ProfilKostTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->actingAs($user)->get(route('profil.show'))->assertDontSee('Digunakan oleh');
+        $this->assertTautanDigunakanOleh($this->actingAs($user)->get(route('profil.show')));
 
         // Seolah-olah PBI 18 sudah merge (pola sama dengan BerandaTest)
         Route::get('/estimasi-biaya', fn () => 'ok')->name('analisis.biaya');
         Route::getRoutes()->refreshNameLookups();
 
-        $this->actingAs($user)
-            ->get(route('profil.show'))
-            ->assertSee('Digunakan oleh')
-            ->assertSee('Estimasi Biaya →')
-            ->assertDontSee('Jejak Karbon →');
+        $this->assertTautanDigunakanOleh($this->actingAs($user)->get(route('profil.show')))
+            ->assertSee('Estimasi Biaya →');
+    }
+
+    /** Tiap tautan tampil kalau route-nya ada; judul "Digunakan oleh" tampil kalau minimal satu tautan ada. */
+    private function assertTautanDigunakanOleh(TestResponse $response): TestResponse
+    {
+        $adaTautan = false;
+
+        foreach (self::DIGUNAKAN_OLEH as $label => $nama) {
+            $adaTautan = $adaTautan || Route::has($nama);
+            Route::has($nama) ? $response->assertSee($label.' →') : $response->assertDontSee($label.' →');
+        }
+
+        return $adaTautan ? $response->assertSee('Digunakan oleh') : $response->assertDontSee('Digunakan oleh');
     }
 }

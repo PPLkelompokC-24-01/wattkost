@@ -1,10 +1,11 @@
 <?php
 
-// SEMENTARA P3 - hapus sebelum merge (file asli milik P2, PR 7a)
-// Field mengikuti docs/PANDUAN-PROMPT.md Tahap A P2. Dipakai mock TokenService::rekap() di test PBI 18.
-
 namespace App\Data;
 
+/**
+ * Hasil TokenService::rekap() (PBI 6). Tidak disimpan ke database.
+ * rataRupiahPerKwh belum dibulatkan (bulatkan saat tampil); null kalau totalKwh = 0.
+ */
 final readonly class RekapToken
 {
     public function __construct(
