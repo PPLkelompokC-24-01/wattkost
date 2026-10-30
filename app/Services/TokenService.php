@@ -1,31 +1,58 @@
 <?php
 
-// SEMENTARA P3 - hapus sebelum merge (file asli milik P2, PR 7a)
-// Sengaja TIDAK final supaya bisa di-mock di unit test P3. Tidak berisi rumus apa pun.
-// App\Data\RekapToken belum ada; aman karena rekap() tidak pernah dipanggil sampai selesai.
-
 namespace App\Services;
 
 use App\Data\RekapToken;
+use App\Models\PembelianToken;
 use App\Models\SisaKwh;
 use App\Models\User;
 use Carbon\CarbonInterface;
-use LogicException;
 
+/**
+ * Rekap pembelian token & data meteran (PBI 5, 6, 7). Kontrak dikunci di docs/ARSITEKTUR.md.
+ *
+ * Sengaja TIDAK final (pengecualian KONVENSI): unit test P3 (PBI 8, 18) memakai $this->mock(TokenService::class),
+ * dan Mockery tidak bisa me-mock class final.
+ */
 class TokenService
 {
+    /**
+     * Rekap pembelian token dengan tanggal_beli di antara tanggal $awal dan $akhir (keduanya ikut).
+     * Jam pada $awal/$akhir diabaikan: dinormalkan ke awal & akhir hari supaya hasil sama di MySQL dan SQLite.
+     */
     public function rekap(User $user, CarbonInterface $awal, CarbonInterface $akhir): RekapToken
     {
-        throw new LogicException('TokenService belum diimplementasikan (menunggu PR 7a P2).');
+        $pembelian = $user->pembelianToken()
+            ->whereBetween('tanggal_beli', [$awal->copy()->startOfDay(), $akhir->copy()->endOfDay()])
+            ->get(['nominal', 'jumlah_kwh']);
+
+        $totalPengeluaran = (int) $pembelian->sum('nominal');
+        $totalKwh = (float) $pembelian->sum(fn (PembelianToken $p) => (float) $p->jumlah_kwh);
+
+        return new RekapToken(
+            totalPengeluaran: $totalPengeluaran,
+            jumlahTransaksi: $pembelian->count(),
+            totalKwh: $totalKwh,
+            rataRupiahPerKwh: $totalKwh > 0 ? $totalPengeluaran / $totalKwh : null,
+        );
     }
 
+    /** Pembacaan meteran terbaru (dicatat_pada terbesar, lalu id terbesar), null kalau belum pernah input. */
     public function sisaTerkini(User $user): ?SisaKwh
     {
-        throw new LogicException('TokenService belum diimplementasikan (menunggu PR 7a P2).');
+        return $user->sisaKwh()->latest('dicatat_pada')->latest('id')->first();
     }
 
+    /**
+     * Total kWh token yang DIBELI dengan tanggal_beli > tanggal $dari dan <= tanggal $sampai. Dipakai PBI 8.
+     * Hanya tanggalnya yang dibandingkan: pembelian di tanggal $dari tidak dihitung, di tanggal $sampai dihitung.
+     */
     public function kwhDibeliAntara(User $user, CarbonInterface $dari, CarbonInterface $sampai): float
     {
-        throw new LogicException('TokenService belum diimplementasikan (menunggu PR 7a P2).');
+        return (float) $user->pembelianToken()
+            ->whereDate('tanggal_beli', '>', $dari->toDateString())
+            ->whereDate('tanggal_beli', '<=', $sampai->toDateString())
+            ->get(['jumlah_kwh'])
+            ->sum(fn (PembelianToken $p) => (float) $p->jumlah_kwh);
     }
 }
