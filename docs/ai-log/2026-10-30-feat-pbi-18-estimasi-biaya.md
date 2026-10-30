@@ -62,3 +62,21 @@ coba run webnya
 yaudah matikan. terus ini gua commit github gimana
 ```
 
+## 15:54 — Rafa
+
+```text
+kenapa waiting
+```
+
+## 15:55 — Rafa
+
+```text
+yaudah lanjut pbi 25
+```
+
+## 15:57 — Rafa
+
+```text
+setuju
+```
+
