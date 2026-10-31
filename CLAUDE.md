@@ -33,6 +33,7 @@ Kalau spesifikasi PBI tidak menjawab pertanyaanmu, **tanya user**, jangan mengar
 6. Data selalu milik user yang login: setiap query penghuni WAJIB dibatasi `user_id = auth()->id()` (lewat relasi `auth()->user()->alatListrik()` dsb). Akses data orang lain = 403/404, dan harus ada test-nya.
 7. Hasil perhitungan (kWh, biaya, prediksi, rekap) **dihitung di Service, tidak disimpan** ke tabel kecuali spesifikasi PBI bilang sebaliknya.
 8. Query harus jalan di MySQL **dan** SQLite (test). Jangan pakai fungsi SQL khusus MySQL (`DATE_FORMAT`, `MONTH()`, `IF()`, raw `GROUP BY` tanggal). Filter tanggal pakai `whereBetween` dengan Carbon, olah/agregasi di PHP (Collection).
+9. **Claude TIDAK PERNAH** menjalankan `git add`, `commit`, `push`, `merge`, `rebase`, `reset`, `revert`, `cherry-pick`, `tag`, atau membuat/merge PR (`gh pr create/merge`). Semua itu dilakukan anggota sendiri. Claude cukup **menuliskan perintahnya** (satu perintah per baris, dalam blok kode) untuk diketik anggota satu per satu. Yang boleh dijalankan Claude: `git status`, `git diff`, `git log`, `git fetch`, `git merge-tree`.
 
 ## Struktur kode (pola wajib)
 
