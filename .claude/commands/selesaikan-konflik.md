@@ -12,4 +12,10 @@ Sedang ada konflik merge. Bantu selesaikan dengan AMAN:
    - File milik pasangan lain: pertahankan versi develop, lalu terapkan ulang perubahan kita kalau memang perlu, dan beri tahu user untuk konfirmasi ke pemilik file.
 4. Usulkan hasil gabungan per file, tunggu persetujuan, lalu edit.
 5. Setelah semua beres: pastikan tidak ada penanda `<<<<<<<`, `=======`, `>>>>>>>` tersisa (`git diff --check`), jalankan `php artisan test` dan `npm run build`.
-6. Beri tahu user perintah commit penyelesaian merge (jangan commit sendiri).
+6. Tulis daftar perintah yang harus diketik anggota **satu per satu** untuk menyelesaikan merge. Claude TIDAK menjalankan perintah ini dan tidak menawarkan untuk menjalankannya:
+   ```bash
+   git add <file-konflik-yang-sudah-beres>
+   git status
+   git commit -m "chore: selesaikan konflik merge origin/develop"
+   git push
+   ```

@@ -40,6 +40,8 @@ git push -u origin feat/pbi-01-kelola-alat
 ```
 Di Claude Code jalankan `/cek-sebelum-pr` sebelum membuka PR.
 
+> **Aturan:** Claude Code tidak pernah menjalankan `git add/commit/push/merge/rebase/reset/revert/cherry-pick/tag` atau membuat/merge PR — Claude hanya menuliskan perintahnya, dan anggota (P1–P4) mengetiknya sendiri satu per satu.
+
 ## Aturan PR
 1. **Kecil.** Idealnya < 400 baris berubah. PBI besar dipecah: (a) model+service+unit test, (b) controller+view+feature test.
 2. Base branch = `develop`. Judul: `PBI-01 Kelola Data Alat Listrik (bagian 1: CRUD)`.
