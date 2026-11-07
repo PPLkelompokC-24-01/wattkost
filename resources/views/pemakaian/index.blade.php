@@ -6,6 +6,7 @@
                 aria-label="Pilih tanggal" data-kirim-otomatis />
             <noscript><x-button type="submit" variant="secondary" small>Tampilkan</x-button></noscript>
         </form>
+        <x-button href="{{ route('konsumsi.index') }}" variant="secondary">Estimasi Konsumsi</x-button>
         @if ($daftarAlat->isNotEmpty())
             <x-button type="submit" form="form-pemakaian">Simpan</x-button>
         @endif
