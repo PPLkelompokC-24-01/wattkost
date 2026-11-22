@@ -15,7 +15,7 @@ Bahasa komunikasi dengan tim: **Bahasa Indonesia**. Nama domain (model, tabel, v
 
 ## Baca dulu sebelum mengerjakan apa pun
 
-1. `docs/SPRINT-1-PLAN.md` — siapa mengerjakan apa, file mana milik siapa; `docs/TAHAPAN-SPRINT-1.md` — urutan PR & gerbang (jangan mengerjakan PR yang dependensinya belum ada di `develop`)
+1. **`docs/SPRINT-2-PLAN.md`** — Sprint 2 (23 Nov – 13 Des): siapa mengerjakan apa, file mana milik siapa, keputusan tim, PR persiapan M2/C2. File Sprint 1 tetap mengikuti `docs/SPRINT-1-PLAN.md` §3.
 2. `docs/pbi/PBI-XX-*.md` — spesifikasi PBI yang sedang dikerjakan (route, validasi, rumus, test)
 3. `docs/DATABASE.md` — skema tabel FINAL. Jangan menebak nama kolom.
 4. `docs/KONVENSI.md` — aturan penamaan & struktur folder
@@ -25,8 +25,8 @@ Kalau spesifikasi PBI tidak menjawab pertanyaanmu, **tanya user**, jangan mengar
 
 ## Aturan keras (wajib dipatuhi)
 
-1. **Kepemilikan file.** Hanya ubah file milik modul PBI yang sedang dikerjakan (lihat tabel kepemilikan di `docs/SPRINT-1-PLAN.md`). Kalau perlu mengubah file milik pasangan lain atau file bersama (`routes/web.php`, `resources/views/layouts/*`, `config/menu.php`, `composer.json`, `package.json`, `bootstrap/app.php`, migration yang sudah ada di `develop`), **berhenti dan beri tahu user** — itu harus lewat PR terpisah yang disetujui.
-2. **Migration yang sudah di-merge ke `develop` TIDAK BOLEH diedit.** Perubahan skema = migration BARU (`php artisan make:migration add_xxx_to_yyy_table`), lalu update `docs/DATABASE.md` di PR yang sama.
+1. **Kepemilikan file.** Hanya ubah file milik modul PBI yang sedang dikerjakan (lihat tabel kepemilikan di `docs/SPRINT-2-PLAN.md` §5 dan `docs/SPRINT-1-PLAN.md` §3). Kalau perlu mengubah file milik pasangan lain atau file bersama (`routes/web.php`, `resources/views/layouts/*`, `config/menu.php`, `composer.json`, `package.json`, `bootstrap/app.php`, migration yang sudah ada di `develop`), **berhenti dan beri tahu user** — itu harus lewat PR terpisah yang disetujui.
+2. **Migration yang sudah di-merge ke `develop` TIDAK BOLEH diedit.** Perubahan skema = migration BARU (`php artisan make:migration add_xxx_to_yyy_table`), lalu update `docs/DATABASE.md` di PR yang sama. **Sprint 2: semua migration dibuat oleh Puti (PM).** Kalau PBI butuh tabel/kolom yang belum ada, berhenti dan beri tahu user untuk meminta ke Puti. Jangan membuat migration sendiri.
 3. **Jangan pernah** membaca, menampilkan, atau meng-commit `.env`. Repo ini PUBLIK. Kunci/password hanya di `.env` lokal.
 4. **Jangan** menjalankan `git push --force`, `git reset --hard` pada branch bersama, `php artisan migrate:fresh` di database orang lain, atau menghapus file di luar modulmu.
 5. **Jangan** menambah package composer/npm. Kalau benar-benar perlu, sampaikan ke user (harus disetujui PM, dipasang lewat PR khusus).
@@ -70,6 +70,7 @@ Signature lengkap ada di `docs/ARSITEKTUR.md`. Kalau service belum jadi, pakai d
 - Kerjakan bertahap: migration/model (kalau ada) → service + unit test → request + controller + route → view → feature test.
 - Setelah selesai satu bagian, jalankan: `php vendor/bin/pint --dirty` lalu `php artisan test --filter=<NamaModul>`. Jangan bilang "selesai" kalau test merah.
 - Setiap PBI wajib punya feature test untuk: halaman tampil (200), simpan valid, simpan tidak valid (error validasi), tidak bisa akses data user lain, dan tamu diarahkan ke login.
+- **Sprint 2:** setiap PBI juga wajib punya skrip Selenium `tests/selenium/test_pbi_XX_*.py` (Python + pytest) sesuai bagian "Skenario Selenium" di spesifikasi. Ikuti pola `tests/selenium/conftest.py`. Claude menulis skripnya; anggota yang menjalankannya.
 - Jelaskan kode yang kamu tulis dengan singkat dalam Bahasa Indonesia — tim harus bisa menjelaskan kodenya saat sprint review.
 - Gunakan MCP `laravel-boost` untuk cek skema DB, daftar route, dan dokumentasi Laravel 12 sebelum menebak. Jangan memakai fitur yang hanya ada di Laravel 13.
 
