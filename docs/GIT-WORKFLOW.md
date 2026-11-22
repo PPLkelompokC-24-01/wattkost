@@ -10,6 +10,14 @@ fix/pbi-05-validasi-nominal  ← perbaikan bug
 chore/fondasi-layout         ← kerja fondasi
 ```
 
+**Mulai Sprint 2, nama branch WAJIB diawali kunci Jira** supaya branch, commit, dan PR otomatis tersambung ke story di Jira:
+```
+feat/SCRUM-199-pbi-09-pengingat-token
+fix/SCRUM-205-pbi-19-total-bagian
+chore/SCRUM-214-migration-sprint-2
+```
+Pesan commit: `feat(pbi-09): SCRUM-199 tambah PengingatTokenService`. Judul PR: `SCRUM-199 PBI-09 Pengingat Token`. Nomor story ada di `docs/SPRINT-2-PLAN.md` §2.
+
 Aturan GitHub (Settings → Branches → Branch protection / Rulesets) untuk `main` **dan** `develop`:
 - Require a pull request before merging, **1 approval**
 - Require status checks to pass → pilih job `tests` (CI)
