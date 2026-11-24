@@ -21,10 +21,7 @@
         <span class="font-display text-xl lg:text-[28px] font-semibold truncate">{{ $title }}</span>
     </div>
     <div class="flex items-center gap-2 sm:gap-4">
-        <button type="button" aria-label="Notifikasi"
-            class="relative size-10 shrink-0 rounded-full bg-glass border border-line grid place-items-center text-white hover:border-aqua">
-            <x-icon name="bell" />
-        </button>
+        <x-lonceng-notifikasi />
         <div class="h-11 pl-1 sm:pr-4 rounded-full bg-glass border border-line flex items-center gap-3">
             <div @class([
                 'size-9 rounded-full grid place-items-center text-xs font-bold',

@@ -15,4 +15,12 @@ return [
     // kg CO2 per kWh, sistem Jawa-Madura-Bali. Sumber: Kepmen ESDM No. 163.K/HK.02/MEM.S/2021
     // (Faktor Emisi GRK Sistem Ketenagalistrikan, data 2019). Sementara; angka lampiran dicek P2 (PBI 24).
     'faktor_emisi_default' => 0.87,
+
+    // Deteksi lonjakan (PBI 22): rasio = kWh tanggal ÷ rata-rata kWh/hari 7 hari sebelumnya.
+    'lonjakan_ambang' => 1.5,   // rasio > 1,5 → lonjakan (tingkat "sedang")
+    'lonjakan_tinggi' => 2.0,   // rasio ≥ 2,0 → tingkat "tinggi"
+    'lonjakan_min_hari' => 7,   // minimal hari berdata sebelum deteksi dijalankan
+
+    // Pengingat token (PBI 09): nilai awal pengingat_batas_hari (kirim kalau sisa hari ≤ angka ini).
+    'pengingat_batas_hari_default' => 3,
 ];

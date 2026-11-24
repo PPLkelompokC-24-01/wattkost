@@ -115,6 +115,53 @@ class MenuSidebarTest extends TestCase
             ->assertSee('bg-amber-soft text-amber', false);
     }
 
+    /**
+     * Menu Sprint 2 (PR C2) hanya tampil kalau route-nya sudah didaftarkan pemilik modul.
+     * Dicek per item terhadap Route::has, jadi test tetap hijau setelah route asli di-merge.
+     */
+    public function test_menu_sprint_2_tersembunyi_selama_route_belum_ada(): void
+    {
+        $penghuni = ['Bantuan' => 'bantuan.index', 'Akun Saya' => 'akun.edit'];
+        $admin = [
+            'Golongan Tarif' => 'admin.golongan.index',
+            'Pengumuman' => 'admin.pengumuman.index',
+            'FAQ' => 'admin.faq.index',
+            'Tantangan' => 'admin.tantangan.index',
+            'Akun Saya' => 'akun.edit',
+        ];
+
+        foreach (['penghuni' => $penghuni, 'admin' => $admin] as $role => $item) {
+            $this->assertEqualsCanonicalizing(
+                $item,
+                array_intersect(array_column(config("menu.{$role}"), 'route', 'label'), $item),
+                "Item menu Sprint 2 untuk {$role} belum lengkap di config/menu.php",
+            );
+
+            $this->actingAs($this->user($role));
+            $html = (string) $this->renderLayout();
+
+            foreach ($item as $label => $route) {
+                $polaItem = '/<\/svg>\s*'.preg_quote($label, '/').'\s*<\/a>/';
+                Route::has($route)
+                    ? $this->assertMatchesRegularExpression($polaItem, $html)
+                    : $this->assertDoesNotMatchRegularExpression($polaItem, $html, "Menu {$label} tampil padahal route {$route} belum ada");
+            }
+        }
+    }
+
+    public function test_halaman_jadwal_menyalakan_menu_alat_listrik(): void
+    {
+        $this->daftarkanRoute(['alat.index' => '/alat-listrik', 'token.index' => '/token']);
+        $this->daftarkanRoute(
+            ['jadwal.uji' => '/jadwal-uji'],
+            fn () => Blade::render('<x-layouts.app title="Jadwal Alat">Isi</x-layouts.app>'),
+        );
+
+        $html = $this->get('/jadwal-uji')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/aria-current="page"[^>]*>\s*<svg[\s\S]*?<\/svg>\s*Alat Listrik/', $html);
+    }
+
     public function test_tamu_melihat_nama_cadangan(): void
     {
         $this->renderLayout()

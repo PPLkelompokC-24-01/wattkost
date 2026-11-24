@@ -10,7 +10,10 @@ require __DIR__.'/modules/auth.php';
 
 Route::middleware('auth')->get('/beranda', BerandaController::class)->name('beranda');
 
-foreach (['alat', 'token', 'analisis', 'profil', 'admin', 'target', 'perbandingan', 'karbon', 'pengguna', 'sprint2'] as $modul) {
+$modulSprint1 = ['alat', 'token', 'analisis', 'profil', 'admin', 'target', 'perbandingan', 'karbon', 'pengguna'];
+$modulSprint2 = ['notifikasi', 'dashboard', 'pengumuman', 'pengingat', 'patungan', 'jadwal', 'rekomendasi', 'faq', 'tantangan', 'golongan', 'akun'];
+
+foreach ([...$modulSprint1, ...$modulSprint2] as $modul) {
     require __DIR__."/modules/{$modul}.php";
 }
 

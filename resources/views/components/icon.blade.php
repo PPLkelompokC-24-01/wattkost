@@ -1,4 +1,4 @@
-{{-- Ikon garis 16×16 dari desain (14 ikon + `users` dari Lucide). Pemakaian: <x-icon name="plug" class="size-4" /> --}}
+{{-- Ikon garis 16×16 dari desain (14 ikon + `users` dari Lucide + `help`, `user`, `megaphone` untuk Sprint 2). Pemakaian: <x-icon name="plug" class="size-4" /> --}}
 @props(['name' => 'bolt'])
 
 <svg viewBox="0 0 16 16" {{ $attributes->class('size-5 shrink-0') }} fill="none" stroke="currentColor"
@@ -74,6 +74,23 @@
             <circle cx="6" cy="4.7" r="2.7" />
             <path d="M10.7 14v-1.3A2.7 2.7 0 0 0 8 10H4a2.7 2.7 0 0 0-2.7 2.7V14" />
             <path d="M10.7 2.1a2.7 2.7 0 0 1 0 5.2M14.7 14v-1.3a2.7 2.7 0 0 0-2-2.6" />
+        @break
+
+        {{-- Ikon tambahan Sprint 2 (gaya garis yang sama) --}}
+        @case('help')
+            <circle cx="8" cy="8" r="6" />
+            <path d="M6.3 6.2a1.8 1.8 0 0 1 3.5.6c0 1.2-1.8 1.6-1.8 2.7" />
+            <path d="M8 11.8h.01" />
+        @break
+
+        @case('user')
+            <circle cx="8" cy="5" r="3" />
+            <path d="M2.5 14.5v-1A3.5 3.5 0 0 1 6 10h4a3.5 3.5 0 0 1 3.5 3.5v1" />
+        @break
+
+        @case('megaphone')
+            <path d="M2 6.5v3h2.5L10 13V3L4.5 6.5H2Z" />
+            <path d="M5 9.5 6 14h1.5M12.5 6a2.5 2.5 0 0 1 0 4" />
         @break
 
         @default
