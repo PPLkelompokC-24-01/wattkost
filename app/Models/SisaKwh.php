@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\SisaKwhObserver;
 use Database\Factories\SisaKwhFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/** Observer: pemicu pengingat token (PBI 09) & deteksi lonjakan (PBI 22) — lihat docs/ARSITEKTUR.md. */
+#[ObservedBy(SisaKwhObserver::class)]
 class SisaKwh extends Model
 {
     /** @use HasFactory<SisaKwhFactory> */

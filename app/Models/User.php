@@ -100,4 +100,42 @@ class User extends Authenticatable
     {
         return $this->hasOne(PengaturanPengguna::class);
     }
+
+    // ---- Relasi Sprint 2 (PR M2) ----
+
+    /** @return HasMany<PeringatanLonjakan, $this> */
+    public function peringatanLonjakan(): HasMany
+    {
+        return $this->hasMany(PeringatanLonjakan::class);
+    }
+
+    /** @return HasMany<AnggotaPatungan, $this> */
+    public function anggotaPatungan(): HasMany
+    {
+        return $this->hasMany(AnggotaPatungan::class);
+    }
+
+    /** @return HasMany<PatunganToken, $this> */
+    public function patunganToken(): HasMany
+    {
+        return $this->hasMany(PatunganToken::class);
+    }
+
+    /** @return HasMany<PesertaTantangan, $this> */
+    public function pesertaTantangan(): HasMany
+    {
+        return $this->hasMany(PesertaTantangan::class);
+    }
+
+    /** @return HasMany<JadwalAlat, $this> */
+    public function jadwalAlat(): HasMany
+    {
+        return $this->hasMany(JadwalAlat::class);
+    }
+
+    /** @return HasMany<RekomendasiDitandai, $this> */
+    public function rekomendasiDitandai(): HasMany
+    {
+        return $this->hasMany(RekomendasiDitandai::class);
+    }
 }

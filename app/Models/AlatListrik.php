@@ -50,4 +50,10 @@ class AlatListrik extends Model
     {
         return $this->hasMany(PemakaianHarian::class);
     }
+
+    /** @return HasMany<JadwalAlat, $this> */
+    public function jadwalAlat(): HasMany
+    {
+        return $this->hasMany(JadwalAlat::class);
+    }
 }
