@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             KatalogAlatSeeder::class,
             TipsHematSeeder::class,
+            // Data master Sprint 2 (PR M2). Golongan tarif sebelum ProfilKost karena profil merujuk nama golongan.
+            GolonganTarifSeeder::class,
+            TantanganSeeder::class,
+            FaqSeeder::class,
             ProfilKostSeeder::class,
             AlatListrikSeeder::class,
             PemakaianHarianSeeder::class,
