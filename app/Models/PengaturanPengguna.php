@@ -22,6 +22,24 @@ class PengaturanPengguna extends Model
      */
     protected $fillable = [
         'faktor_emisi',
+        // PBI 09 Pengingat Token (PR M2)
+        'pengingat_aktif',
+        'pengingat_batas_hari',
+        'pengingat_email',
+        'pengingat_dicek_pada',
+        'pengingat_terakhir_pada',
+    ];
+
+    /**
+     * Sama dengan default kolom di migration, supaya $user->pengaturanPengguna()->firstOrNew()
+     * (user yang belum punya baris) langsung terbaca nilai bawaan tanpa perlu disimpan dulu.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'pengingat_aktif' => true,
+        'pengingat_batas_hari' => 3,
+        'pengingat_email' => false,
     ];
 
     protected function casts(): array
@@ -29,6 +47,11 @@ class PengaturanPengguna extends Model
         return [
             // Pengecualian aturan decimal:2 — kolom decimal(6,4), kg CO2/kWh butuh 4 desimal
             'faktor_emisi' => 'decimal:4',
+            'pengingat_aktif' => 'boolean',
+            'pengingat_batas_hari' => 'integer',
+            'pengingat_email' => 'boolean',
+            'pengingat_dicek_pada' => 'date',
+            'pengingat_terakhir_pada' => 'datetime',
         ];
     }
 

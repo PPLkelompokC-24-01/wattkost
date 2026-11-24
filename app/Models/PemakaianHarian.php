@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use App\Observers\PemakaianHarianObserver;
 use Database\Factories\PemakaianHarianFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Query kolom `tanggal` WAJIB pakai Carbon atau whereDate() — lihat docs/DATABASE.md bagian Konvensi.
+ * Observer: pemicu pengingat token (PBI 09) & deteksi lonjakan (PBI 22) — lihat docs/ARSITEKTUR.md.
  */
+#[ObservedBy(PemakaianHarianObserver::class)]
 class PemakaianHarian extends Model
 {
     /** @use HasFactory<PemakaianHarianFactory> */
