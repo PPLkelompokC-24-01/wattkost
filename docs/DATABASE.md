@@ -1,4 +1,4 @@
-# Skema Database — Sprint 1 (FINAL)
+# Skema Database — Sprint 1 & Sprint 2 (FINAL)
 
 Pemilik: **Pasangan 3** (Luthfan & Dhias). Semua migration di bawah dibuat di Minggu 1. Setelah di-merge ke `develop`, **migration tidak boleh diedit** — perubahan lewat migration baru + update dokumen ini di PR yang sama.
 
@@ -118,6 +118,7 @@ Dibuat lewat migration **baru** (`2026_10_27_*`), migration Sprint 1 di atas tid
 | id | PK | |
 | user_id | FK users, **unique**, cascadeOnDelete | tidak fillable |
 | faktor_emisi | decimal(6,4) nullable | kg CO₂/kWh; null → `config('wattkost.faktor_emisi_default')` |
+| pengingat_* | | 5 kolom PBI 09, ditambah di PR M2 — lihat bagian Sprint 2 |
 
 ## Relasi Eloquent (wajib ada di model)
 ```
@@ -169,17 +170,30 @@ return [
 | Pemakaian_Listrik (meter awal/akhir) | diganti `sisa_kwh` (riwayat) | sama-sama data meteran; menghindari dua sumber kebenaran |
 | Perbandingan_Pemakaian, Laporan_Bulanan, Jejak_Karbon, Simulasi | Sprint 2, kemungkinan besar dihitung (bukan tabel) | |
 | Target_Hemat | **dijadikan tabel** `target_hemat` di PR M1 (revisi 26 Okt) | PBI 11 dipindah ke Sprint 1 |
-| Riwayat_Unduh, Notifikasi, Pengaturan_Token, Patungan_Token, Anggota_Patungan, Tantangan, Poin | Sprint 2 — migration baru | |
+| Riwayat_Unduh, Notifikasi, Pengaturan_Token, Patungan_Token, Anggota_Patungan, Tantangan, Poin | Sprint 2 — migration baru (PR M2, lihat bagian berikut) | Poin = `peserta_tantangan.poin_didapat`; Pengaturan_Token = kolom `pengingat_*` di `pengaturan_pengguna`; Riwayat_Unduh tidak dibuat (laporan PDF langsung diunduh) |
 
-## Tabel Sprint 2 (PR M2, Puti) — DRAF, difinalkan saat PR M2 merge
-Semua lewat migration **baru** (`2026_11_2x_*`); migration di atas tidak diubah. Rincian kolom dan alasan ada di spesifikasi PBI masing-masing (`docs/pbi/PBI-XX-*.md`). Konvensi tetap sama: nama tabel tunggal + `$table`, `user_id` tidak fillable, uang `unsignedBigInteger`, kWh `decimal(8,2)`.
+## Tabel Sprint 2 (PR M2, Puti — SCRUM-214)
+Semua lewat migration **baru** `2026_11_24_000001` … `000013`; migration di atas tidak diubah. Rincian kolom dan alasan ada di spesifikasi PBI masing-masing (`docs/pbi/PBI-XX-*.md`). Konvensi tetap sama: nama tabel tunggal + `$table`, `user_id` tidak fillable, uang `unsignedBigInteger`, kWh `decimal(8,2)`. Bukti skema: `tests/Feature/Database/TabelSprint2Test.php`.
+
+| No. migration | File |
+|---|---|
+| 000001 | `create_notifications_table` (dari `make:notifications-table`) |
+| 000002 | `add_pengingat_to_pengaturan_pengguna_table` |
+| 000003 | `create_peringatan_lonjakan_table` |
+| 000004 – 000006 | `create_anggota_patungan_table`, `create_patungan_token_table`, `create_patungan_bagian_table` |
+| 000007 – 000008 | `create_tantangan_table`, `create_peserta_tantangan_table` |
+| 000009 | `create_golongan_tarif_table` |
+| 000010 – 000011 | `create_pengumuman_table`, `create_faq_table` |
+| 000012 – 000013 | `create_jadwal_alat_table`, `create_rekomendasi_ditandai_table` |
+
+Butuh kolom/tabel baru? **Minta ke Puti** — jangan membuat migration sendiri, jangan edit migration di atas.
 
 | Tabel / perubahan | PBI | Kolom utama | Catatan |
 |---|---|---|---|
 | `notifications` | 31 | bawaan Laravel (`make:notifications-table`): uuid id, type, notifiable, data json, read_at | `User` sudah `Notifiable` |
 | `pengaturan_pengguna` + 5 kolom | 09 | `pengingat_aktif` bool def. true, `pengingat_batas_hari` tinyint def. 3, `pengingat_email` bool def. false, `pengingat_dicek_pada` date null, `pengingat_terakhir_pada` datetime null | migration `add_pengingat_to_pengaturan_pengguna_table` |
 | `peringatan_lonjakan` | 22 | user_id, tanggal date, kwh_tanggal, kwh_rata_rata, rasio decimal(5,2), tingkat string(10), alat_listrik_id null (nullOnDelete), dicek_pada datetime null | unique(user_id, tanggal) |
-| `anggota_patungan` | 27 | user_id, nama string(100), kamar string(20) null | **softDeletes** |
+| `anggota_patungan` | 27 | user_id, nama string(100), kamar string(20) null | **softDeletes**, index(user_id) |
 | `patungan_token` | 19 | user_id, pembelian_token_id **unique** (cascade), catatan string(255) null | |
 | `patungan_bagian` | 19 | patungan_token_id (cascade), anggota_patungan_id **null** (nullOnDelete; null = pembeli), nominal unsignedBigInteger, lunas_pada datetime null | |
 | `tantangan` | 20 | judul string(150), deskripsi text null, jenis_target string(20), nilai_target decimal(8,2), durasi_hari smallint, poin smallint, aktif bool def. true, dibuat_oleh null (nullOnDelete) | `TantanganSeeder` |
@@ -190,18 +204,47 @@ Semua lewat migration **baru** (`2026_11_2x_*`); migration di atas tidak diubah.
 | `jadwal_alat` | 28 | user_id, alat_listrik_id (cascade), hari tinyint (1 = Senin … 7 = Minggu), jam_mulai time, jam_selesai time | index(user_id, hari) |
 | `rekomendasi_ditandai` | 12 | user_id, tips_hemat_id (cascade), alat_listrik_id (cascade) | unique(user_id, tips_hemat_id, alat_listrik_id) |
 
-Relasi baru:
+Model: `PeringatanLonjakan`, `AnggotaPatungan`, `PatunganToken`, `PatunganBagian`, `Tantangan`, `PesertaTantangan`, `GolonganTarif`, `Pengumuman`, `Faq`, `JadwalAlat`, `RekomendasiDitandai` (tabel `notifications` tidak punya model sendiri — pakai `$user->notifications()`).
+
+Relasi baru (nama method = nama model camelCase):
 ```
-User         hasMany PeringatanLonjakan, AnggotaPatungan, PatunganToken, PesertaTantangan, JadwalAlat, RekomendasiDitandai
-PembelianToken hasOne PatunganToken
-PatunganToken  belongsTo User, PembelianToken | hasMany PatunganBagian
-PatunganBagian belongsTo PatunganToken, AnggotaPatungan (->withTrashed())
-AnggotaPatungan belongsTo User | use SoftDeletes
-Tantangan    hasMany PesertaTantangan | belongsTo User as 'pembuat' (dibuat_oleh)
-PesertaTantangan belongsTo Tantangan, User
-AlatListrik  hasMany JadwalAlat
-JadwalAlat, PeringatanLonjakan (alat ->withTrashed()), RekomendasiDitandai  belongsTo User + model terkait
+User         hasMany peringatanLonjakan, anggotaPatungan, patunganToken, pesertaTantangan, jadwalAlat, rekomendasiDitandai
+PembelianToken hasOne patunganToken
+PatunganToken  belongsTo user, pembelianToken | hasMany patunganBagian
+PatunganBagian belongsTo patunganToken, anggotaPatungan (->withTrashed())
+AnggotaPatungan belongsTo user | hasMany patunganBagian (untuk "jumlah patungan yang pernah diikuti", PBI 27) | use SoftDeletes
+Tantangan    hasMany pesertaTantangan | belongsTo User as 'pembuat' (dibuat_oleh)
+PesertaTantangan belongsTo tantangan, user
+AlatListrik  hasMany jadwalAlat
+JadwalAlat         belongsTo user, alatListrik
+PeringatanLonjakan belongsTo user, alatListrik (->withTrashed())
+RekomendasiDitandai belongsTo user, tipsHemat, alatListrik
 Pengumuman   belongsTo User as 'pembuat' (dibuat_oleh)
-SisaKwh, PemakaianHarian  #[ObservedBy(SisaKwhObserver / PemakaianHarianObserver)]
+GolonganTarif, Faq  tanpa relasi (golongan dicocokkan ke profil_kost.golongan_tarif lewat `nama`)
+SisaKwh, PemakaianHarian  #[ObservedBy(SisaKwhObserver / PemakaianHarianObserver)] — class di app/Observers/ masih kosong, diisi Beden
 ```
-Cast tambahan: `tanggal`, `mulai`, `selesai`, `tampil_mulai`, `tampil_sampai`, `pengingat_dicek_pada` → `date`; `dicek_pada`, `lunas_pada`, `dinilai_pada`, `pengingat_terakhir_pada` → `datetime`; boolean → `boolean`; `rasio` → `decimal:2`.
+Cast tambahan: `tanggal`, `mulai`, `selesai`, `tampil_mulai`, `tampil_sampai`, `pengingat_dicek_pada` → `date`; `dicek_pada`, `lunas_pada`, `dinilai_pada`, `pengingat_terakhir_pada` → `datetime`; boolean → `boolean`; `rasio`, `kwh_tanggal`, `kwh_rata_rata`, `nilai_target`, `tarif_per_kwh` → `decimal:2`; `nominal`, `poin`, `poin_didapat`, `durasi_hari`, `hari`, `urutan`, `daya_va`, `pengingat_batas_hari` → `integer`.
+
+**Konstanta model (wajib dipakai, jangan menulis string langsung):**
+| Konstanta | Nilai | Kolom |
+|---|---|---|
+| `Tantangan::JENIS_MAKS_KWH_HARIAN` | `maks_kwh_harian` | `tantangan.jenis_target` |
+| `Tantangan::JENIS_PERSEN_HEMAT` | `persen_hemat` | `tantangan.jenis_target` |
+| `PesertaTantangan::STATUS_BERJALAN` | `berjalan` | `peserta_tantangan.status` |
+| `PesertaTantangan::STATUS_BERHASIL` | `berhasil` | `peserta_tantangan.status` |
+| `PesertaTantangan::STATUS_GAGAL` | `gagal` | `peserta_tantangan.status` |
+| `PeringatanLonjakan::TINGKAT_SEDANG` | `sedang` | `peringatan_lonjakan.tingkat` |
+| `PeringatanLonjakan::TINGKAT_TINGGI` | `tinggi` | `peringatan_lonjakan.tingkat` |
+
+**Catatan penting:**
+- `PengaturanPengguna` punya `$attributes` default (`pengingat_aktif` true, `pengingat_batas_hari` 3, `pengingat_email` false), sama dengan default migration → `$user->pengaturanPengguna()->firstOrNew()` langsung berisi nilai bawaan (PBI 09).
+- `jadwal_alat.jam_mulai` / `jam_selesai` **tidak di-cast** (string). MySQL selalu mengembalikan `HH:MM:SS`, SQLite mengembalikan persis yang disimpan → simpan selalu format `HH:MM:SS` (mis. `$jam.':00'` dari input `H:i`), dan bandingkan jam sebagai string `HH:MM:SS` atau lewat `Carbon::createFromFormat('H:i:s', ...)`.
+- `patungan_bagian.anggota_patungan_id` null = bagian pembeli ("Saya"). Anggota di-soft delete → bagian tetap menunjuk anggota (terbaca lewat `withTrashed`); baru null kalau anggota dihapus permanen.
+- `golongan_tarif.subsidi` dari seeder: true hanya untuk nama yang mengandung `(subsidi)` (450 & 900 VA); `R-1/TR 900 VA-RTM` false.
+
+**Factory state yang tersedia:** `PeringatanLonjakan::factory()->tinggi()/sudahDicek()`, `PatunganBagian::factory()->pembeli()/lunas()`, `Tantangan::factory()->persenHemat()/nonaktif()`, `PesertaTantangan::factory()->berhasil()/gagal($catatan)`, `GolonganTarif::factory()->subsidi()`, `Pengumuman::factory()->terjadwal()/berakhir()`, `PengaturanPengguna::factory()->pengingatNonaktif()/pengingatEmail()`. Factory yang punya FK ke data milik user (alat, pembelian, anggota) membuat data itu untuk **user yang sama** — cukup `->for($user)`.
+
+**Seeder Sprint 2** (dipanggil `DatabaseSeeder` setelah `TipsHematSeeder`, semua idempotent / `updateOrCreate`):
+- `GolonganTarifSeeder` — 6 golongan dari `config('wattkost.golongan_tarif')`.
+- `TantanganSeeder` — 4 tantangan PBI 20; `dibuat_oleh` = admin pertama, null kalau belum ada admin. Deskripsi boleh dilengkapi Tika.
+- `FaqSeeder` — kerangka 2 FAQ (urutan 1–2); isi lengkap ±6 FAQ ditulis Tata.
