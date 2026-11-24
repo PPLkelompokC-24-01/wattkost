@@ -18,7 +18,7 @@ return [
 
     'penghuni' => [
         ['label' => 'Beranda', 'route' => 'beranda', 'ikon' => 'home'],
-        ['label' => 'Alat Listrik', 'route' => 'alat.index', 'ikon' => 'plug', 'aktif_untuk' => ['alat.*']],
+        ['label' => 'Alat Listrik', 'route' => 'alat.index', 'ikon' => 'plug', 'aktif_untuk' => ['alat.*', 'jadwal.*']],
         ['label' => 'Pemakaian Harian', 'route' => 'pemakaian.index', 'ikon' => 'calendar', 'aktif_untuk' => ['pemakaian.*', 'konsumsi.*']],
         ['label' => 'Token Listrik', 'route' => 'token.index', 'ikon' => 'receipt', 'aktif_untuk' => ['token.*', 'meteran.*', 'analisis.prediksi', 'pengingat.*', 'patungan.*']],
         ['label' => 'Dashboard', 'route' => 'dashboard', 'ikon' => 'chart', 'aktif_untuk' => ['dashboard', 'analisis.peringkat', 'analisis.biaya', 'lonjakan.*']],
@@ -30,12 +30,21 @@ return [
         ['label' => 'Laporan', 'route' => 'laporan.index', 'ikon' => 'file', 'aktif_untuk' => ['laporan.*']],
         ['label' => 'Jejak Karbon', 'route' => 'karbon.index', 'ikon' => 'leaf', 'aktif_untuk' => ['karbon.*']],
         ['label' => 'Profil Kost', 'route' => 'profil.show', 'ikon' => 'building', 'aktif_untuk' => ['profil.*']],
+        // Sprint 2 (PBI 30, 32)
+        ['label' => 'Bantuan', 'route' => 'bantuan.index', 'ikon' => 'help', 'aktif_untuk' => ['bantuan.*']],
+        ['label' => 'Akun Saya', 'route' => 'akun.edit', 'ikon' => 'user', 'aktif_untuk' => ['akun.*']],
     ],
 
     'admin' => [
         ['label' => 'Tips Hemat', 'route' => 'admin.tips.index', 'ikon' => 'target', 'aktif_untuk' => ['admin.tips.*']],
         ['label' => 'Katalog Alat', 'route' => 'admin.katalog.index', 'ikon' => 'plug', 'aktif_untuk' => ['admin.katalog.*']],
         ['label' => 'Kelola Pengguna', 'route' => 'admin.pengguna.index', 'ikon' => 'users', 'aktif_untuk' => ['admin.pengguna.*']],
+        // Sprint 2 (PBI 26, 29, 30, 20, 32)
+        ['label' => 'Golongan Tarif', 'route' => 'admin.golongan.index', 'ikon' => 'bolt', 'aktif_untuk' => ['admin.golongan.*']],
+        ['label' => 'Pengumuman', 'route' => 'admin.pengumuman.index', 'ikon' => 'megaphone', 'aktif_untuk' => ['admin.pengumuman.*']],
+        ['label' => 'FAQ', 'route' => 'admin.faq.index', 'ikon' => 'help', 'aktif_untuk' => ['admin.faq.*']],
+        ['label' => 'Tantangan', 'route' => 'admin.tantangan.index', 'ikon' => 'trophy', 'aktif_untuk' => ['admin.tantangan.*']],
+        ['label' => 'Akun Saya', 'route' => 'akun.edit', 'ikon' => 'user', 'aktif_untuk' => ['akun.*']],
     ],
 
 ];

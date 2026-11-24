@@ -27,6 +27,11 @@
         @endif
     </x-page-header>
 
+    {{-- Kartu Sprint 2 (milik Beden, PBI 09 & 22). Muncul sendiri setelah partial-nya dibuat;
+         jarak (mis. mb-6) diatur di dalam partial supaya tidak ada ruang kosong selama belum ada. --}}
+    @includeIf('pengingat._kartu-beranda')
+    @includeIf('lonjakan._kartu-beranda')
+
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         <x-stat-card label="Sisa kWh" icon="bolt" tone="highlight" :value="$sisaKwh['nilai'] ?? '—'"
             :note="$sisaKwh['note'] ?? $kosong" :href="$tautan('meteran.index')" />
