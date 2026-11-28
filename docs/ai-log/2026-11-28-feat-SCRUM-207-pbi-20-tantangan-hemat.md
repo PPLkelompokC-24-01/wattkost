@@ -53,3 +53,31 @@ Jangan commit.
 </pasted_content id="977c">
 ```
 
+## 17:19 — kartyka
+
+```text
+<pasted_content id="977c">
+Tahap 2 oke, sudah aku commit. Teks pesan A1 dan A3 disetujui.
+
+Lanjut tahap 3: view penghuni (tantangan/index + partials/kartu) dan
+admin (admin/tantangan/index + partials/form).
+- Penghuni: ikuti fungsi Tantangan() di pages.txt (x-tabs Tersedia/
+  Diikuti/Selesai, kartu dengan x-ilustrasi-rumah, x-badge durasi,
+  x-info-row Durasi & Target, stat Total Poin, kartu Sedang Diikuti
+  dengan x-progress). Data dari database, bukan data contoh desain.
+  Tab Selesai: tampilkan status Berhasil/Gagal dengan x-badge (tone
+  good/danger), poin didapat, dan catatan alasan gagal.
+  Tombol Leaderboard → dan tautan kartu Total Poin hanya kalau
+  Route::has('leaderboard.index').
+  Empty state untuk tab yang kosong.
+- Admin: gaya admin Tips/Katalog (x-table, x-form-modal, ?ubah=,
+  hapus dengan confirm(@js(...))). Kolom: judul, jenis target,
+  target (format sesuai jenis), durasi, poin, status aktif (x-badge),
+  jumlah peserta. Toggle aktif dengan hidden input "0" sebelumnya.
+- Hanya komponen yang sudah ada, tanpa warna/komponen baru.
+  Mobile-first, cek di lebar 375px.
+Setelah selesai, tunjukkan isi view dan hasil php artisan test, lalu
+berhenti supaya aku cek di browser dulu. Jangan commit.
+</pasted_content id="977c">
+```
+
