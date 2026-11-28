@@ -116,6 +116,8 @@ Tamu → login; **penghuni → 403** di admin; admin tambah valid / tidak valid 
 | 1 | 28 Nov 2026 | PO | `persen_hemat` juga butuh minimal `ceil(durasi ÷ 2)` tanggal tercatat dalam periode tantangan; kurang dari itu → gagal "Data kurang". Alasan: tanpa aturan ini `kwhPeriode` = 0 selalu ≤ target, jadi penghuni bisa berhasil hanya dengan tidak mencatat pemakaian. Unit test: `test_persen_hemat_gagal_data_kurang_keputusan_po`. |
 | 2 | 28 Nov 2026 | PO | Tab Diikuti menampilkan progres (`x-progress` + "Hari X dari Y") langsung di kartu, tanpa halaman detail. |
 | 3 | 28 Nov 2026 | PO | Catatan "Peringkat X dari Y" di kartu Total Poin dikosongkan dulu, diisi di PBI 21 Leaderboard. |
+| 4 | 28 Nov 2026 | PO | `persen_hemat` yang datanya cukup dan punya pembanding, tetapi `kwhPeriode > kwhSebelum × (1 − nilai_target ÷ 100)` → gagal dengan catatan "Target tidak tercapai". |
+| 5 | 28 Nov 2026 | PO | Urutan cek penilaian (kedua jenis): "Data kurang" dicek lebih dulu. Baru setelah itu `maks_kwh_harian` → "Ada hari melebihi batas"; `persen_hemat` → "Tidak ada data pembanding", lalu "Target tidak tercapai". |
 
 ## Skenario Selenium (`tests/selenium/test_pbi_20_tantangan_hemat.py`)
 1. Login admin → Tantangan → tambah "Uji Selenium" (maks_kwh_harian 5, 3 hari, 50 poin) → baris muncul.

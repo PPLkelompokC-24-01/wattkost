@@ -34,3 +34,22 @@ Mulai tahap 1: TantanganService + unit test.
 </pasted_content id="977c">
 ```
 
+## 17:05 — kartyka
+
+```text
+<pasted_content id="977c">
+Tahap 1 oke, sudah aku commit.
+
+Dua asumsi disetujui (keputusan PO): teks gagal persen_hemat
+"Target tidak tercapai", dan "Data kurang" dicek lebih dulu.
+Tambahkan keduanya di bagian Keputusan docs/pbi/PBI-20-tantangan-hemat.md.
+sedangBerjalan() dan durasi dari tanggal peserta juga disetujui.
+
+Lanjut tahap 2: request admin (Store/Update), kedua controller
+(TantanganController penghuni + Admin\TantanganController), dan
+route di routes/modules/tantangan.php. Tunjukkan route:list --name=tantangan
+dan hasil php artisan test, lalu berhenti sebelum view.
+Jangan commit.
+</pasted_content id="977c">
+```
+
