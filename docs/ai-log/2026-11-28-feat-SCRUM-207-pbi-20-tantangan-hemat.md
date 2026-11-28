@@ -116,3 +116,45 @@ Tahap 4 sudah aku commit sendiri, termasuk docs/ai-log. Tahap 5
 aku merge ke branch ini. Untuk sekarang jangan ubah file apa pun.
 ```
 
+## 18:23 — kartyka
+
+```text
+<pasted_content id="977c">
+PR SCRUM-216 sudah merge dan develop sudah aku merge ke branch ini
+(tanpa konflik). Silakan mulai tahap 5: cek tests/selenium/conftest.py
+versi develop dulu, lalu tunjukkan rencana skrip
+tests/selenium/test_pbi_20_tantangan_hemat.py (4 skenario dari spesifikasi)
+sebelum menulis. Jangan commit.
+</pasted_content id="977c">
+```
+
+## 18:26 — kartyka
+
+```text
+<pasted_content id="977c">
+Setuju, dengan catatan:
+1. Sisa data: terima, tulis di docstring bahwa sebelum demo/uji silang
+   jalankan php artisan migrate:fresh --seed. Jangan ubah conftest.py.
+2. Toggle Aktif: usahakan klik elemen yang terlihat (label/tombol geser)
+   seperti pengguna. Pakai klik JavaScript hanya kalau itu tidak bisa,
+   dan beri komentar alasannya.
+3. Tulis di docstring bahwa test 2-4 bergantung pada test sebelumnya,
+   jadi file harus dijalankan utuh.
+4. Boleh tambahkan baris test_pbi_20_tantangan_hemat.py di tabel jumlah
+   login README Selenium.
+Silakan tulis, cek dengan python -m py_compile, lalu tunjukkan git status
+dan perintah untuk aku jalankan. Jangan commit.
+</pasted_content id="977c">
+```
+
+## 18:40 — kartyka
+
+```text
+<pasted_content id="977c">
+Tes Selenium PBI 20 sudah aku jalankan di laptopku: 4 passed.
+Sudah aku commit sendiri (termasuk docs/ai-log). Langkah berikutnya
+uji silang di laptop P1, lalu /cek-sebelum-pr. Untuk sekarang jangan
+ubah file apa pun.
+</pasted_content id="977c">
+```
+

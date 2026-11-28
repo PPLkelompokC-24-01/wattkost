@@ -183,6 +183,7 @@ Selektor yang bisa dipakai tanpa mengubah view:
 |---|---|
 | `test_login.py` | 4 (TC-01, 02, 04, 05; TC-03 ditolak validasi browser, tidak terkirim). Jangan diulang dalam 1 menit |
 | `test_pbi_23_katalog.py` | 2 (admin 1, penghuni1 1) |
+| `test_pbi_20_tantangan_hemat.py` | 2 (admin 1, penghuni1 1) |
 
 Kalau terblokir (halaman "429 Too Many Requests", atau fixture gagal dengan pesan throttle), kosongkan cache rate limiter:
 
