@@ -118,6 +118,7 @@ Tamu → login; **penghuni → 403** di admin; admin tambah valid / tidak valid 
 | 3 | 28 Nov 2026 | PO | Catatan "Peringkat X dari Y" di kartu Total Poin dikosongkan dulu, diisi di PBI 21 Leaderboard. |
 | 4 | 28 Nov 2026 | PO | `persen_hemat` yang datanya cukup dan punya pembanding, tetapi `kwhPeriode > kwhSebelum × (1 − nilai_target ÷ 100)` → gagal dengan catatan "Target tidak tercapai". |
 | 5 | 28 Nov 2026 | PO | Urutan cek penilaian (kedua jenis): "Data kurang" dicek lebih dulu. Baru setelah itu `maks_kwh_harian` → "Ada hari melebihi batas"; `persen_hemat` → "Tidak ada data pembanding", lalu "Target tidak tercapai". |
+| 6 | 28 Nov 2026 | PO | Teks target di kartu & tabel admin (`tantangan/partials/target.blade.php`): `maks_kwh_harian` → "Maks. 6 kWh/hari" (sesuai desain); `persen_hemat` → "Hemat 10% dari 7 hari sebelumnya" (beda dari desain "≤ 78 kWh/bulan", karena batas kWh berbeda per penghuni). Kartu juga menampilkan deskripsi (kalau ada) dan baris Periode di tab Diikuti & Selesai. |
 
 ## Skenario Selenium (`tests/selenium/test_pbi_20_tantangan_hemat.py`)
 1. Login admin → Tantangan → tambah "Uji Selenium" (maks_kwh_harian 5, 3 hari, 50 poin) → baris muncul.

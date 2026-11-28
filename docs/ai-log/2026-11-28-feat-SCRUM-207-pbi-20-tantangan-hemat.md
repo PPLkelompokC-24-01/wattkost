@@ -81,3 +81,38 @@ berhenti supaya aku cek di browser dulu. Jangan commit.
 </pasted_content id="977c">
 ```
 
+## 17:30 — kartyka
+
+```text
+<pasted_content id="977c">
+Tahap 3 sudah aku cek di browser dan commit. Keputusan PO: teks target
+persen_hemat, deskripsi, dan baris Periode dipertahankan; target.blade.php
+dan gaya tombol nonaktif disetujui. Catat keputusan teks target di
+bagian Keputusan docs/pbi/PBI-20-tantangan-hemat.md.
+
+Lanjut tahap 4: feature test TantanganTest (penghuni) dan
+AdminTantanganTest (admin) sesuai daftar di rencana, termasuk 5
+skenario wajib KONVENSI. Jalankan php artisan test --filter=Tantangan
+dan php artisan test (semua), tunjukkan hasilnya. Jangan commit.
+</pasted_content id="977c">
+```
+
+## 17:46 — kartyka
+
+```text
+<pasted_content id="977c">
+Tahap 4 oke. File aneh itu kemungkinan dari teks kode yang tidak
+sengaja aku tempel ke terminal CMD (tanda > jadi redirect), bukan
+dari hook. Boleh hapus kelima file itu sekarang dengan perintah rm
+yang kamu tulis, lalu tunjukkan git status. Jangan commit.
+</pasted_content id="977c">
+```
+
+## 17:53 — kartyka
+
+```text
+Tahap 4 sudah aku commit sendiri, termasuk docs/ai-log. Tahap 5
+(Selenium PBI 20) tunggu dulu sampai PR SCRUM-216 merge dan develop
+aku merge ke branch ini. Untuk sekarang jangan ubah file apa pun.
+```
+
