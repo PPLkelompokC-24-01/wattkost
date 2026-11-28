@@ -29,3 +29,9 @@ Thumbs.db
 .claude/settings.local.json
 CLAUDE.local.md
 /storage/app/laporan
+
+# Selenium (Python) — venv, cache, dan screenshot hasil uji tidak di-commit
+/tests/selenium/.venv/
+/tests/selenium/.pytest_cache/
+/tests/selenium/**/__pycache__/
+/tests/selenium/hasil/
