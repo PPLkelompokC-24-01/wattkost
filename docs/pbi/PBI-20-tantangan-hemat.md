@@ -64,7 +64,7 @@ public function totalPoin(User $user): int;
 ```
 Penilaian (semua kWh dari `KonsumsiService::kwhPerTanggal`):
 - **`maks_kwh_harian`**: berhasil kalau jumlah tanggal tercatat dalam periode ≥ `ceil(durasi ÷ 2)` **dan** semua tanggal tercatat ≤ `nilai_target`. Selain itu gagal (catatan "Data kurang" atau "Ada hari melebihi batas").
-- **`persen_hemat`**: `kwhPeriode` = jumlah kWh mulai–selesai; `kwhSebelum` = jumlah kWh pada periode sama panjang tepat sebelum `mulai`. `kwhSebelum` = 0 → gagal (A2). Berhasil kalau `kwhPeriode ≤ kwhSebelum × (1 − nilai_target ÷ 100)`.
+- **`persen_hemat`**: `kwhPeriode` = jumlah kWh mulai–selesai; `kwhSebelum` = jumlah kWh pada periode sama panjang tepat sebelum `mulai`. Jumlah tanggal tercatat dalam periode < `ceil(durasi ÷ 2)` → gagal "Data kurang" (lihat Keputusan no. 1). `kwhSebelum` = 0 → gagal (A2). Berhasil kalau `kwhPeriode ≤ kwhSebelum × (1 − nilai_target ÷ 100)`.
 - Berhasil → `poin_didapat` = `tantangan.poin`. Gagal → 0.
 
 ### Contoh angka untuk unit test (data PBI-03: 1 Okt = 0,81 kWh, 2 Okt = 0,37 kWh)
@@ -109,6 +109,13 @@ aktif         boolean
 
 ## Test wajib
 Tamu → login; **penghuni → 403** di admin; admin tambah valid / tidak valid (persen > 100, durasi 0); ubah; hapus; `test_hapus_tantangan_berpeserta_ditolak`; `test_ikuti_tantangan`; `test_tidak_bisa_ikut_dua_kali_saat_berjalan`; `test_buka_halaman_menilai_yang_selesai`; `test_progres_hanya_milik_sendiri`. Unit `TantanganServiceTest`: semua contoh angka di atas.
+
+## Keputusan
+| No | Tanggal | Oleh | Keputusan |
+|---|---|---|---|
+| 1 | 28 Nov 2026 | PO | `persen_hemat` juga butuh minimal `ceil(durasi ÷ 2)` tanggal tercatat dalam periode tantangan; kurang dari itu → gagal "Data kurang". Alasan: tanpa aturan ini `kwhPeriode` = 0 selalu ≤ target, jadi penghuni bisa berhasil hanya dengan tidak mencatat pemakaian. Unit test: `test_persen_hemat_gagal_data_kurang_keputusan_po`. |
+| 2 | 28 Nov 2026 | PO | Tab Diikuti menampilkan progres (`x-progress` + "Hari X dari Y") langsung di kartu, tanpa halaman detail. |
+| 3 | 28 Nov 2026 | PO | Catatan "Peringkat X dari Y" di kartu Total Poin dikosongkan dulu, diisi di PBI 21 Leaderboard. |
 
 ## Skenario Selenium (`tests/selenium/test_pbi_20_tantangan_hemat.py`)
 1. Login admin → Tantangan → tambah "Uji Selenium" (maks_kwh_harian 5, 3 hari, 50 poin) → baris muncul.
